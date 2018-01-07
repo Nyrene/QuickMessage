@@ -15,6 +15,11 @@
 		908A19381FFEAA250084D908 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 908A19361FFEAA250084D908 /* LaunchScreen.storyboard */; };
 		908A19431FFEAA260084D908 /* QuickMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A19421FFEAA260084D908 /* QuickMessageTests.swift */; };
 		908A194E1FFEAA260084D908 /* QuickMessageUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A194D1FFEAA260084D908 /* QuickMessageUITests.swift */; };
+		908A195C200064940084D908 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A195B200064940084D908 /* Event.swift */; };
+		908A19622001EC1E0084D908 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A19612001EC1E0084D908 /* Location.swift */; };
+		908A19642001EC6E0084D908 /* DayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A19632001EC6E0084D908 /* DayViewController.swift */; };
+		908A19662001EC7A0084D908 /* EditEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A19652001EC7A0084D908 /* EditEventViewController.swift */; };
+		908A19682001EC8D0084D908 /* EditLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A19672001EC8D0084D908 /* EditLocationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +54,11 @@
 		908A19491FFEAA260084D908 /* QuickMessageUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickMessageUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		908A194D1FFEAA260084D908 /* QuickMessageUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickMessageUITests.swift; sourceTree = "<group>"; };
 		908A194F1FFEAA260084D908 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		908A195B200064940084D908 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		908A19612001EC1E0084D908 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		908A19632001EC6E0084D908 /* DayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayViewController.swift; sourceTree = "<group>"; };
+		908A19652001EC7A0084D908 /* EditEventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditEventViewController.swift; sourceTree = "<group>"; };
+		908A19672001EC8D0084D908 /* EditLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditLocationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,9 +109,11 @@
 		908A19291FFEAA250084D908 /* QuickMessage */ = {
 			isa = PBXGroup;
 			children = (
-				908A192A1FFEAA250084D908 /* AppDelegate.swift */,
-				908A192C1FFEAA250084D908 /* ViewController.swift */,
 				908A192E1FFEAA250084D908 /* Main.storyboard */,
+				908A195D2001EB8F0084D908 /* View Controllers */,
+				908A19602001EBCC0084D908 /* Managers */,
+				908A195E2001EB9D0084D908 /* Models */,
+				908A192A1FFEAA250084D908 /* AppDelegate.swift */,
 				908A19341FFEAA250084D908 /* Assets.xcassets */,
 				908A19361FFEAA250084D908 /* LaunchScreen.storyboard */,
 				908A19391FFEAA250084D908 /* Info.plist */,
@@ -126,6 +138,33 @@
 				908A194F1FFEAA260084D908 /* Info.plist */,
 			);
 			path = QuickMessageUITests;
+			sourceTree = "<group>";
+		};
+		908A195D2001EB8F0084D908 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				908A192C1FFEAA250084D908 /* ViewController.swift */,
+				908A19632001EC6E0084D908 /* DayViewController.swift */,
+				908A19652001EC7A0084D908 /* EditEventViewController.swift */,
+				908A19672001EC8D0084D908 /* EditLocationViewController.swift */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		908A195E2001EB9D0084D908 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				908A195B200064940084D908 /* Event.swift */,
+				908A19612001EC1E0084D908 /* Location.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		908A19602001EBCC0084D908 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,9 +301,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				908A195C200064940084D908 /* Event.swift in Sources */,
 				908A192D1FFEAA250084D908 /* ViewController.swift in Sources */,
+				908A19682001EC8D0084D908 /* EditLocationViewController.swift in Sources */,
+				908A19662001EC7A0084D908 /* EditEventViewController.swift in Sources */,
+				908A19622001EC1E0084D908 /* Location.swift in Sources */,
 				908A192B1FFEAA250084D908 /* AppDelegate.swift in Sources */,
 				908A19331FFEAA250084D908 /* QuickMessage.xcdatamodeld in Sources */,
+				908A19642001EC6E0084D908 /* DayViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
