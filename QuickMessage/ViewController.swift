@@ -37,9 +37,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     // Calendar
     @IBOutlet var calendarView:UICollectionView?
-    
     @IBOutlet weak var monthTxtFld: UITextField!
-    
     @IBOutlet weak var yearTxtFld: UITextField!
     
     
@@ -52,17 +50,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // View
+        
+        let dateComponents = DateComponents()
+        (dateComponents as NSDateComponents).calendar = self.currentCalendar
+        let currentDate = Date()
+        self.monthTxtFld.placeholder = String(currentCalendar.component(.month, from: currentDate))
+        self.yearTxtFld.placeholder = String(currentCalendar.component(.year, from: currentDate))
+    
+        
         // Calendar
         
         self.calendarView?.delegate = self
         self.calendarView?.dataSource = self
-
-        self.setDaysInMonth(nil, givenYear: nil)
-        self.setStartingDayOfWeek(givenMonth: nil, givenYear: nil)
- 
         
-        // TD: set placeholder text of month
-        // and year fields to current
+        self.setCalendarInfo(givenMonth: currentCalendar.component(.month, from: currentDate), givenYear: currentCalendar.component(.year, from: currentDate))
+
+ 
      }
 
     override func didReceiveMemoryWarning() {
@@ -92,29 +96,34 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     
     
+    // Calendar info set up
+    func setCalendarInfo(givenMonth:Int!, givenYear:Int!) {
+        self.daysInMonth = getDaysInMonth(givenMonth, givenYear:givenYear!)
+        self.startingDayOfWeek = getStartingDayOfWeek(givenMonth:givenMonth, givenYear:givenYear)
+        
+    }
     
-    func setDaysInMonth(_ givenMonth:Int!, givenYear:Int!) {
+    
+    func getDaysInMonth(_ givenMonth:Int!, givenYear:Int!) -> Int {
         //note: months start at 1
         
         var dateComponents = DateComponents()
         (dateComponents as NSDateComponents).calendar = self.currentCalendar
-        
         
         // set days in the current month, otherwise IFF year and month are given,
         // set days in the given time range
         
         if (givenMonth == nil && givenYear == nil) {
             let currentDate = Date()
-            //http://stackoverflow.com/questions/1179945/number-of-days-in-the-current-month-using-iphone-sdk
-            let cal = Calendar(identifier:Calendar.Identifier.gregorian)
-            let days:Int = (cal as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: currentDate).length
-            self.daysInMonth = days
+            // http://stackoverflow.com/questions/1179945/number-of-days-in-the-current-month-using-iphone-sdk
+            
+            let days:Int = (currentCalendar as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: currentDate).length
+            return days
             // print("DEBUG: Days in current month: ", daysInMonth)
             
         } else if (givenMonth != nil && givenYear != nil) {
             if (givenMonth < 1 && givenMonth > 12) {
-                self.daysInMonth = 0
-                return
+                return 0
             }
             
             dateComponents.month = givenMonth
@@ -122,26 +131,28 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
             let newDate = self.currentCalendar.date(from: dateComponents)
             let days:Int = (self.currentCalendar as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: newDate!).length
-            self.daysInMonth = days
+            
+            return days
             // print("DEBUG: Days in given month: ", daysInMonth)
            
         } else {
-            // TD: display error about requiring both values
-            self.daysInMonth = 0
+            // TDAlert: display error about requiring both values
             print("Error: getDaysInMonth: Month OR date set; requires both or neither")
+            return 0
+
         }
 
     }
     
     // TD: error checking for this?
-    func setStartingDayOfWeek(givenMonth:Int!, givenYear:Int!) {
+    func getStartingDayOfWeek(givenMonth:Int!, givenYear:Int!) -> Int {
         //if there's no given date, use current one
         
         if (givenMonth == nil && givenYear == nil) {
             let thisDate = Date()
             let startingDay:Int = (self.currentCalendar as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate)
-            self.startingDayOfWeek = startingDay
             print("DEBUG: startingDayOfWeek with current date is: ", startingDay)
+            return startingDay
         } else {
             var dateComponents = DateComponents()
             (dateComponents as NSDateComponents).calendar = self.currentCalendar
@@ -151,30 +162,23 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
  
             let thisDate = self.currentCalendar.date(from: dateComponents as DateComponents)
             let startingDay:Int = (self.currentCalendar as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate!)
-            self.startingDayOfWeek = startingDay
+            return startingDay
         }
     }
 
     
     // IBActions
     
-    // TD: disable go button unless both text fields have values
+    // TD2: disable go button unless both text fields have values
     @IBAction func goBtnPressed(_ sender: UIButton) {
         // Only run if both fields have values
-        // TD: put below into one function that handles errors/throws
         if (self.monthTxtFld.text! != "" && self.yearTxtFld.text! != "") {
+            self.setCalendarInfo(givenMonth: Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
             
-            
-            self.setDaysInMonth(Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
-            if self.daysInMonth == 0 {
-                // Display error about invalid values given
-                // TD: better checking for this
-                return
-            }
-            //if the days in month info was valid, set the start day as well
-            self.setStartingDayOfWeek(givenMonth:Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
             // Redraw the calendar
             self.calendarView?.reloadData()
+        } else {
+            print("Error: both month and year text fields must have values")
         }
         
     }
