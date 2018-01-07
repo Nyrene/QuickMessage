@@ -20,11 +20,6 @@ import UIKit
             if permission denied, display pop-up displaying info
             if permission granted, redraw table with user calendar events
  
-
- 
- 
- 
- 
  
  
 */
@@ -50,6 +45,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     var currentCalendar = Calendar.current
     var daysInMonth:Int = 0
+    var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     
     
     
@@ -62,8 +58,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.calendarView?.dataSource = self
 
         self.setDaysInMonth(nil, givenYear: nil)
-        //DEBUG: try setting it to february 2018
-        self.setDaysInMonth(2, givenYear:2018)
+        self.setStartingDayOfWeek(givenMonth: nil, givenYear: nil)
  
         
         // TD: set placeholder text of month
@@ -81,13 +76,22 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return self.daysInMonth
     }
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // first starting date is sunday, at 0
+        // If the cell is past the starting day of the week, set the
+        // if indexPath < startDay // leave blank
+        // example: startDay = 3
+        // if indexPath == startDay // cell.displayNum = 1
+        // if indexPath > startDay // cell.displayNum = indexPath - startDay
         let thisCell = UICollectionViewCell()
         return thisCell
     }
+    
+    
+    
     
     func setDaysInMonth(_ givenMonth:Int!, givenYear:Int!) {
         //note: months start at 1
@@ -105,22 +109,50 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let cal = Calendar(identifier:Calendar.Identifier.gregorian)
             let days:Int = (cal as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: currentDate).length
             self.daysInMonth = days
-            print("DEBUG: Days in current month: ", daysInMonth)
+            // print("DEBUG: Days in current month: ", daysInMonth)
             
         } else if (givenMonth != nil && givenYear != nil) {
+            if (givenMonth < 1 && givenMonth > 12) {
+                self.daysInMonth = 0
+                return
+            }
+            
             dateComponents.month = givenMonth
             dateComponents.year = givenYear
             
             let newDate = self.currentCalendar.date(from: dateComponents)
             let days:Int = (self.currentCalendar as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: newDate!).length
             self.daysInMonth = days
-            print("DEBUG: Days in given month: ", daysInMonth)
+            // print("DEBUG: Days in given month: ", daysInMonth)
            
         } else {
             // TD: display error about requiring both values
+            self.daysInMonth = 0
             print("Error: getDaysInMonth: Month OR date set; requires both or neither")
         }
 
+    }
+    
+    // TD: error checking for this?
+    func setStartingDayOfWeek(givenMonth:Int!, givenYear:Int!) {
+        //if there's no given date, use current one
+        
+        if (givenMonth == nil && givenYear == nil) {
+            let thisDate = Date()
+            let startingDay:Int = (self.currentCalendar as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate)
+            self.startingDayOfWeek = startingDay
+            print("DEBUG: startingDayOfWeek with current date is: ", startingDay)
+        } else {
+            var dateComponents = DateComponents()
+            (dateComponents as NSDateComponents).calendar = self.currentCalendar
+            dateComponents.month = givenMonth
+            dateComponents.year = givenYear
+            dateComponents.day = 1
+ 
+            let thisDate = self.currentCalendar.date(from: dateComponents as DateComponents)
+            let startingDay:Int = (self.currentCalendar as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate!)
+            self.startingDayOfWeek = startingDay
+        }
     }
 
     
@@ -129,18 +161,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     // TD: disable go button unless both text fields have values
     @IBAction func goBtnPressed(_ sender: UIButton) {
         // Only run if both fields have values
+        // TD: put below into one function that handles errors/throws
         if (self.monthTxtFld.text! != "" && self.yearTxtFld.text! != "") {
             
-            //Check that values are valid
             
-            self.setDaysInMonth(Int(self.monthTxtFld.text!), givenYear: Int(self.monthTxtFld.text!))
-            
-            //Redraw the calendar
+            self.setDaysInMonth(Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
+            if self.daysInMonth == 0 {
+                // Display error about invalid values given
+                // TD: better checking for this
+                return
+            }
+            //if the days in month info was valid, set the start day as well
+            self.setStartingDayOfWeek(givenMonth:Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
+            // Redraw the calendar
             self.calendarView?.reloadData()
         }
-
-        
-        
         
     }
 
