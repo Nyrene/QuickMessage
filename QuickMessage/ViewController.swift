@@ -80,17 +80,25 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.daysInMonth
+        return self.daysInMonth + self.startingDayOfWeek
     }
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // first starting date is sunday, at 0
+        
+        // first starting date is sunday, at 1
         // If the cell is past the starting day of the week, set the
         // if indexPath < startDay // leave blank
         // example: startDay = 3
         // if indexPath == startDay // cell.displayNum = 1
         // if indexPath > startDay // cell.displayNum = indexPath - startDay
-        let thisCell = UICollectionViewCell()
+        let thisCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCell", for: indexPath) as! CalendarCell
+        if (indexPath.item) < (self.startingDayOfWeek - 1) {
+            thisCell.alpha = 0
+        } else {
+            thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)
+        }
+        
+        
         return thisCell
     }
     
