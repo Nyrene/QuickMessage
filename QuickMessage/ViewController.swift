@@ -11,15 +11,15 @@ import UIKit
 
 
 /*
- 1) Load calendar view with current month and year
-    -toggle for showing user calendar events set to no by default
+ Next steps:
  
- 
- 2) if the user toggles yes for including their calendar events
-    1) request permission to do so
-            if permission denied, display pop-up displaying info
-            if permission granted, redraw table with user calendar events
- 
+ 1) If user toggles on:
+    1) ask for permission to access calendar events
+        if user says no, display pop-up explaining that access is required.
+            -keep toggle off
+        if user says yes:
+            1) toggle to on
+            2) come up with highlighting cells that have events
  
  
 */
@@ -86,11 +86,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // first starting date is sunday, at 1
-        // If the cell is past the starting day of the week, set the
-        // if indexPath < startDay // leave blank
-        // example: startDay = 3
-        // if indexPath == startDay // cell.displayNum = 1
-        // if indexPath > startDay // cell.displayNum = indexPath - startDay
         let thisCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCell", for: indexPath) as! CalendarCell
         if (indexPath.item) < (self.startingDayOfWeek - 1) {
             thisCell.alpha = 0
