@@ -65,6 +65,9 @@
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="X1c-Up-mGf">
                                 <rect key="frame" x="310" y="484" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="toggleSwitched:" destination="BYZ-38-t0r" eventType="valueChanged" id="vRC-Z3-dhC"/>
+                                </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="T" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hn5-Ja-bvm">
                                 <rect key="frame" x="102" y="109" width="33" height="30"/>
@@ -190,6 +193,7 @@
                     <connections>
                         <outlet property="calendarView" destination="Ksg-BD-OYa" id="7oN-qg-tTC"/>
                         <outlet property="monthTxtFld" destination="LAL-5T-OYm" id="pKI-B3-ZfP"/>
+                        <outlet property="userEventsToggle" destination="X1c-Up-mGf" id="ybl-zc-TvT"/>
                         <outlet property="yearTxtFld" destination="jU2-yT-Y8X" id="7da-DQ-b2i"/>
                     </connections>
                 </viewController>

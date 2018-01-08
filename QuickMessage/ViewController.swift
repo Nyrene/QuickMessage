@@ -7,20 +7,11 @@
 //
 
 import UIKit
-
+import EventKit
 
 
 /*
  Next steps:
- 
- 1) If user toggles on:
-    1) ask for permission to access calendar events
-        if user says no, display pop-up explaining that access is required.
-            -keep toggle off
-        if user says yes:
-            1) toggle to on
-            2) come up with highlighting cells that have events
- 
  
 */
 
@@ -44,7 +35,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var currentCalendar = Calendar.current
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
+    var includeUserEKEvents:Bool = false
     
+    
+    // Menu area
+    @IBOutlet weak var userEventsToggle: UISwitch!
     
     
 
@@ -65,6 +60,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.calendarView?.dataSource = self
         
         self.setCalendarInfo(givenMonth: currentCalendar.component(.month, from: currentDate), givenYear: currentCalendar.component(.year, from: currentDate))
+
+        // Event info
+        // if we already have access, go ahead and load user events in
+        // TD2: load toggle setting from previous run automatically
+        if EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
+            // TD: draw calendar with user events
+        }
 
  
      }
@@ -168,6 +170,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             return startingDay
         }
     }
+    
+    // User calendar info - EKEvent
+    
 
     
     // IBActions
@@ -185,6 +190,71 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
         
     }
+    
+    
+    @IBAction func toggleSwitched(_ sender: UISwitch) {
+        /*
+        1) If user toggles on:
+            check auth status
+                case auth status:
+                not determined: ask for permission
+                            if denied: display pop-up, toggle to false
+                denied: display pop-up, toggle to false
+                allowed: redraw calendar with ek events, set self.includeEKEvents to true
+        2) if user toggles off:
+                if had ek events included,
+                redraw without ek events (set self.includeEKEvents to false, redraw calendar)
+ 
+        */
+ 
+ 
+        
+        /*
+        let eventStore = EKEventStore()
+        
+        if (self.userEventsToggle.isOn) {
+            case (EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized) {
+            
+                // TD: redraw calendar with user events
+            }
+            func completionHandler(_ granted: Bool, error: Error?) -> Void{
+                if granted == true {
+                    print("granted")
+                } else {
+                    self.userEventsToggle.isOn = false
+                    // User has said no to calendar access; display alert
+                    // TD: display alert
+                    print("not granted")
+                }
+                
+            }
+            eventStore.requestAccess(to: EKEntityType.event, completion: completionHandler as EKEventStoreRequestAccessCompletionHandler)
+            print ("User toggled on")
+            
+           
+        }
+ 
+ */
+        
+         /*
+ 
+         
+         adding events to current calendar:
+         if switch is on, grab list of events for the currently shown month
+         if list  !ordered by dates
+            order it by date
+            for each cell loaded
+                put events for that date in table cell
+                    find first instance of event with that day
+                    while day matches int(displayNum), add to
+         
+         
+ */
+        
+        
+
+    }
+    
 
 
 }

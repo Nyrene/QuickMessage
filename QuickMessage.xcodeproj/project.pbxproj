@@ -557,6 +557,7 @@
 				908A19541FFEAA260084D908 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		908A19551FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessageTests" */ = {
 			isa = XCConfigurationList;
@@ -565,6 +566,7 @@
 				908A19571FFEAA260084D908 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		908A19581FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessageUITests" */ = {
 			isa = XCConfigurationList;
@@ -573,6 +575,7 @@
 				908A195A1FFEAA260084D908 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
