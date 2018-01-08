@@ -37,6 +37,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     var includeUserEKEvents:Bool = false
     
+    let eventStore = EKEventStore()
+    
     
     // Menu area
     @IBOutlet weak var userEventsToggle: UISwitch!
@@ -105,6 +107,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func setCalendarInfo(givenMonth:Int!, givenYear:Int!) {
         self.daysInMonth = getDaysInMonth(givenMonth, givenYear:givenYear!)
         self.startingDayOfWeek = getStartingDayOfWeek(givenMonth:givenMonth, givenYear:givenYear)
+        
+    }
+    
+    func redrawCalendar(useDefaultInfo:Bool) {
+        if (useDefaultInfo == true) {
+            self.setCalendarInfo(givenMonth: nil, givenYear: nil)
+            
+        }
+        
+        if self.includeUserEKEvents == true {
+            // TD: do stuff to facilitate that
+        }
+        
+        self.calendarView?.reloadData()
+        
         
     }
     
@@ -184,7 +201,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             self.setCalendarInfo(givenMonth: Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
             
             // Redraw the calendar
-            self.calendarView?.reloadData()
+            self.redrawCalendar(useDefaultInfo: false)
         } else {
             print("Error: both month and year text fields must have values")
         }
@@ -193,49 +210,46 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     
     @IBAction func toggleSwitched(_ sender: UISwitch) {
-        /*
-        1) If user toggles on:
-            check auth status
-                case auth status:
-                not determined: ask for permission
-                            if denied: display pop-up, toggle to false
-                denied: display pop-up, toggle to false
-                allowed: redraw calendar with ek events, set self.includeEKEvents to true
-        2) if user toggles off:
-                if had ek events included,
-                redraw without ek events (set self.includeEKEvents to false, redraw calendar)
  
-        */
- 
- 
-        
-        /*
-        let eventStore = EKEventStore()
-        
         if (self.userEventsToggle.isOn) {
-            case (EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized) {
-            
-                // TD: redraw calendar with user events
-            }
-            func completionHandler(_ granted: Bool, error: Error?) -> Void{
-                if granted == true {
-                    print("granted")
-                } else {
-                    self.userEventsToggle.isOn = false
-                    // User has said no to calendar access; display alert
-                    // TD: display alert
-                    print("not granted")
+            // Depending on the permissions status, redraw the calendar with events
+            switch (EKEventStore.authorizationStatus(for: EKEntityType.event)) {
+            case .authorized:
+                self.includeUserEKEvents = true
+                self.redrawCalendar(useDefaultInfo: false)
+                break;
+            case .notDetermined:
+                // TD: display pop-up
+                func completionHandler(_ granted: Bool, error: Error?) -> Void{
+                    if granted == true {
+                        print("granted")
+                    } else {
+                        self.userEventsToggle.isOn = false
+                        // User has said no to calendar access; display alert
+                        // TD: display alert
+                        print("not granted")
+                    }
+                    
                 }
-                
+                eventStore.requestAccess(to: EKEntityType.event, completion: completionHandler as EKEventStoreRequestAccessCompletionHandler)
+                break;
+            case .denied:
+                // TD: display pop-up
+                self.userEventsToggle.isOn = false
+                break;
+            case .restricted:
+                // TD: display pop-up about restricted status
+                self.userEventsToggle.isOn = false
+                break;
             }
-            eventStore.requestAccess(to: EKEntityType.event, completion: completionHandler as EKEventStoreRequestAccessCompletionHandler)
-            print ("User toggled on")
             
-           
+            
+        } else { //user has toggled it off
+            self.includeUserEKEvents = false
+            self.redrawCalendar(useDefaultInfo: false)
+            
         }
  
- */
-        
          /*
  
          
