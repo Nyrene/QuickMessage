@@ -10,6 +10,8 @@
 		9077B0B620047755002BBE0B /* DayViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */; };
 		9077B0B9200493FB002BBE0B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0B8200493FA002BBE0B /* CoreDataManager.swift */; };
 		9077B0BB20054D65002BBE0B /* SelectDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0BA20054D65002BBE0B /* SelectDateViewController.swift */; };
+		9077B0BF2005685A002BBE0B /* ContactsTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0BE2005685A002BBE0B /* ContactsTableCell.swift */; };
+		9077B0C12005755C002BBE0B /* ContactsTableCellButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0C02005755C002BBE0B /* ContactsTableCellButton.swift */; };
 		908A192B1FFEAA250084D908 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A192A1FFEAA250084D908 /* AppDelegate.swift */; };
 		908A192D1FFEAA250084D908 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A192C1FFEAA250084D908 /* ViewController.swift */; };
 		908A19301FFEAA250084D908 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 908A192E1FFEAA250084D908 /* Main.storyboard */; };
@@ -47,6 +49,8 @@
 		9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayViewTableViewCell.swift; sourceTree = "<group>"; };
 		9077B0B8200493FA002BBE0B /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		9077B0BA20054D65002BBE0B /* SelectDateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDateViewController.swift; sourceTree = "<group>"; };
+		9077B0BE2005685A002BBE0B /* ContactsTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableCell.swift; sourceTree = "<group>"; };
+		9077B0C02005755C002BBE0B /* ContactsTableCellButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableCellButton.swift; sourceTree = "<group>"; };
 		908A19271FFEAA250084D908 /* QuickMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		908A192A1FFEAA250084D908 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		908A192C1FFEAA250084D908 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 				908A195B200064940084D908 /* Event.swift */,
 				908A19612001EC1E0084D908 /* Location.swift */,
 				908A196920028E020084D908 /* CalendarCell.swift */,
+				9077B0BE2005685A002BBE0B /* ContactsTableCell.swift */,
+				9077B0C02005755C002BBE0B /* ContactsTableCellButton.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -332,7 +338,9 @@
 				908A192B1FFEAA250084D908 /* AppDelegate.swift in Sources */,
 				908A19331FFEAA250084D908 /* QuickMessage.xcdatamodeld in Sources */,
 				908A19642001EC6E0084D908 /* DayViewController.swift in Sources */,
+				9077B0BF2005685A002BBE0B /* ContactsTableCell.swift in Sources */,
 				9077B0B9200493FB002BBE0B /* CoreDataManager.swift in Sources */,
+				9077B0C12005755C002BBE0B /* ContactsTableCellButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,10 +11,16 @@ import UIKit
 import Contacts
 import ContactsUI
 
+struct contactTableInfo {
+    var nameToDisplay:String
+    var identifier:String
+}
+
 
 class EditEventViewController:UIViewController, CNContactPickerDelegate, UITableViewDelegate, UITableViewDataSource {
     var selectedDate:Date!
     var selectedContactsIDs = [String]()
+    var contactInfosForTable = [contactTableInfo]()
     
     @IBOutlet weak var titleTxtFld: UITextField!
     
@@ -76,12 +82,21 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     }
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
-        // get id for contact
-        // later on, will implement more for choosing specific numbers
+        
+        // TD2: later on, will implement more for choosing specific numbers
+        
+        // add contact identifier info
         let thisContactID = contact.identifier
         self.selectedContactsIDs.append(thisContactID)
         
-        // self.reloadTableViewData
+        // convert to contactInfo for table and add it
+        let contactName = contact.givenName + " " + contact.familyName
+        let contactID = contact.identifier
+        let newContactInfo = contactTableInfo(nameToDisplay: contactName, identifier: contactID)
+        self.contactInfosForTable.append(newContactInfo)
+        
+        
+        self.tableView.reloadData()
     }
     
     func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
@@ -94,9 +109,32 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.selectedContactsIDs.count
+        return self.contactInfosForTable.count
     }
     
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+         let thisCell = tableView.dequeueReusableCell(withIdentifier: "ContactsTableCell") as! ContactsTableCell
+        
+         // make self the target for the delete button on the contact cell
+        thisCell.deleteBtn.addTarget(self, action: #selector(EditEventViewController.deleteContactBtnPressed(_:)), for:UIControlEvents.touchUpInside)
+        
+        // now set up rest of contact info
+        let cellInfo = self.contactInfosForTable[indexPath.row]
+        thisCell.contactNameLbl.text = cellInfo.nameToDisplay
+        
+        // include indexPath info of the contact so that if the delete button is pressed,
+        // the delete function knows which cell was selected
+        thisCell.deleteBtn.indexPath = indexPath
+        
+        return thisCell
+    }
+    
+    func deleteContactBtnPressed(_ sender:ContactsTableCellButton) {
+        // delete contact info and redraw table
+        let indexForDeletedItem = sender.indexPath
+        self.contactInfosForTable.remove(at: (indexForDeletedItem?.row)!)
+        self.tableView.reloadData()
+    }
     
     
 }
