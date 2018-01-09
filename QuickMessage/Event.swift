@@ -12,6 +12,10 @@ import CoreData
 
 class Event:NSManagedObject {
     var TiedToUserEKEventID = ""
+    var title = ""
+    var startDate:Date!
+    var uniqueID = ""
+    var contactIdentifiers = [String]()
     
     
 }
@@ -32,17 +36,7 @@ class Event:NSManagedObject {
  
  // need to have an ek event somehow tied to this so that the day view table view can print things out easily (maybe?)
  
- // table view item view needs to have:
-        - date
-        - Whether there's an alarm
-        - Alarm time (if applicable)
-        - location info (if applicable)
- 
- 
- 
- 
- 
- 
+
  
     if location:
         double: latitude

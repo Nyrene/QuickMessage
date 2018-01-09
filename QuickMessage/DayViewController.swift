@@ -72,6 +72,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
                         // don't include it
                     } else {
                         let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
+                        print("DEBUG: in addGivenEvents, ekEvent.startDate is: ", ekEvent.startDate)
                         let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, alarmTiedToUserEKEventID: "")
                         
                         self.tableViewItems.append(newTableViewItem)

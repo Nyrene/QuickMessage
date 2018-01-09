@@ -204,7 +204,7 @@
         <!--Edit Event-->
         <scene sceneID="2DJ-G6-lqI">
             <objects>
-                <viewController id="kmx-RS-Mtw" sceneMemberID="viewController">
+                <viewController id="kmx-RS-Mtw" customClass="EditEventViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rhm-Bg-98k"/>
                         <viewControllerLayoutGuide type="bottom" id="ZZ4-Yd-tyB"/>
@@ -293,6 +293,14 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Delete(shown if editing)"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jnc-tF-cQY">
+                                <rect key="frame" x="313" y="112" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Edit"/>
+                                <connections>
+                                    <segue destination="fIy-RA-HED" kind="show" identifier="EditDateSID" id="8cm-4o-7i1"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <attributedString key="userComments">
@@ -305,12 +313,74 @@
                         </attributedString>
                     </view>
                     <navigationItem key="navigationItem" title="Edit Event" id="M1l-iO-Zje">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="vNV-aY-BG9"/>
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="vNV-aY-BG9">
+                            <connections>
+                                <action selector="cancelBtnPressed:" destination="kmx-RS-Mtw" id="Obp-z4-GV6"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="addContactBtn" destination="g9l-OT-H0e" id="uOU-23-NUI"/>
+                        <outlet property="dateLbl" destination="xWC-sq-BhD" id="4s8-JB-caa"/>
+                        <outlet property="deleteBtn" destination="jUT-zZ-qWC" id="StS-Xu-RRE"/>
+                        <outlet property="editLocationInfoBtn" destination="Rlr-2j-TJ5" id="UcH-Ye-Z9I"/>
+                        <outlet property="tableView" destination="sYV-Fk-8Ij" id="Yvh-bA-Lh5"/>
+                        <outlet property="titleTxtFld" destination="LYF-1n-N42" id="PGg-cz-rVp"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8qw-Yq-PtL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1840.8" y="123.68815592203899"/>
+        </scene>
+        <!--Select Date-->
+        <scene sceneID="k7n-kv-xvm">
+            <objects>
+                <viewController id="fIy-RA-HED" customClass="SelectDateViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Q0X-d6-khL"/>
+                        <viewControllerLayoutGuide type="bottom" id="QBG-Oh-CcJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WIW-u1-gjd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="s46-R4-G4c">
+                                <rect key="frame" x="0.0" y="118" width="375" height="216"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <date key="date" timeIntervalSinceReferenceDate="537218287.75777698">
+                                    <!--2018-01-09 19:18:07 +0000-->
+                                </date>
+                            </datePicker>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="abB-2D-UMW">
+                                <rect key="frame" x="16" y="371" width="343" height="148"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <string key="text">This window is a placeholder. The edit event page will have a popup for selecting the date, rather than a dedicated view like this.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Select Date" id="7vl-ux-KEa">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="LlW-0d-U5p">
+                            <connections>
+                                <action selector="cancelBtnPressed:" destination="fIy-RA-HED" id="cjg-B0-uf0"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="C5E-Nj-X2a">
+                            <connections>
+                                <action selector="saveBtnPressed:" destination="fIy-RA-HED" id="Phu-Wg-bA5"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="datePicker" destination="s46-R4-G4c" id="V3u-TE-Fyh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GHP-ia-HAa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2616.8000000000002" y="350.37481259370315"/>
         </scene>
         <!--Selected Date-->
         <scene sceneID="HFr-4u-7dM">
