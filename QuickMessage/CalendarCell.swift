@@ -8,9 +8,12 @@
 
 import Foundation
 import UIKit
+import EventKit
 
 open class CalendarCell:UICollectionViewCell {
     
     @IBOutlet var displayNum:UILabel!
+    
+    var ekEvents:[EKEvent] = []
     
 }

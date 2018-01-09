@@ -140,7 +140,7 @@
                                         </view>
                                         <connections>
                                             <outlet property="displayNum" destination="01H-UE-B0r" id="8IG-ZT-vB2"/>
-                                            <segue destination="r8h-rW-EmU" kind="show" id="EGs-NP-9P5"/>
+                                            <segue destination="r8h-rW-EmU" kind="show" identifier="EventViewSID" id="EGs-NP-9P5"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

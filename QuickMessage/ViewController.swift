@@ -34,6 +34,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     var includeUserEKEvents:Bool = false
+    var selectedCell:CalendarCell! = nil
     
     // Only used for the collection view...
     // TD: find some way to not have these as attributes
@@ -68,10 +69,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // Event info
         // if we already have access, go ahead and load user events in
         // TD2: load toggle setting from previous run automatically
-        if EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
+        /*if EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
             // TD2: and if the toggle was switched on when the app was closed
             self.includeUserEKEvents = true
         }
+ */
 
        
     }
@@ -81,6 +83,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // Dispose of any resources that can be recreated.
     }
 
+    // Calendar delegate and source functions
     
     open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -134,14 +137,24 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let fetchedEvents = eventStore.events(matching: thisPredicate)
             if fetchedEvents.count != 0 {
                 thisCell.backgroundColor = UIColor.yellow
+            } else {
+                thisCell.backgroundColor = UIColor.white
             }
             
+            thisCell.ekEvents = fetchedEvents
+    
+            
+        } else {
+            thisCell.backgroundColor = UIColor.white
         }
         
         
         return thisCell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.selectedCell = self.calendarView?.cellForItem(at: indexPath)
+    }
     
     
     // Calendar info set up
@@ -167,10 +180,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         if (useDefaultInfo == true) {
             self.setCalendarInfo(givenMonth: nil, givenYear: nil)
             
-        }
-        
-        if self.includeUserEKEvents == true {
-            // TD: do stuff to facilitate that
         }
         
         self.calendarView?.reloadData()
@@ -285,6 +294,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                         print("granted")
                     } else {
                         self.userEventsToggle.isOn = false
+                        self.includeUserEKEvents = false
                         // User has said no to calendar access; display alert
                         self.displayEventsAlerts()
                         print("not granted")
@@ -295,6 +305,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 break;
             case .denied:
                 self.userEventsToggle.isOn = false
+                self.includeUserEKEvents = false
                 self.displayEventsAlerts()
                 break;
             case .restricted:
@@ -303,7 +314,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 let thisAlert = UIAlertController(title: "Calendar Access Restricted", message: "Calendar access is restricted. This may be caused by parental controls or another setting.", preferredStyle: UIAlertControllerStyle.alert)
                 thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
                 present(thisAlert, animated: true, completion: nil)
-
+                self.includeUserEKEvents = false
                 break;
             }
             
@@ -312,26 +323,25 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             self.includeUserEKEvents = false
             self.redrawCalendar(useDefaultInfo: false)
             
+            
         }
  
-         /*
- 
-         
-         adding events to current calendar:
-         if switch is on, grab list of events for the currently shown month
-         if list  !ordered by dates
-            order it by date
-            for each cell loaded
-                put events for that date in table cell
-                    find first instance of event with that day
-                    while day matches int(displayNum), add to
-         
-         
- */
         
-        
-
     }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // segue ID for displaying event: EventViewSID
+        if segue.identifier == "EventViewSID" {
+            // Load the calendar events for that day into the window
+            //let thisViewController = DayViewCon
+            
+            let targetVC = segue.destination as! DayViewController
+            //targetVC.navigationController.title = "Event Date"
+            
+        }
+    }
+    
     
 
 
