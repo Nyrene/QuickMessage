@@ -31,11 +31,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet weak var monthTxtFld: UITextField!
     @IBOutlet weak var yearTxtFld: UITextField!
     
-    
-    var currentCalendar = Calendar.current
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     var includeUserEKEvents:Bool = false
+    
+    // Only used for the collection view...
+    // TD: find some way to not have these as attributes
+    var year:Int = 0
+    var month:Int = 0
     
     let eventStore = EKEventStore()
     
@@ -50,28 +53,28 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // View
         
         let dateComponents = DateComponents()
-        (dateComponents as NSDateComponents).calendar = self.currentCalendar
+        (dateComponents as NSDateComponents).calendar = Calendar.current
         let currentDate = Date()
-        self.monthTxtFld.placeholder = String(currentCalendar.component(.month, from: currentDate))
-        self.yearTxtFld.placeholder = String(currentCalendar.component(.year, from: currentDate))
+        self.monthTxtFld.placeholder = String(Calendar.current.component(.month, from: currentDate))
+        self.yearTxtFld.placeholder = String(Calendar.current.component(.year, from: currentDate))
     
-        
         // Calendar
         
         self.calendarView?.delegate = self
         self.calendarView?.dataSource = self
         
-        self.setCalendarInfo(givenMonth: currentCalendar.component(.month, from: currentDate), givenYear: currentCalendar.component(.year, from: currentDate))
+        self.setCalendarInfo(givenMonth: Calendar.current.component(.month, from: currentDate), givenYear: Calendar.current.component(.year, from: currentDate))
 
         // Event info
         // if we already have access, go ahead and load user events in
         // TD2: load toggle setting from previous run automatically
         if EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
-            // TD: draw calendar with user events
+            // TD2: and if the toggle was switched on when the app was closed
+            self.includeUserEKEvents = true
         }
 
- 
-     }
+       
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -87,6 +90,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         return self.daysInMonth + self.startingDayOfWeek
     }
     
+    
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // first starting date is sunday, at 1
@@ -97,6 +101,43 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)
         }
         
+        // Add EKEvents if required
+        if self.includeUserEKEvents == true && thisCell.displayNum.text != "" && thisCell.alpha != 0 {
+            // Get start and end date for this cell
+            var thisDateComponents = DateComponents()
+            thisDateComponents.year = self.year
+            thisDateComponents.month = self.month
+            thisDateComponents.day = Int(thisCell.displayNum.text!)
+            thisDateComponents.hour = 0
+            thisDateComponents.minute = 0
+            
+            let beginDate = Calendar.current.date(from: thisDateComponents)
+            /*print("DEBUG: beginDate is: ", beginDate)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = DateFormatter.Style.medium
+            dateFormatter.timeStyle = DateFormatter.Style.medium
+            let dateString = dateFormatter.string(from: beginDate!)
+            print("datestring for begin date is: ", dateString)
+            */
+            
+            
+            thisDateComponents.hour = 23
+            thisDateComponents.minute = 59
+            let endDate = Calendar.current.date(from: thisDateComponents)
+            //print("DEBUG: endDate is: ", endDate)
+            
+            // predicate for that day
+            // TD2: allow user to choose which calendars
+            let thisPredicate = self.eventStore.predicateForEvents(withStart: beginDate!, end: endDate!, calendars: nil)
+            
+            // set the cell's color if there's events
+            let fetchedEvents = eventStore.events(matching: thisPredicate)
+            if fetchedEvents.count != 0 {
+                thisCell.backgroundColor = UIColor.yellow
+            }
+            
+        }
+        
         
         return thisCell
     }
@@ -104,9 +145,21 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     
     // Calendar info set up
+    
+        // Utility
+    
     func setCalendarInfo(givenMonth:Int!, givenYear:Int!) {
         self.daysInMonth = getDaysInMonth(givenMonth, givenYear:givenYear!)
         self.startingDayOfWeek = getStartingDayOfWeek(givenMonth:givenMonth, givenYear:givenYear)
+        self.year = givenYear
+        self.month = givenMonth
+        
+        if (givenMonth == nil && givenYear == nil) {
+            // use current information
+            let thisDate = Date()
+            if (self.year == 0) {self.year = Calendar.current.component(.year, from: thisDate)}
+            if (self.month == 0) {self.month = Calendar.current.component(.month, from: thisDate)}
+        }
         
     }
     
@@ -130,7 +183,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         //note: months start at 1
         
         var dateComponents = DateComponents()
-        (dateComponents as NSDateComponents).calendar = self.currentCalendar
+        (dateComponents as NSDateComponents).calendar = Calendar.current
         
         // set days in the current month, otherwise IFF year and month are given,
         // set days in the given time range
@@ -139,7 +192,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let currentDate = Date()
             // http://stackoverflow.com/questions/1179945/number-of-days-in-the-current-month-using-iphone-sdk
             
-            let days:Int = (currentCalendar as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: currentDate).length
+            let days:Int = ( Calendar.current as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: currentDate).length
             return days
             // print("DEBUG: Days in current month: ", daysInMonth)
             
@@ -151,8 +204,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             dateComponents.month = givenMonth
             dateComponents.year = givenYear
             
-            let newDate = self.currentCalendar.date(from: dateComponents)
-            let days:Int = (self.currentCalendar as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: newDate!).length
+            let newDate = Calendar.current.date(from: dateComponents)
+            let days:Int = (Calendar.current as NSCalendar).range(of: NSCalendar.Unit.day, in: NSCalendar.Unit.month, for: newDate!).length
             
             return days
             // print("DEBUG: Days in given month: ", daysInMonth)
@@ -172,18 +225,18 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         if (givenMonth == nil && givenYear == nil) {
             let thisDate = Date()
-            let startingDay:Int = (self.currentCalendar as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate)
+            let startingDay:Int = (Calendar.current as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate)
             print("DEBUG: startingDayOfWeek with current date is: ", startingDay)
             return startingDay
         } else {
             var dateComponents = DateComponents()
-            (dateComponents as NSDateComponents).calendar = self.currentCalendar
+            (dateComponents as NSDateComponents).calendar = Calendar.current
             dateComponents.month = givenMonth
             dateComponents.year = givenYear
             dateComponents.day = 1
  
-            let thisDate = self.currentCalendar.date(from: dateComponents as DateComponents)
-            let startingDay:Int = (self.currentCalendar as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate!)
+            let thisDate = Calendar.current.date(from: dateComponents as DateComponents)
+            let startingDay:Int = (Calendar.current as NSCalendar).component(NSCalendar.Unit.weekday, from: thisDate!)
             return startingDay
         }
     }
@@ -208,6 +261,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
     }
     
+    // TD2: move this to a separate area for alerts
+    func displayEventsAlerts() {
+        // Create and present an alert
+        let thisAlert = UIAlertController(title: "Calendar Access Required", message: "Please allow access to the calendar to display your calendar events in-app. You can do this by going to your phone settings.", preferredStyle: UIAlertControllerStyle.alert)
+        thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+        present(thisAlert, animated: true, completion: nil)
+
+    }
     
     @IBAction func toggleSwitched(_ sender: UISwitch) {
  
@@ -219,14 +280,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 self.redrawCalendar(useDefaultInfo: false)
                 break;
             case .notDetermined:
-                // TD: display pop-up
                 func completionHandler(_ granted: Bool, error: Error?) -> Void{
                     if granted == true {
                         print("granted")
                     } else {
                         self.userEventsToggle.isOn = false
                         // User has said no to calendar access; display alert
-                        // TD: display alert
+                        self.displayEventsAlerts()
                         print("not granted")
                     }
                     
@@ -234,12 +294,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 eventStore.requestAccess(to: EKEntityType.event, completion: completionHandler as EKEventStoreRequestAccessCompletionHandler)
                 break;
             case .denied:
-                // TD: display pop-up
                 self.userEventsToggle.isOn = false
+                self.displayEventsAlerts()
                 break;
             case .restricted:
-                // TD: display pop-up about restricted status
                 self.userEventsToggle.isOn = false
+                // Create and present an alert
+                let thisAlert = UIAlertController(title: "Calendar Access Restricted", message: "Calendar access is restricted. This may be caused by parental controls or another setting.", preferredStyle: UIAlertControllerStyle.alert)
+                thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+                present(thisAlert, animated: true, completion: nil)
+
                 break;
             }
             
