@@ -34,7 +34,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     var includeUserEKEvents:Bool = false
-    var selectedCell:CalendarCell! = nil
     
     // Only used for the collection view...
     // TD: find some way to not have these as attributes
@@ -77,6 +76,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
        
     }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -98,23 +98,27 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         // first starting date is sunday, at 1
         let thisCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCell", for: indexPath) as! CalendarCell
+        var thisDateComponents = DateComponents()
+        
         if (indexPath.item) < (self.startingDayOfWeek - 1) {
             thisCell.alpha = 0
-        } else {
+        } else { // cell is an active calendar item. Give it a date and display
             thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)
-        }
-        
-        // Add EKEvents if required
-        if self.includeUserEKEvents == true && thisCell.displayNum.text != "" && thisCell.alpha != 0 {
-            // Get start and end date for this cell
-            var thisDateComponents = DateComponents()
+
             thisDateComponents.year = self.year
             thisDateComponents.month = self.month
             thisDateComponents.day = Int(thisCell.displayNum.text!)
             thisDateComponents.hour = 0
             thisDateComponents.minute = 0
             
-            let beginDate = Calendar.current.date(from: thisDateComponents)
+            thisCell.beginDate = Calendar.current.date(from: thisDateComponents)!
+
+            
+        }
+        
+        // Add EKEvents if required
+        if self.includeUserEKEvents == true && thisCell.displayNum.text != "" && thisCell.alpha != 0 {
+            // Get start and end date for this cell
             /*print("DEBUG: beginDate is: ", beginDate)
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = DateFormatter.Style.medium
@@ -131,7 +135,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
             // predicate for that day
             // TD2: allow user to choose which calendars
-            let thisPredicate = self.eventStore.predicateForEvents(withStart: beginDate!, end: endDate!, calendars: nil)
+            let thisPredicate = self.eventStore.predicateForEvents(withStart: thisCell.beginDate, end: endDate!, calendars: nil)
             
             // set the cell's color if there's events
             let fetchedEvents = eventStore.events(matching: thisPredicate)
@@ -151,11 +155,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         return thisCell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.selectedCell = self.calendarView?.cellForItem(at: indexPath)
-    }
-    
     
     // Calendar info set up
     
@@ -177,6 +176,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func redrawCalendar(useDefaultInfo:Bool) {
+        
         if (useDefaultInfo == true) {
             self.setCalendarInfo(givenMonth: nil, givenYear: nil)
             
@@ -333,11 +333,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // segue ID for displaying event: EventViewSID
         if segue.identifier == "EventViewSID" {
-            // Load the calendar events for that day into the window
-            //let thisViewController = DayViewCon
             
+            let senderCell = sender as! CalendarCell
             let targetVC = segue.destination as! DayViewController
-            //targetVC.navigationController.title = "Event Date"
+            // try to wait for self's selected cell to be set before switching windows
+            
+            targetVC.selectedCell = senderCell
+            targetVC.calendarVC = self
+            
+            print("DEBUG: selected cell in prepare for segue's target VC is: ", targetVC)
             
         }
     }

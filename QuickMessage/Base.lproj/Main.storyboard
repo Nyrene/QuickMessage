@@ -315,7 +315,7 @@
         <!--Selected Date-->
         <scene sceneID="HFr-4u-7dM">
             <objects>
-                <viewController id="r8h-rW-EmU" sceneMemberID="viewController">
+                <viewController id="r8h-rW-EmU" customClass="DayViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ygk-sY-rbO"/>
                         <viewControllerLayoutGuide type="bottom" id="uf0-BL-e3N"/>
@@ -361,7 +361,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Selected Date" id="SXG-2B-P5q">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="6XV-IO-YC1"/>
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="6XV-IO-YC1">
+                            <connections>
+                                <action selector="backBtnPressed:" destination="r8h-rW-EmU" id="Fvu-8Y-2FU"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="APj-cJ-G5L" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -435,6 +439,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="ggy-hz-alA"/>
+        <segue reference="FFA-fp-wAq"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -17,7 +17,11 @@ import CoreData
     occurence date
     [string: messages]
     string uniqueID
-    String:ContactIDs - pull contact information from 
+    String:ContactIDs - pull contact information from this list of strings, rather than save an entire contact model
+ 
+ 
+ // don't have an ekevent tied to this. Just allow them to be separate, in order to allow for multiple alarms to one event without
+ // conflicting, and
  
  
  
