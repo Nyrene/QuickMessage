@@ -23,6 +23,15 @@ import CoreData
  // don't have an ekevent tied to this. Just allow them to be separate, in order to allow for multiple alarms to one event without
  // conflicting, and
  
+ // need to have an ek event somehow tied to this so that the day view table view can print things out easily (maybe?)
+ 
+ // table view item view needs to have:
+        - date
+        - Whether there's an alarm
+        - Alarm time (if applicable)
+        - location info (if applicable)
+ 
+ 
  
  
  
