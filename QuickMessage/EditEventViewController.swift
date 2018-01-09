@@ -44,15 +44,32 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         // Uncomment when saving functions are finished
         // let eventTitle = self.titleTxtFld.text
         
+        if self.titleTxtFld!.text == "" {
+            // TD2: add alert to alert controller
+            let thisAlert = UIAlertController(title: "No Title Given", message: "Please add a title for this event.", preferredStyle: UIAlertControllerStyle.alert)
+            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            present(thisAlert, animated: true, completion: nil)
+            return
+        }
+        
         
         if self.selectedDate != nil {
             //let eventDate = self.selectedDate
         } else {
             // TD2: add popup to popup controller later
-            let thisAlert = UIAlertController(title: "No Date Selected", message: "Please select a date for this alarm.", preferredStyle: UIAlertControllerStyle.alert)
+            let thisAlert = UIAlertController(title: "No Date Selected", message: "Please select a date for this event.", preferredStyle: UIAlertControllerStyle.alert)
             thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
             present(thisAlert, animated: true, completion: nil)
+            return
         }
+        
+        if self.selectedContactsIDs.count == 0 {
+            let thisAlert = UIAlertController(title: "No contacts selected", message: "Please select one or more contacts for this event.", preferredStyle: UIAlertControllerStyle.alert)
+            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            present(thisAlert, animated: true, completion: nil)
+            return
+        }
+        
 
         
     }
