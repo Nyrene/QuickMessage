@@ -15,6 +15,7 @@ open class CalendarCell:UICollectionViewCell {
     @IBOutlet var displayNum:UILabel!
     
     var ekEvents:[EKEvent] = []
+    var events:[Event] = []
     var beginDate:Date = Date()
     
 }

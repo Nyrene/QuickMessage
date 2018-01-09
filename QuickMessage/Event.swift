@@ -8,6 +8,13 @@
 
 import Foundation
 import CoreData
+
+
+class Event:NSManagedObject {
+    var TiedToUserEKEventID = ""
+    
+    
+}
 /*
  
  

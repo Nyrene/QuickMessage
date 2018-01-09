@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9077B0B620047755002BBE0B /* DayViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */; };
 		908A192B1FFEAA250084D908 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A192A1FFEAA250084D908 /* AppDelegate.swift */; };
 		908A192D1FFEAA250084D908 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908A192C1FFEAA250084D908 /* ViewController.swift */; };
 		908A19301FFEAA250084D908 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 908A192E1FFEAA250084D908 /* Main.storyboard */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayViewTableViewCell.swift; sourceTree = "<group>"; };
 		908A19271FFEAA250084D908 /* QuickMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		908A192A1FFEAA250084D908 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		908A192C1FFEAA250084D908 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -88,6 +90,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9077B0B72004777B002BBE0B /* SubViews */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = SubViews;
+			sourceTree = "<group>";
+		};
 		908A191E1FFEAA250084D908 = {
 			isa = PBXGroup;
 			children = (
@@ -112,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				908A192E1FFEAA250084D908 /* Main.storyboard */,
+				9077B0B72004777B002BBE0B /* SubViews */,
 				908A195D2001EB8F0084D908 /* View Controllers */,
 				908A19602001EBCC0084D908 /* Managers */,
 				908A195E2001EB9D0084D908 /* Models */,
@@ -156,6 +166,7 @@
 		908A195E2001EB9D0084D908 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */,
 				908A195B200064940084D908 /* Event.swift */,
 				908A19612001EC1E0084D908 /* Location.swift */,
 				908A196920028E020084D908 /* CalendarCell.swift */,
@@ -305,6 +316,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				908A195C200064940084D908 /* Event.swift in Sources */,
+				9077B0B620047755002BBE0B /* DayViewTableViewCell.swift in Sources */,
 				908A192D1FFEAA250084D908 /* ViewController.swift in Sources */,
 				908A19682001EC8D0084D908 /* EditLocationViewController.swift in Sources */,
 				908A19662001EC7A0084D908 /* EditEventViewController.swift in Sources */,
