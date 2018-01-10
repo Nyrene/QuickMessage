@@ -13,7 +13,7 @@ import CoreData
 class Event:NSManagedObject {
     var TiedToUserEKEventID = ""
     var title = ""
-    var startDate:Date!
+    var alarmDate:Date!
     var uniqueID = ""
     var contactIdentifiers = [String]()
     

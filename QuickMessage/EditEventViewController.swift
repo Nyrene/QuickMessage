@@ -44,6 +44,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         // Uncomment when saving functions are finished
         // let eventTitle = self.titleTxtFld.text
         
+        // TD: switch these to guard statements	
+        // https://thatthinginswift.com/guard-statement-swift/
+        
         if self.titleTxtFld!.text == "" {
             // TD2: add alert to alert controller
             let thisAlert = UIAlertController(title: "No Title Given", message: "Please add a title for this event.", preferredStyle: UIAlertControllerStyle.alert)
