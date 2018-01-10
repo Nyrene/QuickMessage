@@ -12,6 +12,7 @@ import EventKit
 
 open class CalendarCell:UICollectionViewCell {
     
+    @IBOutlet weak var dotMarkerLbl: UILabel!
     @IBOutlet var displayNum:UILabel!
     
     var ekEvents:[EKEvent] = []

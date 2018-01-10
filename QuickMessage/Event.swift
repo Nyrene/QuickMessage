@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-
-class Event:NSManagedObject {
+@objc(Event)
+public class Event:NSManagedObject {
     var TiedToUserEKEventID = ""
     var title = ""
     var alarmDate:Date!

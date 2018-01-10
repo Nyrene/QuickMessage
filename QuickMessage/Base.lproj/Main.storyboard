@@ -130,9 +130,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="01H-UE-B0r">
-                                                    <rect key="frame" x="4" y="8" width="34" height="27"/>
+                                                    <rect key="frame" x="7" y="0.0" width="28" height="24"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2b7-qF-8f7">
+                                                    <rect key="frame" x="14" y="20" width="14" height="15"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -140,6 +147,7 @@
                                         </view>
                                         <connections>
                                             <outlet property="displayNum" destination="01H-UE-B0r" id="8IG-ZT-vB2"/>
+                                            <outlet property="dotMarkerLbl" destination="2b7-qF-8f7" id="PWL-9E-tVo"/>
                                             <segue destination="r8h-rW-EmU" kind="show" identifier="EventViewSID" id="EGs-NP-9P5"/>
                                         </connections>
                                     </collectionViewCell>
@@ -584,6 +592,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="FFA-fp-wAq"/>
+        <segue reference="ggy-hz-alA"/>
     </inferredMetricsTieBreakers>
 </document>

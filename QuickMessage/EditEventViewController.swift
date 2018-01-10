@@ -42,7 +42,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     
     @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {
         // Uncomment when saving functions are finished
-        // let eventTitle = self.titleTxtFld.text
+        let eventTitle = self.titleTxtFld.text
         
         // TD: switch these to guard statements	
         // https://thatthinginswift.com/guard-statement-swift/
@@ -57,7 +57,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         
         if self.selectedDate != nil {
-            //let eventDate = self.selectedDate
+            let eventDate = self.selectedDate
         } else {
             // TD2: add popup to popup controller later
             let thisAlert = UIAlertController(title: "No Date Selected", message: "Please select a date for this event.", preferredStyle: UIAlertControllerStyle.alert)
@@ -73,7 +73,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         }
         
-
+        CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+        
+        self.navigationController?.popViewController(animated: true)
         
     }
     

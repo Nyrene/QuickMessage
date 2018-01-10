@@ -8,7 +8,7 @@
 
 import UIKit
 import EventKit
-
+import CoreData
 
 /*
  Next steps:
@@ -25,6 +25,8 @@ import EventKit
 //This contains the calendar view and is the starting point for the app
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
+    // DEBUG:
+    var events = [Event]()
     
     // Calendar
     @IBOutlet var calendarView:UICollectionView?
@@ -74,6 +76,36 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
  */
 
+        // DEBUG: attempting to fetch all events to see if there's any getting saved
+        // let events = CoreDataManager.fetchAllEvents()
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return
+        }
+        
+        // create new event
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        
+        do {
+            events = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.medium
+        print("DEBUG: attempting to print saved events")
+        for item in events {
+            let thisEvent = item as! Event
+            print("item title in viewDidLoad is: ", thisEvent.title)
+            print("item with key value printing in viewDidLoad is: ", thisEvent.value(forKey:"title") as! String)
+
+            // print("date: ", dateFormatter.string(from: item.alarmDate))
+            
+        }
        
     }
     
@@ -100,7 +132,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let thisCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCell", for: indexPath) as! CalendarCell
         var thisDateComponents = DateComponents()
         
-        if (indexPath.item) < (self.startingDayOfWeek - 1) {
+        if (indexPath.item) < (self.startingDayOfWeek - 1) { // if it's before the start date
             thisCell.alpha = 0
         } else { // cell is an active calendar item. Give it a date and display
             thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)
@@ -112,47 +144,64 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             thisDateComponents.minute = 0
             
             thisCell.beginDate = Calendar.current.date(from: thisDateComponents)!
-
-            
-        }
-        
-        // Add EKEvents if required
-        if self.includeUserEKEvents == true && thisCell.displayNum.text != "" && thisCell.alpha != 0 {
-            // Get start and end date for this cell
-            /*print("DEBUG: beginDate is: ", beginDate)
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = DateFormatter.Style.medium
-            dateFormatter.timeStyle = DateFormatter.Style.medium
-            let dateString = dateFormatter.string(from: beginDate!)
-            print("datestring for begin date is: ", dateString)
-            */
-            
             
             thisDateComponents.hour = 23
             thisDateComponents.minute = 59
             let endDate = Calendar.current.date(from: thisDateComponents)
-            //print("DEBUG: endDate is: ", endDate)
+
             
-            // predicate for that day
-            // TD2: allow user to choose which calendars
-            let thisPredicate = self.eventStore.predicateForEvents(withStart: thisCell.beginDate, end: endDate!, calendars: nil)
-            
-            // set the cell's color if there's events
-            let fetchedEvents = eventStore.events(matching: thisPredicate)
-            if fetchedEvents.count != 0 {
-                thisCell.backgroundColor = UIColor.yellow
+        
+        
+        // Add EKEvents if required
+            if self.includeUserEKEvents == true
+            {
+                // Get start and end date for this cell
+                /*print("DEBUG: beginDate is: ", beginDate)
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateStyle = DateFormatter.Style.medium
+                dateFormatter.timeStyle = DateFormatter.Style.medium
+                let dateString = dateFormatter.string(from: beginDate!)
+                print("datestring for begin date is: ", dateString)
+                */
+                
+                
+                thisDateComponents.hour = 23
+                thisDateComponents.minute = 59
+                let endDate = Calendar.current.date(from: thisDateComponents)
+                //print("DEBUG: endDate is: ", endDate)
+                
+                // predicate for that day
+                // TD2: allow user to choose which calendars
+                let thisPredicate = self.eventStore.predicateForEvents(withStart: thisCell.beginDate, end: endDate!, calendars: nil)
+                
+                // set the cell's color if there's events
+                let fetchedEvents = eventStore.events(matching: thisPredicate)
+                if fetchedEvents.count != 0 {
+                    thisCell.backgroundColor = UIColor.yellow
+                } else {
+                    thisCell.backgroundColor = UIColor.white
+                }
+                
+                thisCell.ekEvents = fetchedEvents
+        
+                
             } else {
                 thisCell.backgroundColor = UIColor.white
             }
             
-            thisCell.ekEvents = fetchedEvents
-    
+            // now add saved events
+            let fetchedEvents = CoreDataManager.fetchEventsForDate(givenDate: thisCell.beginDate) as [Event]
+            if fetchedEvents.count > 0 {
+                print("DEBUG: saved events retrieved in cell")
+                thisCell.dotMarkerLbl.alpha = 1
+                thisCell.events = fetchedEvents
+            } else {
+                print("DEBUG: no saved events retrieved in cell")
+                thisCell.dotMarkerLbl.alpha = 0
+            }
             
-        } else {
-            thisCell.backgroundColor = UIColor.white
-        }
         
-        
+        } // end of if calendar date
         return thisCell
     }
     

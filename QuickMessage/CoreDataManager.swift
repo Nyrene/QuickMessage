@@ -27,8 +27,6 @@ public class CoreDataManager {
         /* "
          When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
  */
-        
-        // create new event: requires NSEntityDescription and NSManagedObjectContext
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
                 print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
@@ -46,6 +44,10 @@ public class CoreDataManager {
         newEvent.alarmDate = eventDate
         newEvent.contactIdentifiers = contactIDs
         
+        newEvent.setValue(title, forKeyPath : "title")
+        newEvent.setValue(eventDate, forKeyPath: "alarmDate")
+        newEvent.setValue(contactIDs, forKeyPath: "contactIdentifiers")
+        
         
         
         // if no uniqueID given, create a new one
@@ -60,7 +62,39 @@ public class CoreDataManager {
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
         }
-   
+        
+        print("DEBUG: at end of save function")
+        
+        // TD: associate alarm/notification with this event
+        
+        
+        // DEBUG: attempting to fetch immediately after saving
+        var events = [Event]()
+        
+        /*guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return events
+        }
+ */
+        
+        // create new event
+        //let thisMOC = appDelegate.persistentContainer.viewContext
+        // let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        
+        do {
+            events = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        for item in events {
+            let thisEvent = item as! Event
+            print("item title in same func as fetch is: ", thisEvent.title)
+            print("item with key value printing is: ", thisEvent.value(forKey:"title") as! String)
+        }
+
     }
  
  
@@ -70,26 +104,93 @@ public class CoreDataManager {
         
     }
     
-    static func deleteEvent() {
+    static func deleteEventWithID(eventID:String) {
+        // TD: delete event
+        
+        
+        // TD: delete notification/alarm associated with event
+        
         
         
     }
     
     static func loadEventWithID(uniqueID:String) {
+    }
+    
+    static func fetchAllEvents() -> [Event] {
+        var events = [Event]()
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return events
+        }
+        
+        // create new event
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        // let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        
+        do {
+            events = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        
+        return events
         
     }
     
-    /*
-    static func createNewEvent(title:String, startDate:Date, contactIdentifiers:[String], tiedToUserEKEventID:String) {
-        //create new unique ID for event
-        let thisStringID = randomString(length: 8)
+    static func fetchEventsForDate(givenDate:Date) -> [Event] {
         
+        var events = [Event]()
         
-        "
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return events
+        }
+        
+        // create new event
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC)
+        
+        // create predicate, below code copied from
+        // https://stackoverflow.com/questions/40312105/core-data-predicate-filter-by-todays-date
+        // TD: modify calendar view cellForItem code to use startOfDay instead of manual components
+        // Get the current calendar with local time zone
+        var calendar = Calendar.current
+        calendar.timeZone = NSTimeZone.local
+        
+        // Get today's beginning & end
+        let dateFrom = calendar.startOfDay(for: givenDate) // eg. 2016-10-10 00:00:00
+        // left off here
+        var components = calendar.dateComponents([.year, .month, .day, .hour, .minute],from: dateFrom)
+        components.day! += 1
+        let dateTo = calendar.date(from: components)! // eg. 2016-10-11 00:00:00
+        // Note: Times are printed in UTC. Depending on where you live it won't print 00:00:00 but it will work with UTC times which can be converted to local time
+        
+        // Set predicate as date being today's date
+        let datePredicate = NSPredicate(format: "(%@ <= alarmDate) AND (alarmDate < %@)", argumentArray: [dateFrom, dateTo])
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        fetchRequest.predicate = datePredicate
+        
+        // fetch all events for that date
+        do {
+           events = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        return events
+        
     }
- */
     
-    
+
+ 
+
     // Utility
     
     // https://stackoverflow.com/questions/26845307/generate-random-alphanumeric-string-in-swift
