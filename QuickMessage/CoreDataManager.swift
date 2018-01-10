@@ -20,9 +20,10 @@ public class CoreDataManager {
      */
     
     
-    
+    // most of below function's code pulled from
+    // https://www.raywenderlich.com/173972/getting-started-with-core-data-tutorial-2
     static func saveNewEventWithInformation(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!) {
-        // TD: NOTE FOR LATER: 
+        // TD2: NOTE FOR LATER:
         /* "
          When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
  */
@@ -49,27 +50,17 @@ public class CoreDataManager {
         
         // if no uniqueID given, create a new one
         if uniqueID == nil || uniqueID == "" {
-            let uniqueID = self.randomString(length: 6)
+            newEvent.uniqueID = self.randomString(length: 6)
+        } else {
+            newEvent.uniqueID = uniqueID
         }
         
-
-        
-        /*
- var TiedToUserEKEventID = ""
- var title = ""
- var startDate:Date!
- var uniqueID = ""
- var contactIdentifiers = [String]()*/
-        
-        /*
- let newEntry:EventEntryModel = EventEntryModel(entity:entityDescription, insertInto: moc)
- //set the entry object's values
- newEntry.eventTitle = entryInfo?.eventTitle
- newEntry.isCalEvent = (entryInfo?.isCalEvent)!
- newEntry.occurrenceDate = (entryInfo?.occurrenceDate)! as NSDate
- newEntry.uniqueID = (entryInfo?.uniqueID)!
-*/
- 
+        do {
+            try thisMOC.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+   
     }
  
  
