@@ -79,38 +79,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             self.includeUserEKEvents = true
         }
  */
-
-        // DEBUG: attempting to fetch all events to see if there's any getting saved
-        // let events = CoreDataManager.fetchAllEvents()
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                return
-        }
-        
-        // create new event
-        let thisMOC = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
-        
-        do {
-            events = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = DateFormatter.Style.medium
-        dateFormatter.timeStyle = DateFormatter.Style.medium
-        print("DEBUG: attempting to print saved events")
-        for item in events {
-            let thisEvent = item as! Event
-            print("item title in viewDidLoad is: ", thisEvent.title)
-            print("item with key value printing in viewDidLoad is: ", thisEvent.value(forKey:"title") as! String)
-
-            // print("date: ", dateFormatter.string(from: item.alarmDate))
-            
-        }
-       
     }
     
 

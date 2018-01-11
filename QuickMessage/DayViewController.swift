@@ -51,6 +51,8 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         
         // prepare table view items
         self.addGivenEKEventsToTableItems()
+        self.addGivenEventsToTableItems()
+        // self.tableViewItems.sort(by: TableViewItem.dateString)
         self.tableView.reloadData()
         
     }
@@ -99,6 +101,12 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         if self.selectedCell.events.count == 0 {
             return
         } else {
+            for event in selectedCell.events {
+                let eventDate = event.alarmDate as Date?
+                let eventDateStr = dateFormatterPrint.string(from: eventDate!)
+                let newTableItem = TableViewItem(title: event.title!, dateString: eventDateStr, eventID: event.uniqueID!, ekEventID: "", alarmTiedToUserEKEventID: "")
+                self.tableViewItems.append(newTableItem)
+            }
             
         }
         
