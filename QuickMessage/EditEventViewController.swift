@@ -21,6 +21,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var selectedDate:Date!
     var selectedContactsIDs = [String]()
     var contactInfosForTable = [contactTableInfo]()
+    var calendarView:ViewController!
     
     @IBOutlet weak var titleTxtFld: UITextField!
     
@@ -52,6 +53,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             let thisAlert = UIAlertController(title: "No Title Given", message: "Please add a title for this event.", preferredStyle: UIAlertControllerStyle.alert)
             thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
             present(thisAlert, animated: true, completion: nil)
+            if self.calendarView != nil {
+                self.calendarView.redrawCalendar(useDefaultInfo: false)
+            }
             return
         }
         
@@ -74,6 +78,12 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         }
         
         CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+        
+        // we might not be coming straight from the calendar view, so don't throw an error if
+        // it's nil
+        if (self.calendarView != nil) {
+            self.calendarView.redrawCalendar(useDefaultInfo: false)
+        }
         
         self.navigationController?.popViewController(animated: true)
         

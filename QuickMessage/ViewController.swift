@@ -10,8 +10,12 @@ import UIKit
 import EventKit
 import CoreData
 
+//SKU little_QuickMessage_SKU
+
 /*
  Next steps:
+ - load saved events/alarms into table view
+ -
  
 */
 
@@ -194,6 +198,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             if fetchedEvents.count > 0 {
                 print("DEBUG: saved events retrieved in cell")
                 thisCell.dotMarkerLbl.alpha = 1
+                thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
                 thisCell.events = fetchedEvents
             } else {
                 print("DEBUG: no saved events retrieved in cell")
@@ -340,7 +345,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             case .notDetermined:
                 func completionHandler(_ granted: Bool, error: Error?) -> Void{
                     if granted == true {
-                        print("granted")
+                        userEventsToggle.isOn = true
+                        self.includeUserEKEvents = true
+                        self.redrawCalendar(useDefaultInfo: false)
                     } else {
                         self.userEventsToggle.isOn = false
                         self.includeUserEKEvents = false
@@ -381,7 +388,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // segue ID for displaying event: EventViewSID
-        if segue.identifier == "EventViewSID" {
+        if segue.identifier == "DayViewSID" {
             
             let senderCell = sender as! CalendarCell
             let targetVC = segue.destination as! DayViewController
@@ -391,6 +398,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             targetVC.calendarVC = self
             
             print("DEBUG: selected cell in prepare for segue's target VC is: ", targetVC)
+            
+        }
+        if segue.identifier == "EditEventViewSID" {
+            let targetVC = segue.destination as! EditEventViewController
+            
+            targetVC.calendarView = self
             
         }
     }

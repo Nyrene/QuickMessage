@@ -96,7 +96,11 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func addGivenEventsToTableItems() {
-        
+        if self.selectedCell.events.count == 0 {
+            return
+        } else {
+            
+        }
         
     }
 

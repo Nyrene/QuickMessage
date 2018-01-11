@@ -40,13 +40,13 @@ public class CoreDataManager {
         
         
         // set event attributes
-        newEvent.title = title
-        newEvent.alarmDate = eventDate
-        newEvent.contactIdentifiers = contactIDs
+        // newEvent.title = title
+        // newEvent.alarmDate = eventDate
+        // newEvent.contactIdentifiers = contactIDs
         
-        newEvent.setValue(title, forKeyPath : "title")
-        newEvent.setValue(eventDate, forKeyPath: "alarmDate")
-        newEvent.setValue(contactIDs, forKeyPath: "contactIdentifiers")
+        newEvent.setValue(title, forKey : "title")
+        newEvent.setValue(eventDate, forKey: "alarmDate")
+        newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
         
         
         
@@ -78,13 +78,20 @@ public class CoreDataManager {
         }
  */
         
+        guard let appDelegate2 =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return
+        }
+        
         // create new event
-        //let thisMOC = appDelegate.persistentContainer.viewContext
-        // let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC)
+        let thisMOC2 = appDelegate2.persistentContainer.viewContext
+
+        
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
         
         do {
-            events = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
+            events = try thisMOC2.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }

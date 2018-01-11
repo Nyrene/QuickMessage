@@ -5,17 +5,17 @@
 //  Created by Rachael Little on 1/5/18.
 //  Copyright © 2018 Rachael Little. All rights reserved.
 //
-
+/*
 import Foundation
 import CoreData
 
 @objc(Event)
 public class Event:NSManagedObject {
     var TiedToUserEKEventID = ""
-    var title = ""
+    var title:String!
     var alarmDate:Date!
-    var uniqueID = ""
-    var contactIdentifiers = [String]()
+    var uniqueID:String!
+    var contactIdentifiers:[String]!
     
     
 }
@@ -51,4 +51,4 @@ public class Event:NSManagedObject {
  
  
  
- */
+ */*/
