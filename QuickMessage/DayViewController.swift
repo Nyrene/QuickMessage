@@ -40,8 +40,8 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         // Load info from the selected cell if it's not nil
         if selectedCell != nil {
             // Set up info
-            let dateFormatterPrint = DateFormatter()
-            dateFormatterPrint.dateFormat = "MMM dd, yyyy"
+            
+            dateFormatterPrint.dateFormat = "MMM dd, yyyy, hh:mm"
             
             self.navigationItem.title = dateFormatterPrint.string(from: selectedCell.beginDate)
             
@@ -55,48 +55,23 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         // prepare table view items
         self.addGivenEKEventsToTableItems()
         self.addGivenEventsToTableItems()
-        //customObjects = customObjects.sorted(by: {
-        //$0.date.compare($1.date) == .orderedDescending
+
         // https://www.agnosticdev.com/content/how-sort-objects-date-swift
-        self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedDescending})
+        self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedAscending})
         self.tableView.reloadData()
         
     }
     
     // Utility
     func addGivenEKEventsToTableItems() {
-        // If an event and an ekevent have the same id in event's "added to calendar" id, 
-        // then only show the alarm event, with yellow shading and the dot. Don't include
-        // the calendar event as well.
-        // TD: implement that^
-        
-        
-        if (self.selectedCell.events.count > 0) {
-            for ekEvent in self.selectedCell.ekEvents {
-                let thisEkID = ekEvent.eventIdentifier
-                
-                for item in self.tableViewItems {
-                    if thisEkID == item.alarmTiedToUserEKEventID {
-                        // don't include it
-                    } else {
-                        let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
-                        print("DEBUG: in addGivenEvents, ekEvent.startDate is: ", ekEvent.startDate)
-                        let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, date: ekEvent.startDate, alarmTiedToUserEKEventID: "")
-                        
-                        self.tableViewItems.append(newTableViewItem)
-                    }
-                }
-                
-            }
 
-        } else { // nothing to compare to, add all events to the table view items
-            for ekEvent in self.selectedCell.ekEvents {
-                let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
-                let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, date: ekEvent.startDate, alarmTiedToUserEKEventID: "")
-                
-                self.tableViewItems.append(newTableViewItem)
-            }
+        for ekEvent in self.selectedCell.ekEvents {
+            let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
+            let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, date: ekEvent.startDate, alarmTiedToUserEKEventID: "")
+            
+            self.tableViewItems.append(newTableViewItem)
         }
+    
         
         
         
