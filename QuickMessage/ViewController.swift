@@ -21,13 +21,26 @@ import CoreData
 
 
 
-// TD: things to look up:
-// weak vs strong, atomic vs nonatomic, optionals
+// copied straight from https://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift, esqqarrouth's answer
+// to avoid interference with didSelectRow or didSelectItem,
+// add this: tap.cancelsTouchesInView = false
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
 
 
 
 //This contains the calendar view and is the starting point for the app
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    
     
     // DEBUG:
     var events = [Event]()
@@ -55,6 +68,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
 
     override func viewDidLoad() {
+        // Keyboard dismissal
+        hideKeyboardWhenTappedAround()
         super.viewDidLoad()
         // View
         
@@ -272,6 +287,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         }
     }
     
+
     // User calendar info - EKEvent
     
 
@@ -289,6 +305,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         } else {
             print("Error: both month and year text fields must have values")
         }
+        
+        self.dismissKeyboard()
         
     }
     
@@ -329,7 +347,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 break;
             case .denied:
                 self.userEventsToggle.isOn = false
-                self.includeUserEKEvents = false
+                if self.includeUserEKEvents == true {
+                    
+                }
                 self.displayEventsAlerts()
                 break;
             case .restricted:

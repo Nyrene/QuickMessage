@@ -12,12 +12,16 @@ import UIKit
 class SelectDateViewController:UIViewController {
     
     var editEventVC:EditEventViewController!
+    var selectedDateFromTarget:Date!
     
     
     @IBOutlet weak var datePicker: UIDatePicker!
     
     override func viewDidLoad() {
         // Set up for date here, if loading from an existing window
+        if self.selectedDateFromTarget != nil {
+            self.datePicker.date = selectedDateFromTarget
+        }
     }
     
     @IBAction func cancelBtnPressed(_ sender: UIBarButtonItem) {

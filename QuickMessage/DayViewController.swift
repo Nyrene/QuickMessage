@@ -15,6 +15,7 @@ struct TableViewItem {
     var dateString = ""
     var eventID = ""
     var ekEventID = ""
+    var date = Date() // we need this to sort combined ek and app events
     var alarmTiedToUserEKEventID = "" // the unique identifier for the EKEVent, used to filter out duplicates
     
     
@@ -48,11 +49,16 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             self.navigationController?.popViewController(animated: true)
         }
         
+        // Keyboard hiding
+        hideKeyboardWhenTappedAround()
         
         // prepare table view items
         self.addGivenEKEventsToTableItems()
         self.addGivenEventsToTableItems()
-        // self.tableViewItems.sort(by: TableViewItem.dateString)
+        //customObjects = customObjects.sorted(by: {
+        //$0.date.compare($1.date) == .orderedDescending
+        // https://www.agnosticdev.com/content/how-sort-objects-date-swift
+        self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedDescending})
         self.tableView.reloadData()
         
     }
@@ -75,7 +81,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
                     } else {
                         let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
                         print("DEBUG: in addGivenEvents, ekEvent.startDate is: ", ekEvent.startDate)
-                        let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, alarmTiedToUserEKEventID: "")
+                        let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, date: ekEvent.startDate, alarmTiedToUserEKEventID: "")
                         
                         self.tableViewItems.append(newTableViewItem)
                     }
@@ -86,7 +92,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         } else { // nothing to compare to, add all events to the table view items
             for ekEvent in self.selectedCell.ekEvents {
                 let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
-                let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, alarmTiedToUserEKEventID: "")
+                let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, date: ekEvent.startDate, alarmTiedToUserEKEventID: "")
                 
                 self.tableViewItems.append(newTableViewItem)
             }
@@ -103,8 +109,13 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         } else {
             for event in selectedCell.events {
                 let eventDate = event.alarmDate as Date?
+                var alarmTiedToEkEvent = ""
+                if event.tiedToEkEvent != nil {
+                    alarmTiedToEkEvent = event.tiedToEkEvent!
+                }
+            
                 let eventDateStr = dateFormatterPrint.string(from: eventDate!)
-                let newTableItem = TableViewItem(title: event.title!, dateString: eventDateStr, eventID: event.uniqueID!, ekEventID: "", alarmTiedToUserEKEventID: "")
+                let newTableItem = TableViewItem(title: event.title!, dateString: eventDateStr, eventID: event.uniqueID!, ekEventID: "", date: eventDate!, alarmTiedToUserEKEventID: alarmTiedToEkEvent)
                 self.tableViewItems.append(newTableItem)
             }
             

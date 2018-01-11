@@ -97,6 +97,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
 
     }
     
+    override func viewDidLoad() {
+        hideKeyboardWhenTappedAround()
+    }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // user is editing a date
@@ -107,7 +111,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             
             // load the date with the current one if we have one
             if self.selectedDate != nil {
-                targetVC.datePicker.date = self.selectedDate
+                targetVC.selectedDateFromTarget = self.selectedDate
             }
         }
         
