@@ -21,7 +21,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var selectedDate:Date!
     var selectedContactsIDs = [String]()
     var contactInfosForTable = [contactTableInfo]()
+    
+    // for triggering redraws when events have been changed/added
     var calendarView:ViewController!
+    var dayView:DayViewController!
     
     @IBOutlet weak var titleTxtFld: UITextField!
     
@@ -77,7 +80,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         }
         
-        CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+        let newEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
         
         // we might not be coming straight from the calendar view, so don't throw an error if
         // it's nil
@@ -85,6 +88,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.calendarView.redrawCalendar(useDefaultInfo: false)
         }
         
+        if (self.dayView != nil) {
+            self.dayView.addNewEventToTableView(newEvent: newEvent)
+        }
         self.navigationController?.popViewController(animated: true)
         
     }

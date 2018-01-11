@@ -63,32 +63,82 @@ public class CoreDataManager {
             print("Could not save. \(error), \(error.userInfo)")
         }
         
-        print("DEBUG: at end of save function")
+        // TD: associate alarm/notification with this event
+
+    }
+    
+    static func saveNewEventWithInformationAndReturn(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!) -> Event {
+        // TD2: NOTE FOR LATER:
+        /* "
+         When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
+         */
+        /*
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                // TD: have this function throw
+        }
+ */
+        let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate
+        
+        // create new event
+        let thisMOC = appDelegate?.persistentContainer.viewContext
+        let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC!)
+        let newEvent = NSManagedObject(entity: thisEntityDescription!, insertInto: thisMOC) as! Event
+        
+        
+        // set event attributes
+        // newEvent.title = title
+        // newEvent.alarmDate = eventDate
+        // newEvent.contactIdentifiers = contactIDs
+        
+        newEvent.setValue(title, forKey : "title")
+        newEvent.setValue(eventDate, forKey: "alarmDate")
+        newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
+        
+        
+        
+        // if no uniqueID given, create a new one
+        if uniqueID == nil || uniqueID == "" {
+            newEvent.uniqueID = self.randomString(length: 6)
+        } else {
+            newEvent.uniqueID = uniqueID
+        }
+        
+        do {
+            try thisMOC?.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
         
         // TD: associate alarm/notification with this event
         
+        return newEvent
         
-        // DEBUG: attempting to fetch immediately after saving
-        var events = [Event]()
+    }
+
+ 
+ 
+ 
+    static func saveChangesToEvent() {
         
-        /*guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                return events
-        }
- */
         
-        guard let appDelegate2 =
+    }
+    
+    /*
+    static func fetchEventWithUniqueID(string:givenUniqueID) -> Event {
+        guard let appDelegate1 =
             UIApplication.shared.delegate as? AppDelegate else {
                 print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
                 return
         }
         
-        // create new event
-        let thisMOC2 = appDelegate2.persistentContainer.viewContext
-
+        let thisMOC = appDelegate2.persistentContainer.viewContext
+        
         
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        fetchRequest.predicate = NSPredicate(
         
         do {
             events = try thisMOC2.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
@@ -102,14 +152,9 @@ public class CoreDataManager {
             print("item with key value printing is: ", thisEvent.value(forKey:"title") as! String)
         }
 
-    }
- 
- 
- 
-    static func saveChangesToEvent() {
-        
         
     }
+ */
     
     static func deleteEventWithID(eventID:String) {
         // TD: delete event

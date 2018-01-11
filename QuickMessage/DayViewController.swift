@@ -133,10 +133,40 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     
+    func addNewEventToTableView(newEvent:Event) {
+        self.selectedCell.events.append(newEvent) // Not necessary for now but might be later
+        let thisDateString = dateFormatterPrint.string(from: newEvent.alarmDate! as Date)
+        var thisEkID = ""
+        if newEvent.tiedToEkEvent != nil {
+            thisEkID = newEvent.tiedToEkEvent!
+        }
+        
+        let newTableInfo = TableViewItem(title: newEvent.title!, dateString: thisDateString, eventID: newEvent.uniqueID!, ekEventID:"", date: newEvent.alarmDate! as Date, alarmTiedToUserEKEventID: thisEkID)
+        
+        self.tableViewItems.append(newTableInfo)
+        self.tableView.reloadData()
+    }
+    
     
     // IBActions
     @IBAction func backBtnPressed(_ sender: UIBarButtonItem) {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    
+    // Segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // If we're creating a new event from this window
+        if segue.identifier == "NewEventFromDayViewSID" {
+            // set the target VC's day view info to self, so it'll trigger
+            // a redraw of the table view when a new event is saved
+            let targetVC = segue.destination as! EditEventViewController
+            targetVC.dayView = self
+            
+            
+        } else if segue.identifier == "EditEventFromDayViewSID" {
+            
+        }
     }
     
     
