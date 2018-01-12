@@ -178,8 +178,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
             // now add saved events
             let fetchedEvents = CoreDataManager.fetchEventsForDate(givenDate: thisCell.beginDate) as [Event]
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeStyle = DateFormatter.Style.medium
+            dateFormatter.dateStyle = DateFormatter.Style.medium
+            let thisDateString = dateFormatter.string(from: thisCell.beginDate)
             if fetchedEvents.count > 0 {
-                print("DEBUG: saved events retrieved in cell")
+                print("DEBUG: thisCell.beginDate is: ", thisDateString)
                 thisCell.dotMarkerLbl.alpha = 1
                 thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
                 thisCell.events = fetchedEvents
@@ -192,6 +196,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         } // end of if calendar date
         return thisCell
     }
+    
     
     // Calendar info set up
     

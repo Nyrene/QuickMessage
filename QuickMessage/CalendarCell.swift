@@ -19,4 +19,9 @@ open class CalendarCell:UICollectionViewCell {
     var events:[Event] = []
     var beginDate:Date = Date()
     
+    override open func prepareForReuse() {
+        ekEvents = []
+        events = []
+    }
+    
 }
