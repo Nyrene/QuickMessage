@@ -164,16 +164,17 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 // set the cell's color if there's events
                 let fetchedEvents = eventStore.events(matching: thisPredicate)
                 if fetchedEvents.count != 0 {
-                    thisCell.backgroundColor = UIColor.yellow
+                    thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
+                    thisCell.dotMarkerLbl.alpha = 1
                 } else {
-                    thisCell.backgroundColor = UIColor.white
+                    thisCell.dotMarkerLbl.alpha = 0
                 }
                 
                 thisCell.ekEvents = fetchedEvents
         
                 
             } else {
-                thisCell.backgroundColor = UIColor.white
+                thisCell.dotMarkerLbl.alpha = 0
             }
             
             // now add saved events
@@ -181,15 +182,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             let dateFormatter = DateFormatter()
             dateFormatter.timeStyle = DateFormatter.Style.medium
             dateFormatter.dateStyle = DateFormatter.Style.medium
-            let thisDateString = dateFormatter.string(from: thisCell.beginDate)
             if fetchedEvents.count > 0 {
-                print("DEBUG: thisCell.beginDate is: ", thisDateString)
-                thisCell.dotMarkerLbl.alpha = 1
-                thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
+                thisCell.backgroundColor = UIColor.yellow
                 thisCell.events = fetchedEvents
             } else {
-                print("DEBUG: no saved events retrieved in cell")
-                thisCell.dotMarkerLbl.alpha = 0
+                
+                thisCell.backgroundColor = UIColor.white
             }
             
         
@@ -389,8 +387,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
             targetVC.selectedCell = senderCell
             targetVC.calendarVC = self
-            
-            print("DEBUG: selected cell in prepare for segue's target VC is: ", targetVC)
             
         }
         if segue.identifier == "EditEventViewSID" {

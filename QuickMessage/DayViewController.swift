@@ -35,8 +35,6 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     var tableViewItems = [TableViewItem]()
     
     override func viewDidLoad() {
-        print("Day view was loaded")
-        print("selected cell is: ")
         // Load info from the selected cell if it's not nil
         if selectedCell != nil {
             // Set up info
@@ -52,18 +50,13 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         // Keyboard hiding
         hideKeyboardWhenTappedAround()
         
-        // prepare table view items
-        self.addGivenEKEventsToTableItems()
-        self.addGivenEventsToTableItems()
-
-        // https://www.agnosticdev.com/content/how-sort-objects-date-swift
-        self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedAscending})
-        self.tableView.reloadData()
+        // draw table
+        self.redrawTable()
         
     }
     
     // Utility
-    func addGivenEKEventsToTableItems() {
+    func setGivenEKEventsToTableItems() {
 
         for ekEvent in self.selectedCell.ekEvents {
             let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
@@ -78,7 +71,8 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         
     }
     
-    func addGivenEventsToTableItems() {
+    func setGivenEventsToTableItems() {
+
         if self.selectedCell.events.count == 0 {
             return
         } else {
@@ -123,8 +117,12 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         
         let thisTableViewItem = self.tableViewItems[indexPath.row]
         if thisTableViewItem.eventID == "" {
+            thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
+        } else {
             thisCell.dotMarkerLbl.alpha = 0
+            thisCell.backgroundColor = UIColor.yellow
         }
+        
         
         thisCell.dateLbl.text = thisTableViewItem.dateString
         thisCell.titleLbl.text = thisTableViewItem.title
@@ -147,6 +145,27 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         self.tableView.reloadData()
     }
     
+    func updateEventInTableView(newEvent:Event) {
+        // we don't need to update the list of core data items because
+        // we edit one of them in the edit event VC
+        // just reset the list of table info items(can't update the one cell because
+        // the date might've changed(and thus the ordering of the cells)
+        
+        self.redrawTable()
+    }
+    
+    func redrawTable() {
+        self.tableViewItems = []
+        self.setGivenEventsToTableItems()
+        self.setGivenEKEventsToTableItems()
+        
+        
+        // order the table by date
+        self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedAscending})
+        
+        self.tableView.reloadData()
+    }
+
     
     // IBActions
     @IBAction func backBtnPressed(_ sender: UIBarButtonItem) {
@@ -162,9 +181,15 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             // a redraw of the table view when a new event is saved
             let targetVC = segue.destination as! EditEventViewController
             targetVC.dayView = self
+            targetVC.selectedDate = self.selectedCell.beginDate
             
             
         } else if segue.identifier == "EditEventFromDayViewSID" {
+            // load info into the event
+            let targetVC = segue.destination as! EditEventViewController
+            targetVC.dayView = self
+            targetVC.selectedDate = self.selectedCell.beginDate
+            targetVC.eventToEdit = self.selectedCell.events[0]
             
         }
     }

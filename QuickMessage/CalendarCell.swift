@@ -22,6 +22,10 @@ open class CalendarCell:UICollectionViewCell {
     override open func prepareForReuse() {
         ekEvents = []
         events = []
+        
+        if dotMarkerLbl != nil {
+            dotMarkerLbl.backgroundColor = UIColor.white
+        }
     }
     
 }
