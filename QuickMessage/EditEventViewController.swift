@@ -73,7 +73,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         }
         
-        if self.selectedContactsIDs.count == 0 {
+        if self.selectedContactsIDs.count == 0 || self.contactInfosForTable.count == 0 {
             let thisAlert = UIAlertController(title: "No contacts selected", message: "Please select one or more contacts for this event.", preferredStyle: UIAlertControllerStyle.alert)
             thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
             present(thisAlert, animated: true, completion: nil)
@@ -175,6 +175,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         // delete contact info and redraw table
         let indexForDeletedItem = sender.indexPath
         self.contactInfosForTable.remove(at: (indexForDeletedItem?.row)!)
+        self.selectedContactsIDs.remove(at:(indexForDeletedItem?.row)!)
         self.tableView.reloadData()
     }
     
