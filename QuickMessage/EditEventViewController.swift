@@ -39,13 +39,15 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     @IBOutlet weak var editLocationInfoBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
-    @IBOutlet var contactsTableView:UITableView!
-    
     
     
     override func viewDidLoad() {
         
         hideKeyboardWhenTappedAround()
+        
+         let thisImage = UIImage(named: "background_3.jpg")
+         let backgroundColor = UIColor(patternImage: thisImage!)
+         self.view.backgroundColor = backgroundColor
         
         if self.eventToEdit != nil {
             // editing an existing event, fill in info
@@ -95,7 +97,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             
         }
         
-        self.contactsTableView.reloadData()
+        self.tableView.reloadData()
     }
     
     // Table view
@@ -174,16 +176,22 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         }
         
-        if self.dayView != nil { // either we need to update an existing item, or add a new one
-                                // to the table
+        
+        // Save object
+        let newEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+        
+        // Depending on where we came from, might need to update previous view
+        
+        if self.dayView != nil { // possibly need to add new date to the day view table
+            
+            // only add to the table if the start dates match
             if self.eventToEdit == nil { // new event
-                let newEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
-                self.dayView.addNewEventToTableView(newEvent: newEvent)
-            } else {
-                // update an existing event. only need to redraw the table as the
-                // day view's core data events have been updated already
+                if Calendar.current.startOfDay(for: eventToEdit.alarmDate! as Date) == Calendar.current.startOfDay(for: self.eventToEdit.alarmDate! as Date) {
+                    self.dayView.addNewEventToTableView(newEvent: newEvent)
+                }
                 
-                // TD: still need to save changes
+            } else { // update an existing event. if the date was changed, remove it from the day view's table
+                
                 
                 self.dayView.redrawTable()
                 
