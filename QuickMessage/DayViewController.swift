@@ -35,6 +35,12 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     var tableViewItems = [TableViewItem]()
     
     override func viewDidLoad() {
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+
+        
+        
         // Load info from the selected cell if it's not nil
         if selectedCell != nil {
             // Set up info
@@ -123,7 +129,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             thisCell.backgroundColor = UIColor.yellow
         }
         
-        
+        thisCell.indexPath = indexPath
         thisCell.dateLbl.text = thisTableViewItem.dateString
         thisCell.titleLbl.text = thisTableViewItem.title
         
@@ -189,7 +195,14 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             let targetVC = segue.destination as! EditEventViewController
             targetVC.dayView = self
             targetVC.selectedDate = self.selectedCell.beginDate
-            targetVC.eventToEdit = self.selectedCell.events[0]
+            // we want to pull the event info from the day view, not
+            // from the selected cell
+            
+            // get the selected table view cell, pull event from that,
+            // then give it to the target VC
+            let selectedTableCell = sender as! DayViewTableViewCell
+            let thisEvent = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
+            targetVC.eventToEdit = thisEvent
             
         }
     }

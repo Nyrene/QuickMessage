@@ -16,4 +16,7 @@ class DayViewTableViewCell: UITableViewCell {
     @IBOutlet var dateLbl:UILabel!
     @IBOutlet var dotMarkerLbl:UILabel!
     
+    
+    var indexPath = IndexPath()
+    
 }

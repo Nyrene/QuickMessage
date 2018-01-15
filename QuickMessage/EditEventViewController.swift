@@ -159,9 +159,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         }
         
         
-        if self.selectedDate != nil {
-            let eventDate = self.selectedDate
-        } else {
+        if self.selectedDate == nil {
             // TD2: add popup to popup controller later
             let thisAlert = UIAlertController(title: "No Date Selected", message: "Please select a date for this event.", preferredStyle: UIAlertControllerStyle.alert)
             thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
@@ -176,42 +174,65 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         }
         
+        var haveSaved = false
+        // cases:
+        // 1) editing same event, changed date, remove it from table
+        // 2) editing same event, didn't change date, don't remove it from table but
+        //      redraw the table
+        // 3) new event, same date, add to table/redraw
+        // 4) new event, different date, don't add to table
         
-        // Save object
-        let newEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+        // day view always comes from selecting a cell, so we can use
+        // selectedCell.date to check the date (compare it with Calendar.current.startOfDay(for: eventToEdit.alarmDate! as Date) == Calendar.current.startOfDay(for: self.eventToEdit.alarmDate! as Date)
         
-        // Depending on where we came from, might need to update previous view
-        
-        if self.dayView != nil { // possibly need to add new date to the day view table
-            
-            // only add to the table if the start dates match
-            if self.eventToEdit == nil { // new event
-                if Calendar.current.startOfDay(for: eventToEdit.alarmDate! as Date) == Calendar.current.startOfDay(for: self.eventToEdit.alarmDate! as Date) {
-                    self.dayView.addNewEventToTableView(newEvent: newEvent)
+        // test if the date has changed:
+        if self.dayView != nil {
+            if Calendar.current.startOfDay(for:self.selectedDate) == Calendar.current.startOfDay(for:self.dayView.selectedCell.beginDate) {
+                if self.eventToEdit != nil {
+                    // redraw the table view
+                    // save the existing event
+                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs)
+                    self.dayView.redrawTable()
+                    haveSaved = true
+                    
+                } else {
+                    // it's a new event, add it to the day view's list of events
+                    let thisNewEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+                    self.dayView.addNewEventToTableView(newEvent: thisNewEvent)
+                    haveSaved = true
                 }
                 
-            } else { // update an existing event. if the date was changed, remove it from the day view's table
-                
-                
-                self.dayView.redrawTable()
-                
+            } else {
+                // the new event's date doesn't match the day view. Save, but 
+                // don't update the table view
+                if self.eventToEdit == nil {
+                    // new event
+                    CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+                    haveSaved = true
+                } else {
+                    // save existing event
+                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs)
+                    haveSaved = true
+                }
             }
-            
         }
         
         if self.calendarView != nil {
-            // TD2: find way to just refetch info for the one cell that needs to be updated
-            // rather than redrawing the entire thing
-            if self.eventToEdit == nil {
+            if self.eventToEdit != nil {
+                CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs)
+            } else {
                 CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
             }
             self.calendarView.redrawCalendar(useDefaultInfo: false)
+            haveSaved = true
         }
         
         
-        
-        
+        if haveSaved == false {
+            print("ERROR: saveBtnPressed, but no case occurred where saved")
+        }
         self.navigationController?.popViewController(animated: true)
+        // end of savebtnpressed
         
     }
     

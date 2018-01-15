@@ -72,19 +72,14 @@ public class CoreDataManager {
         /* "
          When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
          */
-        /*
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                // TD: have this function throw
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("Error: could not get app delegate")
+            return Event()
         }
- */
-        let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate
         
         // create new event
-        let thisMOC = appDelegate?.persistentContainer.viewContext
-        let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC!)
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC)
         let newEvent = NSManagedObject(entity: thisEntityDescription!, insertInto: thisMOC) as! Event
         
         
@@ -107,7 +102,7 @@ public class CoreDataManager {
         }
         
         do {
-            try thisMOC?.save()
+            try thisMOC.save()
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
         }
@@ -126,35 +121,6 @@ public class CoreDataManager {
         
     }
     
-    /*
-    static func fetchEventWithUniqueID(string:givenUniqueID) -> Event {
-        guard let appDelegate1 =
-            UIApplication.shared.delegate as? AppDelegate else {
-                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                return
-        }
-        
-        let thisMOC = appDelegate2.persistentContainer.viewContext
-        
-        
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
-        fetchRequest.predicate = NSPredicate(
-        
-        do {
-            events = try thisMOC2.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        
-        for item in events {
-            let thisEvent = item as! Event
-            print("item title in same func as fetch is: ", thisEvent.title)
-            print("item with key value printing is: ", thisEvent.value(forKey:"title") as! String)
-        }
-
-        
-    }
- */
     
     static func deleteEventWithID(eventID:String) {
         // TD: delete event
@@ -166,8 +132,6 @@ public class CoreDataManager {
         
     }
     
-    static func loadEventWithID(uniqueID:String) {
-    }
     
     static func fetchAllEvents() -> [Event] {
         var events = [Event]()
@@ -206,7 +170,6 @@ public class CoreDataManager {
         
         // create new event
         let thisMOC = appDelegate.persistentContainer.viewContext
-        let thisEntityDescription = NSEntityDescription.entity(forEntityName: "Event", in: thisMOC)
         
         // create predicate, below code copied from
         // https://stackoverflow.com/questions/40312105/core-data-predicate-filter-by-todays-date
@@ -238,6 +201,66 @@ public class CoreDataManager {
         
         return events
         
+    }
+    
+    static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String]) {
+        // set event information
+        givenEvent.title! = eventTitle
+        givenEvent.alarmDate! = alarmDate as NSDate
+        givenEvent.contactIdentifiers! = eventContactIDs as NSObject
+        
+        
+        // save info
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return
+        }
+        
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        
+        do {
+            try thisMOC.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        
+    }
+    
+    static func fetchEventForID(eventID:String) -> Event{
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return Event()
+        }
+        
+        // create new event
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        let thisFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Event")
+        let thisPredicate = NSPredicate(format:"%K == %@", "uniqueID", eventID)
+        thisFetchRequest.predicate = thisPredicate
+        
+        var events:[Event] = []
+        
+        do {
+            events = try thisMOC.fetch(thisFetchRequest ) as! [Event]
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        if events.count == 0 { // TDL should throw here
+            print("Error: no returned events")
+            return Event()
+        }
+        
+        if events.count > 1 {
+            print("Error: duplicate events with unique IDs")
+            return events[0]
+        } else {
+            return events[0]
+        }
+        
+        return Event()
     }
     
 

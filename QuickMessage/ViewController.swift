@@ -68,6 +68,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
 
     override func viewDidLoad() {
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+
+        
         // Keyboard dismissal
         hideKeyboardWhenTappedAround()
         super.viewDidLoad()
@@ -132,9 +137,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
             thisCell.beginDate = Calendar.current.date(from: thisDateComponents)!
             
+            /*
             thisDateComponents.hour = 23
             thisDateComponents.minute = 59
             let endDate = Calendar.current.date(from: thisDateComponents)
+ */
 
             
         
