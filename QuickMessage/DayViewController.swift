@@ -45,9 +45,10 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         if selectedCell != nil {
             // Set up info
             
-            dateFormatterPrint.dateFormat = "MMM dd, yyyy, hh:mm"
+            dateFormatterPrint.dateFormat = "MMM dd, yyyy"
             
             self.navigationItem.title = dateFormatterPrint.string(from: selectedCell.beginDate)
+            dateFormatterPrint.dateFormat = "MMM dd, yyyy hh:mm"
             
         } else {
             self.navigationController?.popViewController(animated: true)

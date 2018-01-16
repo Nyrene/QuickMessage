@@ -45,10 +45,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         hideKeyboardWhenTappedAround()
         
-         let thisImage = UIImage(named: "background_3.jpg")
-         let backgroundColor = UIColor(patternImage: thisImage!)
-         self.view.backgroundColor = backgroundColor
-        
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+
         if self.eventToEdit != nil {
             // editing an existing event, fill in info
             self.titleTxtFld.text = eventToEdit.title!
@@ -57,6 +57,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.dateLbl.text = dateFormatterPrint.string(from: eventToEdit.alarmDate! as Date)
             self.selectedContactsIDs = self.eventToEdit.contactIdentifiers! as! [String]
             self.populateTableFromGivenContactsIDs()
+            
+            self.deleteBtn.alpha = 1
+
+        } else { // there's no event to delete, so hide the delete button
+            self.deleteBtn.alpha = 0
             
         }
     }
@@ -73,7 +78,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         let contactName = contact.givenName + " " + contact.familyName
         let contactID = contact.identifier
         let newContactInfo = contactTableInfo(nameToDisplay: contactName, identifier: contactID)
-        self.selectedContactsIDs.append(contact.identifier)
         self.contactInfosForTable.append(newContactInfo)
         
         
@@ -130,7 +134,12 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         // delete contact info and redraw table
         let indexForDeletedItem = sender.indexPath
         self.contactInfosForTable.remove(at: (indexForDeletedItem?.row)!)
+        print("DEBUG: count before removal: ", self.selectedContactsIDs.count)
+        print("DEBUG: contactID remove at: ", indexForDeletedItem?.row)
+        print("DEBUG: contactID for removal: ", self.selectedContactsIDs[indexForDeletedItem!.row])
         self.selectedContactsIDs.remove(at:(indexForDeletedItem?.row)!)
+        print("DEBUG: count after removal: ", self.selectedContactsIDs.count)
+
         self.tableView.reloadData()
     }
 
@@ -227,6 +236,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             haveSaved = true
         }
         
+        print("DEBUG: selectedContactsIDs.count is: ", self.selectedContactsIDs.count)
+        
         
         if haveSaved == false {
             print("ERROR: saveBtnPressed, but no case occurred where saved")
@@ -253,7 +264,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             targetVC.editEventVC = self
             
             // load the date with the current one if we have one
-            if self.selectedDate != nil {
+            if self.eventToEdit != nil {
+                targetVC.selectedDateFromTarget = self.eventToEdit.alarmDate as! Date
+            } else if self.selectedDate != nil {
                 targetVC.selectedDateFromTarget = self.selectedDate
             }
         }
