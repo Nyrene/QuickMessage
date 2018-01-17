@@ -24,6 +24,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     
     var eventToEdit:Event!
     
+    var messages:[String] = []// don't edit the messages on the event directly. use an extra
+    // string so if the user hits cancel and does some other editing later, the blanket
+    // save doesn't incorrectly save the new messages on the event
+    
     // for triggering redraws when events have been changed/added
     var calendarView:ViewController!
     var dayView:DayViewController!
@@ -39,6 +43,12 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     @IBOutlet weak var editLocationInfoBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
     
+    
+    // messages
+    @IBOutlet var message1Lbl:UILabel!
+    @IBOutlet var message2Lbl:UILabel!
+    @IBOutlet var message3Lbl:UILabel!
+    @IBOutlet var message4Lbl:UILabel!
     
     
     override func viewDidLoad() {
@@ -134,13 +144,27 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         // delete contact info and redraw table
         let indexForDeletedItem = sender.indexPath
         self.contactInfosForTable.remove(at: (indexForDeletedItem?.row)!)
-        print("DEBUG: count before removal: ", self.selectedContactsIDs.count)
-        print("DEBUG: contactID remove at: ", indexForDeletedItem?.row)
-        print("DEBUG: contactID for removal: ", self.selectedContactsIDs[indexForDeletedItem!.row])
         self.selectedContactsIDs.remove(at:(indexForDeletedItem?.row)!)
-        print("DEBUG: count after removal: ", self.selectedContactsIDs.count)
 
         self.tableView.reloadData()
+    }
+    
+    func reloadMessages() {
+        if self.messages.count == 0 {
+            print("ERROR: no messages in edit event view")
+            return
+        }
+        
+        if self.messages.count < 0 {
+            print("ERROR: not enough messages to load")
+            return
+        }
+        
+        self.message1Lbl!.text! = self.messages[0]
+        self.message2Lbl!.text! = self.messages[1]
+        self.message3Lbl!.text! = self.messages[2]
+        self.message4Lbl!.text! = self.messages[3]
+        
     }
 
     
@@ -255,6 +279,18 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
 
     }
     
+    @IBAction func deleteBtnPressed(_ sender:UIButton) {
+        CoreDataManager.deleteObject(givenEvent: self.eventToEdit)
+        
+        // reload table view - remove the core data object from the list and
+        // redraw table
+        if self.dayView != nil {
+            self.dayView.selectedCell.events = self.dayView.selectedCell.events.filter { $0 != eventToEdit }
+            self.dayView.redrawTable()
+        }
+        
+        self.navigationController?.popViewController(animated: true)
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // user is editing a date
@@ -265,10 +301,15 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             
             // load the date with the current one if we have one
             if self.eventToEdit != nil {
-                targetVC.selectedDateFromTarget = self.eventToEdit.alarmDate as! Date
+                targetVC.selectedDateFromTarget = self.eventToEdit.alarmDate! as Date
             } else if self.selectedDate != nil {
                 targetVC.selectedDateFromTarget = self.selectedDate
             }
+        }
+        
+        if segue.identifier == "EditMessagesSID" {
+            let targetVC = segue.destination as! EditMessagesViewController
+            
         }
         
     }

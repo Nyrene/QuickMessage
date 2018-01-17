@@ -264,7 +264,13 @@ public class CoreDataManager {
     }
     
 
- 
+    static func deleteObject(givenEvent:Event) {
+        let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
+        let moc = appDelegate.persistentContainer.viewContext
+        
+        moc.delete(givenEvent)
+        appDelegate.saveContext()
+    }
 
     // Utility
     
