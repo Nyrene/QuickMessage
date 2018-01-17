@@ -25,7 +25,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var eventToEdit:Event!
     
     var messages:[String] = []// don't edit the messages on the event directly. use an extra
-    // string so if the user hits cancel and does some other editing later, the blanket
+    // string so if the user hits cancel and does some other editing later, the
     // save doesn't incorrectly save the new messages on the event
     
     // for triggering redraws when events have been changed/added
@@ -68,12 +68,21 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.selectedContactsIDs = self.eventToEdit.contactIdentifiers! as! [String]
             self.populateTableFromGivenContactsIDs()
             
+            if self.eventToEdit.messages != nil {
+                self.messages = self.eventToEdit.messages as! [String]
+            } else {
+                self.messages = CoreDataManager.getDefaultMessages()
+            }
+            
             self.deleteBtn.alpha = 1
 
         } else { // there's no event to delete, so hide the delete button
             self.deleteBtn.alpha = 0
+            self.messages = CoreDataManager.getDefaultMessages()
             
         }
+        
+        self.reloadMessages()
     }
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
@@ -224,13 +233,13 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 if self.eventToEdit != nil {
                     // redraw the table view
                     // save the existing event
-                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs)
+                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
                     self.dayView.redrawTable()
                     haveSaved = true
                     
                 } else {
                     // it's a new event, add it to the day view's list of events
-                    let thisNewEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+                    let thisNewEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
                     self.dayView.addNewEventToTableView(newEvent: thisNewEvent)
                     haveSaved = true
                 }
@@ -240,11 +249,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 // don't update the table view
                 if self.eventToEdit == nil {
                     // new event
-                    CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+                    CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
                     haveSaved = true
                 } else {
                     // save existing event
-                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs)
+                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
                     haveSaved = true
                 }
             }
@@ -252,9 +261,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         if self.calendarView != nil {
             if self.eventToEdit != nil {
-                CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs)
+                CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
             } else {
-                CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil)
+                CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
             }
             self.calendarView.redrawCalendar(useDefaultInfo: false)
             haveSaved = true
@@ -309,6 +318,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         if segue.identifier == "EditMessagesSID" {
             let targetVC = segue.destination as! EditMessagesViewController
+            targetVC.editEventWindow = self
+            targetVC.messages = self.messages
             
         }
         

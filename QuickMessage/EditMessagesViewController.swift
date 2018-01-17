@@ -64,18 +64,17 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
     // IBActions
     
     @IBAction func saveMsgBtnPressed(_ sender:UIButton) {
-        self.messages[self.selectedIndexPath.row] = self.textView.text!
+        // update the table view
+        let thisCell = self.tableView.cellForRow(at: self.selectedIndexPath) as! MessagesTableViewCell
+        
+        thisCell.messageLbl.text! = self.textView.text!
+        
         self.textView.resignFirstResponder()
-        
-        guard let thisCell = self.tableView.cellForRow(at: self.selectedIndexPath) else {
-            print("ERROR: couldn't get table cell to edit in messages view")
-            return
-        }
-        
-        (thisCell as! MessagesTableViewCell).messageLbl.text! = self.messages
         
         self.saveMsgBtn.alpha = 0
         self.cancelEditMsgBtn.alpha = 0
+        
+        
     }
     
     @IBAction func cancelEditMsgBtnPressed(_ sender:UIButton) {
@@ -93,9 +92,25 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
     }
     
     @IBAction func saveBtnPressed(_ sender: UIBarButtonItem) {
+        // save the contents of each table cell to the messages array
+        var i = 0
+        var thisIndexPath = IndexPath(row: 0, section: 0)
+        while i < 4 {
+            thisIndexPath.row = i
+            guard let thisCell = self.tableView.cellForRow(at: thisIndexPath) else {
+                print("ERROR: couldn't get table cell to edit in messages view")
+                return
+            }
+            
+            //(thisCell as! MessagesTableViewCell).messageLbl.text! = self.messages[i]
+            self.messages[i] = (thisCell as! MessagesTableViewCell).messageLbl.text!
+            i += 1
+            
+        }
+        
         self.editEventWindow.messages = self.messages
         self.editEventWindow.reloadMessages()
-        
+
         
         
         self.navigationController?.popViewController(animated: true)

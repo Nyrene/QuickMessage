@@ -454,6 +454,10 @@
                         <outlet property="dateLbl" destination="xWC-sq-BhD" id="4s8-JB-caa"/>
                         <outlet property="deleteBtn" destination="jUT-zZ-qWC" id="StS-Xu-RRE"/>
                         <outlet property="editLocationInfoBtn" destination="Rlr-2j-TJ5" id="UcH-Ye-Z9I"/>
+                        <outlet property="message1Lbl" destination="h3B-H2-t7c" id="VgH-fX-433"/>
+                        <outlet property="message2Lbl" destination="OyG-kC-Ndp" id="Prd-mh-hqG"/>
+                        <outlet property="message3Lbl" destination="0pD-qM-CKL" id="FCU-fF-Ywf"/>
+                        <outlet property="message4Lbl" destination="Ugl-pO-DgK" id="zw4-0L-5Q3"/>
                         <outlet property="tableView" destination="sYV-Fk-8Ij" id="Yvh-bA-Lh5"/>
                         <outlet property="titleTxtFld" destination="LYF-1n-N42" id="PGg-cz-rVp"/>
                     </connections>
@@ -497,7 +501,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
-                                    <action selector="saveMsgBtnPressed:" destination="F1N-Aq-Rmx" eventType="touchUpInside" id="yd4-p3-q5c"/>
+                                    <action selector="saveMsgBtnPressed:" destination="F1N-Aq-Rmx" eventType="touchUpInside" id="eYb-Qn-pLV"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wpC-U0-7WF">

@@ -22,7 +22,7 @@ public class CoreDataManager {
     
     // most of below function's code pulled from
     // https://www.raywenderlich.com/173972/getting-started-with-core-data-tutorial-2
-    static func saveNewEventWithInformation(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!) {
+    static func saveNewEventWithInformation(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!, messages:[String]!) {
         // TD2: NOTE FOR LATER:
         /* "
          When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
@@ -48,6 +48,10 @@ public class CoreDataManager {
         newEvent.setValue(eventDate, forKey: "alarmDate")
         newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
         
+        if messages != nil {
+            let defaults = getDefaultMessages()
+            newEvent.setValue(messages, forKey: "messages")
+        }
         
         
         // if no uniqueID given, create a new one
@@ -67,7 +71,7 @@ public class CoreDataManager {
 
     }
     
-    static func saveNewEventWithInformationAndReturn(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!) -> Event {
+    static func saveNewEventWithInformationAndReturn(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!, messages:[String]!) -> Event {
         // TD2: NOTE FOR LATER:
         /* "
          When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
@@ -91,6 +95,11 @@ public class CoreDataManager {
         newEvent.setValue(title, forKey : "title")
         newEvent.setValue(eventDate, forKey: "alarmDate")
         newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
+        
+        if messages != nil {
+            let defaults = getDefaultMessages()
+            newEvent.setValue(messages, forKey: "messages")
+        }
         
         
         
@@ -203,12 +212,15 @@ public class CoreDataManager {
         
     }
     
-    static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String]) {
+    static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String], messages:[String]!) {
         // set event information
         givenEvent.title! = eventTitle
         givenEvent.alarmDate! = alarmDate as NSDate
         givenEvent.contactIdentifiers! = eventContactIDs as NSObject
         
+        if (messages != nil) {
+            givenEvent.setValue(messages, forKey: "messages")
+        }
         
         // save info
         guard let appDelegate =
@@ -260,7 +272,14 @@ public class CoreDataManager {
             return events[0]
         }
         
-        return Event()
+        // return Event() // commented out to silence warning as this line is never executed
+    }
+    
+    
+    static func getDefaultMessages() -> [String] {
+        let messages = ["On my way.", "Just arrived.", "Currently delayed.",  "Almost there."]
+        
+        return messages
     }
     
 
