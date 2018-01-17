@@ -73,6 +73,9 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
         
         self.saveMsgBtn.alpha = 0
         self.cancelEditMsgBtn.alpha = 0
+        self.textView.text! = "Tap on a message to edit it, or hit save to preserve your choices and return to editing your event."
+        
+        
         
         
     }

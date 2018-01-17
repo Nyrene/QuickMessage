@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9063B095200E6F1A0020E32E /* EditMessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9063B094200E6F1A0020E32E /* EditMessagesViewController.swift */; };
 		9063B097200E95590020E32E /* MessagesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9063B096200E95590020E32E /* MessagesTableViewCell.swift */; };
+		9063B099200F0D870020E32E /* SendMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9063B098200F0D870020E32E /* SendMessageViewController.swift */; };
 		9077B0B620047755002BBE0B /* DayViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */; };
 		9077B0B9200493FB002BBE0B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0B8200493FA002BBE0B /* CoreDataManager.swift */; };
 		9077B0BB20054D65002BBE0B /* SelectDateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077B0BA20054D65002BBE0B /* SelectDateViewController.swift */; };
@@ -50,6 +51,7 @@
 /* Begin PBXFileReference section */
 		9063B094200E6F1A0020E32E /* EditMessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditMessagesViewController.swift; sourceTree = "<group>"; };
 		9063B096200E95590020E32E /* MessagesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewCell.swift; sourceTree = "<group>"; };
+		9063B098200F0D870020E32E /* SendMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMessageViewController.swift; sourceTree = "<group>"; };
 		9077B0B520047755002BBE0B /* DayViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayViewTableViewCell.swift; sourceTree = "<group>"; };
 		9077B0B8200493FA002BBE0B /* CoreDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		9077B0BA20054D65002BBE0B /* SelectDateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDateViewController.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 		908A195D2001EB8F0084D908 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9063B098200F0D870020E32E /* SendMessageViewController.swift */,
 				908A192C1FFEAA250084D908 /* ViewController.swift */,
 				908A19632001EC6E0084D908 /* DayViewController.swift */,
 				908A19652001EC7A0084D908 /* EditEventViewController.swift */,
@@ -334,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9063B099200F0D870020E32E /* SendMessageViewController.swift in Sources */,
 				908A195C200064940084D908 /* Event.swift in Sources */,
 				9063B097200E95590020E32E /* MessagesTableViewCell.swift in Sources */,
 				9077B0B620047755002BBE0B /* DayViewTableViewCell.swift in Sources */,
