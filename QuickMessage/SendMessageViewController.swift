@@ -51,16 +51,13 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
         print("Controller didFinishWithResult called")
         switch result {
         case .cancelled:
-            // do nothing
             controller.dismiss(animated: true, completion: nil)
             break
         case .sent:
-            // TD: set label to "message sent!"
             self.noticeLbl.text! = "Message sent!"
             controller.dismiss(animated: true, completion: nil)
             break
         case .failed:
-            // TD: set label to "message failed. try again?"
             self.noticeLbl.text! = "Message failed to send. Tap one of the message buttons to try again."
             controller.dismiss(animated: true, completion: nil)
             break

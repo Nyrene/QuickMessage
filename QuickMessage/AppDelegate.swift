@@ -8,15 +8,43 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
+    var CDManager = CoreDataManager()
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        print("DEBUG: Will present called")
+        
+        completionHandler([.alert, .sound])
+    }
+    
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        
+        
+        // Notifications
+        // https://code.tutsplus.com/tutorials/an-introduction-to-the-usernotifications-framework--cms-27250
+        
+        let center = UNUserNotificationCenter.current()
+        let options: UNAuthorizationOptions = [.alert, .badge, .sound]
+        center.delegate = self
+        
+        center.requestAuthorization(options: options) { (granted, error) in
+            if granted {
+                print("DEBUG: notifications permission given")
+                application.registerForRemoteNotifications()
+            } else {
+                print("DEBUG: notifications permissions not given")
+            }
+        }
         return true
     }
 
@@ -43,12 +71,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
     }
-
+    
+    
+    // Notification center
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                         didReceive response: UNNotificationResponse,
+                                         withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        print("DEBUG: did receive response called")
+        
+        let actionIdentifier = response.actionIdentifier
+        
+        switch actionIdentifier {
+        case UNNotificationDismissActionIdentifier: // Notification was dismissed by user
+            // Do nothing TD2: leave notification available in home app screen
+            completionHandler()
+        case UNNotificationDefaultActionIdentifier: // App was opened from notification
+            
+            // Do something
+            completionHandler()
+        default:
+            completionHandler()
+        }
+        
+    }
+    
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
+        /*e         The persistent container for the application. This implementation
          creates and returns a container, having loaded the store for the
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.

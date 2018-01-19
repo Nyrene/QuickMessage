@@ -36,10 +36,10 @@
             </objects>
             <point key="canvasLocation" x="-386.39999999999998" y="-748.87556221889065"/>
         </scene>
-        <!--Send messages window-->
+        <!--SendMessagesViewController-->
         <scene sceneID="dq6-DB-nQs">
             <objects>
-                <viewController id="0pz-m5-U5c" customClass="SendMessageViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="SendMessagesViewController" id="0pz-m5-U5c" customClass="SendMessageViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="EWz-xr-vRk"/>
                         <viewControllerLayoutGuide type="bottom" id="di2-IS-9nc"/>
@@ -95,7 +95,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Contacts: (placeholder text)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CVk-I0-Md4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Contacts: will list recipients here in next build version" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CVk-I0-Md4">
                                 <rect key="frame" x="16" y="72" width="328" height="73"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>

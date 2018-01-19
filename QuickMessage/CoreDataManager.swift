@@ -9,16 +9,18 @@
 import Foundation
 import CoreData
 import UIKit // required to get app delegate
+import UserNotifications
+import UserNotificationsUI
 
-public class CoreDataManager {
-    /*
-        steps for creating an object: create the NSManagedObject
-        steps for saving:
-            
- 
- 
-     */
+public class CoreDataManager: NSObject, UNUserNotificationCenterDelegate {
+
     
+    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("DEBUG: willPresent was called")
+        completionHandler([.alert, .sound])
+    }
+    
+
     
     // most of below function's code pulled from
     // https://www.raywenderlich.com/173972/getting-started-with-core-data-tutorial-2
@@ -68,6 +70,7 @@ public class CoreDataManager {
         }
         
         // TD: associate alarm/notification with this event
+        self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date)
 
     }
     
@@ -117,19 +120,47 @@ public class CoreDataManager {
         }
         
         // TD: associate alarm/notification with this event
+        // create new notification with time: alarm date
+        // message: "Text <recipient1> <recipient 2> and # of others?
+        self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date)
         
         return newEvent
         
     }
 
- 
- 
- 
-    static func saveChangesToEvent() {
+    static func scheduleNotificationForEventIdentifier(identifier:String, notDate:Date) {
+        // https://code.tutsplus.com/tutorials/an-introduction-to-the-usernotifications-framework--cms-27250
+        let notDateComps = Calendar.current.dateComponents([.hour,.minute,.second,], from: notDate)
+        let thisUNTrigger = UNCalendarNotificationTrigger(dateMatching: notDateComps, repeats: false)
+        
+        let notContent = UNMutableNotificationContent()
+        notContent.title = "Message Helper"
+        notContent.subtitle = "Send message?"
+        notContent.sound = UNNotificationSound.default()
+        notContent.body = "This is the body of the alert"
+        notContent.badge = 0
+        notContent.categoryIdentifier = "test"
+        notContent.userInfo = ["key":"value"]
+        notContent.userInfo = [:]
+        notContent.launchImageName = ""
+        
+        
+        
+        let request = UNNotificationRequest(identifier: identifier, content: notContent, trigger: thisUNTrigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                // Do something with error
+                print("ERROR: unable to schedule notification.")
+                
+            } else {
+                // Request was added successfully
+                print("DEBUG: Notification scheduled!")
+            }
+        }
+        
         
         
     }
-    
     
     static func deleteEventWithID(eventID:String) {
         // TD: delete event
