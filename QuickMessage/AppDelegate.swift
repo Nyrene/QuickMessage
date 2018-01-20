@@ -15,10 +15,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     var window: UIWindow?
     var CDManager = CoreDataManager()
+    var eventFromNotification:Event!
+
+    // TD: move all notification related stuff to a better spot
+    // maybe the calendar view, so that when the message screen can
+    // be dismissed properly 
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
-        print("DEBUG: Will present called")
+        if let thisEvent = notification.request.content.userInfo["event"] {
+            self.eventFromNotification = thisEvent as! Event
+        }
         
         completionHandler([.alert, .sound])
     }
@@ -87,7 +94,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             // Do nothing TD2: leave notification available in home app screen
             completionHandler()
         case UNNotificationDefaultActionIdentifier: // App was opened from notification
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let otherVC = sb.instantiateViewController(withIdentifier: "SendMessageViewController") as! SendMessageViewController
             
+            if self.eventFromNotification != nil {
+                otherVC.messages = eventFromNotification.messages as! [String]
+                let theseContactIDs = eventFromNotification.contactIdentifiers as! [String]
+                let contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
+                otherVC.contacts = contacts
+            }
+            
+            
+            window?.rootViewController = otherVC;
             // Do something
             completionHandler()
         default:

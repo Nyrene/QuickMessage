@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+import Contacts
 
 class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     @IBOutlet var tableView:UITableView!
@@ -19,6 +19,7 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
     var messages:[String] = ["On my way", "Almost there", "Just got delayed", "I've arrived"]
     var selectedIndexPath:IndexPath = IndexPath()
     var editEventWindow:EditEventViewController!
+    var contacts:[CNContact]!
     
     override func viewDidLoad() {
         

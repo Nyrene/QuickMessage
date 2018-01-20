@@ -11,14 +11,10 @@ import CoreData
 import UIKit // required to get app delegate
 import UserNotifications
 import UserNotificationsUI
+import Contacts
+import ContactsUI
 
-public class CoreDataManager: NSObject, UNUserNotificationCenterDelegate {
-
-    
-    public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("DEBUG: willPresent was called")
-        completionHandler([.alert, .sound])
-    }
+public class CoreDataManager {
     
 
     
@@ -70,7 +66,7 @@ public class CoreDataManager: NSObject, UNUserNotificationCenterDelegate {
         }
         
         // TD: associate alarm/notification with this event
-        self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date)
+        self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date, withEvent:newEvent)
 
     }
     
@@ -122,13 +118,13 @@ public class CoreDataManager: NSObject, UNUserNotificationCenterDelegate {
         // TD: associate alarm/notification with this event
         // create new notification with time: alarm date
         // message: "Text <recipient1> <recipient 2> and # of others?
-        self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date)
+        self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date, withEvent:newEvent)
         
         return newEvent
         
     }
 
-    static func scheduleNotificationForEventIdentifier(identifier:String, notDate:Date) {
+    static func scheduleNotificationForEventIdentifier(identifier:String, notDate:Date, withEvent:Event) {
         // https://code.tutsplus.com/tutorials/an-introduction-to-the-usernotifications-framework--cms-27250
         let notDateComps = Calendar.current.dateComponents([.hour,.minute,.second,], from: notDate)
         let thisUNTrigger = UNCalendarNotificationTrigger(dateMatching: notDateComps, repeats: false)
@@ -140,7 +136,7 @@ public class CoreDataManager: NSObject, UNUserNotificationCenterDelegate {
         notContent.body = "This is the body of the alert"
         notContent.badge = 0
         notContent.categoryIdentifier = "test"
-        notContent.userInfo = ["key":"value"]
+        notContent.userInfo = ["event":withEvent]
         notContent.userInfo = [:]
         notContent.launchImageName = ""
         
@@ -342,7 +338,15 @@ public class CoreDataManager: NSObject, UNUserNotificationCenterDelegate {
         return randomString
     }
     
-    
+    static func fetchContactsForIDs(contactIDs:[String]) -> [CNContact] {
+        // TD: move this to another class, maybe a general utility one
+        let store = CNContactStore()
+        let predicate: NSPredicate = CNContact.predicateForContacts(withIdentifiers: contactIDs)
+        let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactIdentifierKey, CNContactPhoneNumbersKey]
+        let contacts = try! store.unifiedContacts(matching: predicate, keysToFetch:keysToFetch as [CNKeyDescriptor])
+        
+        return contacts
+    }
     
     
 }

@@ -72,6 +72,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
 
+        self.calendarView?.backgroundColor = backgroundColor
         
         // Keyboard dismissal
         hideKeyboardWhenTappedAround()

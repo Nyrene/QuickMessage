@@ -10,11 +10,13 @@ import Foundation
 import UIKit
 import MessageUI
 import Messages
-
+import Contacts
+import ContactsUI
 
 class SendMessageViewController:UIViewController, MFMessageComposeViewControllerDelegate {
     var recipients = [String]()
     var messages = [String]()
+    var contacts:[CNContact]!
     
     
     @IBOutlet var messageBtn1:UIButton!
@@ -28,6 +30,11 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
         let thisImage = UIImage(named: "background_3.jpg")
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
+        
+        if self.contacts != nil {
+            // add phone numbers to recipients var
+            
+        }
         
         
         self.setMessageBtnsFromGivenInfo()
@@ -54,7 +61,7 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
             controller.dismiss(animated: true, completion: nil)
             break
         case .sent:
-            self.noticeLbl.text! = "Message sent!"
+            self.noticeLbl.text! = "Message sent! You can continue sending messages by tapping on more options."
             controller.dismiss(animated: true, completion: nil)
             break
         case .failed:
@@ -69,7 +76,8 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
     @IBAction func messageBtnPressed(_ sender: UIButton) {
         let messageComposeVC = MFMessageComposeViewController()
         if self.recipients.count < 1 {
-            self.recipients.append("invalid number")
+            //self.recipients.append("invalid number")
+            self.noticeLbl.text! = "No contacts have been selected. You will need to add them in the message window after selecting a message option."
         }
         
         messageComposeVC.recipients = self.recipients
@@ -77,4 +85,15 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
         messageComposeVC.messageComposeDelegate = self
         self.present(messageComposeVC, animated: true, completion: nil)
         }
+    
+    
+    @IBAction func exitBtnPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+        
     }
+    
+    
+    }
+
+
+
