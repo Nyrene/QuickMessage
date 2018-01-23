@@ -58,7 +58,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         let thisImage = UIImage(named: "background_3.jpg")
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
-
+        
+        
         if self.eventToEdit != nil {
             // editing an existing event, fill in info
             self.titleTxtFld.text = eventToEdit.title!

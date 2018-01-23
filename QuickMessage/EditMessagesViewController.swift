@@ -23,16 +23,27 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         
-        if self.messages.count < 4 { // remove this restriction later?
-            
+        if self.messages.count == 0 { // remove this restriction later?
+         self.messages = CoreDataManager.getDefaultMessages() // in case a VC
+            // somehow sets this to 0
         }
+        
+        self.saveMsgBtn.alpha = 0
+        self.cancelEditMsgBtn.alpha = 0
+        self.textView.isSelectable = false
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         self.selectedIndexPath = indexPath
+        
+        // enable buttons and text field
         self.cancelEditMsgBtn.alpha = 1
         self.saveMsgBtn.alpha = 1
+        self.textView.isSelectable  = true
+        self.textView.isEditable = true
+        
+        // set the text field
         let thisCell = self.tableView.cellForRow(at: indexPath) as! MessagesTableViewCell
         if thisCell.messageLbl.text != nil {
             self.textView.text! = thisCell.messageLbl.text!
@@ -74,6 +85,7 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
         
         self.saveMsgBtn.alpha = 0
         self.cancelEditMsgBtn.alpha = 0
+        self.textView.isSelectable = false
         self.textView.text! = "Tap on a message to edit it, or hit save to preserve your choices and return to editing your event."
         
         
@@ -84,6 +96,7 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
     @IBAction func cancelEditMsgBtnPressed(_ sender:UIButton) {
         self.textView.text! = ""
         self.textView.resignFirstResponder()
+        self.textView.isSelectable = false
         
         
         self.cancelEditMsgBtn.alpha = 0

@@ -123,7 +123,9 @@ public class CoreDataManager {
         return newEvent
         
     }
-
+    
+    
+    // TD: cut back on parameters - only need event
     static func scheduleNotificationForEventIdentifier(identifier:String, notDate:Date, withEvent:Event) {
         // https://code.tutsplus.com/tutorials/an-introduction-to-the-usernotifications-framework--cms-27250
         let notDateComps = Calendar.current.dateComponents([.hour,.minute,.second,], from: notDate)
@@ -131,13 +133,26 @@ public class CoreDataManager {
         
         let notContent = UNMutableNotificationContent()
         notContent.title = "Message Helper"
-        notContent.subtitle = "Send message?"
+        notContent.subtitle = "Alert"
         notContent.sound = UNNotificationSound.default()
-        notContent.body = "This is the body of the alert"
+        notContent.body = "Tap this alert to send a message."
         notContent.badge = 0
         notContent.categoryIdentifier = "test"
-        notContent.userInfo = ["event":withEvent]
-        notContent.userInfo = [:]
+        // save contact IDs
+        var i = 0
+        let thisContactIDsArray = withEvent.contactIdentifiers as! Array<String>
+        for ID in thisContactIDsArray {
+            let keyStr = "r" + String(i) as String
+            notContent.userInfo[keyStr] = ID
+            i += 1
+        }
+        // save messages - for now, we know we have exactly 4
+        let messagesArray = withEvent.messages as! Array<String>
+        notContent.userInfo["messages1"] = messagesArray[0]
+        notContent.userInfo["messages2"] = messagesArray[1]
+        notContent.userInfo["messages3"] = messagesArray[2]
+        notContent.userInfo["messages4"] = messagesArray[3]
+        
         notContent.launchImageName = ""
         
         
@@ -317,6 +332,10 @@ public class CoreDataManager {
         moc.delete(givenEvent)
         appDelegate.saveContext()
     }
+    
+    static func deleteNotification(notID:String) {
+        let thisNot = UNUserNotificationCenter.current()
+    }
 
     // Utility
     
@@ -347,6 +366,17 @@ public class CoreDataManager {
         
         return contacts
     }
+    
+    static func getPhoneNumbersForContacts(contacts:[CNContact]) -> [String] {
+        var numbers = [String]()
+        for person in contacts {
+            let thisNumber = (person.phoneNumbers[0].value ).value(forKey: "digits") as! String
+            numbers.append(thisNumber)
+        }
+        
+        return numbers
+    }
+    
     
     
 }

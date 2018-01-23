@@ -13,7 +13,7 @@ class SelectDateViewController:UIViewController {
     
     var editEventVC:EditEventViewController!
     var selectedDateFromTarget:Date!
-    
+    var isCountdownTimer = false
     
     @IBOutlet weak var datePicker: UIDatePicker!
     
@@ -21,6 +21,11 @@ class SelectDateViewController:UIViewController {
         // Set up for date here, if loading from an existing window
         if self.selectedDateFromTarget != nil {
             self.datePicker.date = selectedDateFromTarget
+        }
+        
+        // TD: continue implementation for selecting a calendar event
+        if self.isCountdownTimer {
+         self.datePicker.datePickerMode = UIDatePickerMode.countDownTimer
         }
     }
     

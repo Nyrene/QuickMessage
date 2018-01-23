@@ -176,6 +176,9 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     
     // IBActions
     @IBAction func backBtnPressed(_ sender: UIBarButtonItem) {
+        if self.calendarVC != nil {
+            self.calendarVC.redrawCalendar(useDefaultInfo: false)
+        }
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -201,9 +204,17 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             
             // get the selected table view cell, pull event from that,
             // then give it to the target VC
+            // TD: instead of fetching again, assign events and EKEvents to cells
+            // themselves
             let selectedTableCell = sender as! DayViewTableViewCell
-            let thisEvent = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
-            targetVC.eventToEdit = thisEvent
+            if self.tableViewItems[selectedTableCell.indexPath.row].eventID != "" {
+                // this is a user created event
+                let thisEvent = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
+                targetVC.eventToEdit = thisEvent
+            } else {
+                // calendar event. TD: initialize view with countdown timer
+                // to event time
+            }
             
         }
     }

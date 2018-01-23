@@ -15,7 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     var window: UIWindow?
     var CDManager = CoreDataManager()
-    var eventFromNotification:Event!
+    var phoneNums = [String]()
+    var messages = [String]()
+    var contactNames = [String]()
+    
 
     // TD: move all notification related stuff to a better spot
     // maybe the calendar view, so that when the message screen can
@@ -23,9 +26,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
-        if let thisEvent = notification.request.content.userInfo["event"] {
-            self.eventFromNotification = thisEvent as! Event
+        // get contact IDs from the dictionary
+        var theseContactIDs = [String]()
+        var i = 0
+        while (i > 0) {
+            let thisKey =  ("r" + String(i)) as String
+            if let thisID = notification.request.content.userInfo[thisKey] {
+                theseContactIDs.append(thisID as! String)
+                i += 1
+            } else {
+                break
+            }
         }
+        
+        // get phone numbers for these contacts
+        var contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
+        for item in contacts {
+            self.contactNames.append(item.givenName + " " + item.familyName)
+        }
+        self.phoneNums = CoreDataManager.getPhoneNumbersForContacts(contacts: contacts)
+        
+        
+        // set messages
+        i = 1
+        while (i > 0) {
+            let thisMessageKey = "messages" + String(i)
+            if let thisMessage = notification.request.content.userInfo[thisMessageKey] {
+                self.messages.append(thisMessage as! String)
+            } else {
+                break
+            }
+        
+        }
+        
         
         completionHandler([.alert, .sound])
     }
@@ -89,6 +122,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let actionIdentifier = response.actionIdentifier
         
+        let notDict = response.notification.request.content.userInfo
+        // get contact IDs from the dictionary
+        var theseContactIDs = [String]()
+        var i = 0
+        while (i > -1) {
+            let thisKey =  ("r" + String(i)) as String
+            print("thisKey is: ", thisKey)
+            if let thisID = notDict[thisKey] {
+                theseContactIDs.append(thisID as! String)
+                i += 1
+            } else {
+                break
+            }
+        }
+        
+        // get phone numbers for these contacts
+        if theseContactIDs.count > 0 {
+            let contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
+            for item in contacts {
+                self.contactNames.append(item.givenName + " " + item.familyName)
+            }
+            self.phoneNums = CoreDataManager.getPhoneNumbersForContacts(contacts: contacts)
+        }
+        
+        // set messages
+        i = 1
+        while (i > 0) {
+            let thisMessageKey = "messages" + String(i)
+            if let thisMessage = notDict[thisMessageKey] {
+                self.messages.append(thisMessage as! String)
+                i += 1
+            } else {
+                break
+            }
+            
+        }
+        
+        
+
+        
         switch actionIdentifier {
         case UNNotificationDismissActionIdentifier: // Notification was dismissed by user
             // Do nothing TD2: leave notification available in home app screen
@@ -97,13 +170,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             let sb = UIStoryboard(name: "Main", bundle: nil)
             let otherVC = sb.instantiateViewController(withIdentifier: "SendMessageViewController") as! SendMessageViewController
             
-            if self.eventFromNotification != nil {
-                otherVC.messages = eventFromNotification.messages as! [String]
-                let theseContactIDs = eventFromNotification.contactIdentifiers as! [String]
-                let contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
-                otherVC.contacts = contacts
+            if self.messages.count == 4 {
+                print("DEBUG: setting otherVC's messages to self.messages in App Delegate")
+                otherVC.messages = self.messages
+                otherVC.recipients = self.phoneNums
+                otherVC.contactNames = self.contactNames
             }
             
+            if self.phoneNums.count > 0 {
+                otherVC.recipients = self.phoneNums
+            }
             
             window?.rootViewController = otherVC;
             // Do something

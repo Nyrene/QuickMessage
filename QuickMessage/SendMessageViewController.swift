@@ -16,7 +16,7 @@ import ContactsUI
 class SendMessageViewController:UIViewController, MFMessageComposeViewControllerDelegate {
     var recipients = [String]()
     var messages = [String]()
-    var contacts:[CNContact]!
+    var contactNames = [String]()
     
     
     @IBOutlet var messageBtn1:UIButton!
@@ -25,19 +25,28 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
     @IBOutlet var messageBtn4:UIButton!
     
     @IBOutlet var noticeLbl:UILabel!
+    @IBOutlet var contactsLbl:UILabel!
     
     override func viewDidLoad() {
         let thisImage = UIImage(named: "background_3.jpg")
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
         
-        if self.contacts != nil {
-            // add phone numbers to recipients var
-            
-        }
-        
+        // add contacts from recipients
+        // TD: put this in a better spot/dedicated
         
         self.setMessageBtnsFromGivenInfo()
+        self.setContactsLblFromGivenInfo()
+    }
+    
+    func setContactsLblFromGivenInfo() {
+        var thisContactStr = ""
+        for item in self.contactNames {
+            thisContactStr.append((", " + item))
+        }
+        
+        self.contactsLbl.text!.append(thisContactStr)
+        
     }
     
     func setMessageBtnsFromGivenInfo() {

@@ -95,7 +95,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Contacts: will list recipients here in next build version" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CVk-I0-Md4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Contacts: " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CVk-I0-Md4">
                                 <rect key="frame" x="16" y="72" width="328" height="73"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -129,6 +129,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Send messages window" id="4yN-z3-ypS"/>
                     <connections>
+                        <outlet property="contactsLbl" destination="CVk-I0-Md4" id="hBM-vJ-PGQ"/>
                         <outlet property="messageBtn1" destination="wyN-fh-cgn" id="IEL-36-csb"/>
                         <outlet property="messageBtn2" destination="416-yI-L3J" id="eAw-uZ-aoX"/>
                         <outlet property="messageBtn3" destination="mlD-Ae-eza" id="AXW-IA-YSP"/>
@@ -433,13 +434,6 @@
                                     <action selector="deleteBtnPressed:" destination="kmx-RS-Mtw" eventType="touchUpInside" id="TSY-WB-sH4"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Send as group message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jYD-EB-Ky5">
-                                <rect key="frame" x="16" y="206" width="217" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jnc-tF-cQY">
                                 <rect key="frame" x="313" y="108" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -450,21 +444,6 @@
                                     <segue destination="fIy-RA-HED" kind="show" identifier="EditDateSID" id="8cm-4o-7i1"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rlr-2j-TJ5">
-                                <rect key="frame" x="16" y="145" width="343" height="25"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Add or edit location info">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="Q3A-1I-Zxm" kind="show" id="xfx-gH-XU5"/>
-                                </connections>
-                            </button>
-                            <switch opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fLy-NY-2NB">
-                                <rect key="frame" x="302" y="206" width="51" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h3B-H2-t7c">
                                 <rect key="frame" x="54" y="449" width="297" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -535,7 +514,6 @@
                         <outlet property="addContactBtn" destination="g9l-OT-H0e" id="uOU-23-NUI"/>
                         <outlet property="dateLbl" destination="xWC-sq-BhD" id="4s8-JB-caa"/>
                         <outlet property="deleteBtn" destination="jUT-zZ-qWC" id="StS-Xu-RRE"/>
-                        <outlet property="editLocationInfoBtn" destination="Rlr-2j-TJ5" id="UcH-Ye-Z9I"/>
                         <outlet property="message1Lbl" destination="h3B-H2-t7c" id="VgH-fX-433"/>
                         <outlet property="message2Lbl" destination="OyG-kC-Ndp" id="Prd-mh-hqG"/>
                         <outlet property="message3Lbl" destination="0pD-qM-CKL" id="FCU-fF-Ywf"/>
