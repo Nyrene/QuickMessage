@@ -209,8 +209,8 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             let selectedTableCell = sender as! DayViewTableViewCell
             if self.tableViewItems[selectedTableCell.indexPath.row].eventID != "" {
                 // this is a user created event
-                let thisEvent = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
-                targetVC.eventToEdit = thisEvent
+                let thisEventArr = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
+                targetVC.eventToEdit = thisEventArr[0]
             } else {
                 // calendar event. TD: initialize view with countdown timer
                 // to event time

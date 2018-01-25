@@ -47,7 +47,6 @@ public class CoreDataManager {
         newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
         
         if messages != nil {
-            let defaults = getDefaultMessages()
             newEvent.setValue(messages, forKey: "messages")
         }
         
@@ -96,7 +95,6 @@ public class CoreDataManager {
         newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
         
         if messages != nil {
-            let defaults = getDefaultMessages()
             newEvent.setValue(messages, forKey: "messages")
         }
         
@@ -159,7 +157,7 @@ public class CoreDataManager {
         
         let request = UNNotificationRequest(identifier: identifier, content: notContent, trigger: thisUNTrigger)
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+            if error != nil {
                 // Do something with error
                 print("ERROR: unable to schedule notification.")
                 
@@ -175,11 +173,12 @@ public class CoreDataManager {
     
     static func deleteEventWithID(eventID:String) {
         // TD: delete event
-        
-        
-        // TD: delete notification/alarm associated with event
-        
-        
+        let theseEvents = fetchEventForID(eventID: eventID)
+        if theseEvents.count == 1 {
+            deleteObject(givenEvent: theseEvents[0])
+        } else {
+            print("Error: no object with that ID to delete")
+        }
         
     }
     
@@ -280,12 +279,12 @@ public class CoreDataManager {
         }
         
     }
-    
-    static func fetchEventForID(eventID:String) -> Event{
+    // TD: make this throw instead of returning an empty array
+    static func fetchEventForID(eventID:String) -> [Event] {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
                 print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                return Event()
+                return [Event]()
         }
         
         // create new event
@@ -304,14 +303,14 @@ public class CoreDataManager {
         
         if events.count == 0 { // TDL should throw here
             print("Error: no returned events")
-            return Event()
+            return events
         }
         
         if events.count > 1 {
             print("Error: duplicate events with unique IDs")
-            return events[0]
+            return events
         } else {
-            return events[0]
+            return events
         }
         
         // return Event() // commented out to silence warning as this line is never executed
@@ -329,12 +328,16 @@ public class CoreDataManager {
         let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
         let moc = appDelegate.persistentContainer.viewContext
         
+        
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [givenEvent.uniqueID!])
+        
         moc.delete(givenEvent)
         appDelegate.saveContext()
     }
     
     static func deleteNotification(notID:String) {
-        let thisNot = UNUserNotificationCenter.current()
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notID])
+        
     }
 
     // Utility

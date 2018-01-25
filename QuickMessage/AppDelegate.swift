@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         // get phone numbers for these contacts
-        var contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
+        let contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
         for item in contacts {
             self.contactNames.append(item.givenName + " " + item.familyName)
         }
@@ -123,6 +123,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let actionIdentifier = response.actionIdentifier
         
         let notDict = response.notification.request.content.userInfo
+        let notID = response.notification.request.identifier
+        
         // get contact IDs from the dictionary
         var theseContactIDs = [String]()
         var i = 0
@@ -159,7 +161,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             
         }
         
-        
 
         
         switch actionIdentifier {
@@ -180,6 +181,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if self.phoneNums.count > 0 {
                 otherVC.recipients = self.phoneNums
             }
+            
+            otherVC.eventID = notID
             
             window?.rootViewController = otherVC;
             // Do something

@@ -26,6 +26,7 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
     
     @IBOutlet var noticeLbl:UILabel!
     @IBOutlet var contactsLbl:UILabel!
+    var eventID:String!
     
     override func viewDidLoad() {
         let thisImage = UIImage(named: "background_3.jpg")
@@ -97,6 +98,10 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
     
     
     @IBAction func exitBtnPressed(_ sender: UIButton) {
+        // delete the event associated with this window
+        if self.eventID != nil {
+            CoreDataManager.deleteEventWithID(eventID: eventID)
+        }
         self.dismiss(animated: true, completion: nil)
         
     }

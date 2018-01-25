@@ -129,8 +129,9 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
         self.editEventWindow.reloadMessages()
 
         
-        
-        self.navigationController?.popViewController(animated: true)
+        let thisVC = ViewController()
+        self.present(thisVC, animated: true, completion: nil)
+        //self.navigationController?.popViewController(animated: true)
         
     }
     
