@@ -281,11 +281,42 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
     }
     
+    // TD: this could be cleaned up a lot
     @IBAction func addContactBtnPressed(_ sender: UIButton) {
-        let contactsVC = CNContactPickerViewController()
-        contactsVC.delegate = self
+        let authStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+        func completionHandler(_ granted: Bool, error: Error?) -> Void {
+            if granted == false {
+                let thisAlert = UIAlertController(title: "Permission Denied", message: "Please enable accessing contacts in your settings to add contacts.", preferredStyle: UIAlertControllerStyle.alert)
+                thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+                present(thisAlert, animated: true, completion: nil)
+                return
 
-        self.present(contactsVC, animated: true, completion: nil)
+            } else {
+                let contactsVC = CNContactPickerViewController()
+                self.present(contactsVC, animated: true, completion: nil)
+            }
+        }
+        switch authStatus {
+        case .authorized:
+            let contactsVC = CNContactPickerViewController()
+            self.present(contactsVC, animated: true, completion: nil)
+            break
+        case .denied:
+            let thisAlert = UIAlertController(title: "Permission Denied", message: "Please enable accessing contacts in your settings to add contacts.", preferredStyle: UIAlertControllerStyle.alert)
+            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            present(thisAlert, animated: true, completion: nil)
+            return
+        case .notDetermined:
+            let thisContactStore = CNContactStore()
+            thisContactStore.requestAccess(for: CNEntityType.contacts, completionHandler: completionHandler(_:error:))
+            break
+        case .restricted:
+            let thisAlert = UIAlertController(title: "Permission Restricted", message: "Please enable accessing contacts in your settings to add contacts.", preferredStyle: UIAlertControllerStyle.alert)
+            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            present(thisAlert, animated: true, completion: nil)
+            break
+        }
+
 
     }
     

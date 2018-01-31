@@ -37,7 +37,14 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
         // TD: put this in a better spot/dedicated
         
         self.setMessageBtnsFromGivenInfo()
-        self.setContactsLblFromGivenInfo()
+        let authStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+        if authStatus != .authorized {
+            self.contactsLbl.text! = "Permission to access user contacts has not been granted. You may still select a message and add contacts from there."
+        } else {
+            self.setContactsLblFromGivenInfo()
+        }
+        
+        self.setMessageBtnsFromGivenInfo()
     }
     
     func setContactsLblFromGivenInfo() {
@@ -102,7 +109,11 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
         if self.eventID != nil {
             CoreDataManager.deleteEventWithID(eventID: eventID)
         }
-        self.dismiss(animated: true, completion: nil)
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let otherVC = sb.instantiateViewController(withIdentifier: "MainViewController") as! ViewController
+        self.navigationController?.present(otherVC, animated: true, completion: nil)
+        
+        // self.dismiss(animated: true, completion: nil)
         
     }
     

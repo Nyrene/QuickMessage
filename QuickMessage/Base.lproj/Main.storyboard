@@ -144,7 +144,7 @@
         <!--Title-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainViewController" id="BYZ-38-t0r" customClass="ViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -846,6 +846,6 @@
         <image name="Checkbx 5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="FFA-fp-wAq"/>
+        <segue reference="ggy-hz-alA"/>
     </inferredMetricsTieBreakers>
 </document>

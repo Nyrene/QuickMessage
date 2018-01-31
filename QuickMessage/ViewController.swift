@@ -9,7 +9,7 @@
 import UIKit
 import EventKit
 import CoreData
-
+import Contacts
 //SKU little_QuickMessage_SKU
 
 /*
@@ -224,7 +224,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     func redrawCalendar(useDefaultInfo:Bool) {
-        
+        print("DEBUG: redrawCalendar called")
         if (useDefaultInfo == true) {
             self.setCalendarInfo(givenMonth: nil, givenYear: nil)
             
@@ -297,6 +297,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             return startingDay
         }
     }
+    // TD: clean this up or move someplace where it makes more sense
+    func getPermissionsForContacts() {
+        func completionHandler(_ granted: Bool, error: Error?) -> Void {
+            // for now, don't need to do anything with this
+        }
+
+        CNContactStore().requestAccess(for: CNEntityType.contacts, completionHandler: completionHandler(_:error:))
+    }
     
 
     // User calendar info - EKEvent
@@ -330,6 +338,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     }
     
+    
     @IBAction func toggleSwitched(_ sender: UISwitch) {
  
         if (self.userEventsToggle.isOn) {
@@ -342,6 +351,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             case .notDetermined:
                 func completionHandler(_ granted: Bool, error: Error?) -> Void{
                     if granted == true {
+                        print("DEBUG: calendar permissions granted")
                         userEventsToggle.isOn = true
                         self.includeUserEKEvents = true
                         self.redrawCalendar(useDefaultInfo: false)
