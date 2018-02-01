@@ -36,7 +36,20 @@ class SelectDateViewController:UIViewController {
     @IBAction func saveBtnPressed(_ sender: UIBarButtonItem) {
         if self.editEventVC == nil {
             print("ERROR: selectDateVC's editEvent attribute is nil, nothing to pass date back to")
+            self.navigationController?.popViewController(animated: true)
             // TD: pop-up explaining the date couldn't be saved
+        }
+        
+        // TD: create a function for this, since it's being done in multiple locations
+        let currentDate = Date()
+        
+        if (currentDate > datePicker!.date) {
+            let thisAlert = UIAlertController(title: "Invalid date", message: "Please select a date and time that takes place in the future.", preferredStyle: UIAlertControllerStyle.alert)
+            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            present(thisAlert, animated: true, completion: nil)
+
+            print ("DEBUG: user tried to save a date that was in the past")
+            
         } else {
             // Pass the selected date back to the previous window
             self.editEventVC.selectedDate = self.datePicker.date

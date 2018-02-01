@@ -743,13 +743,6 @@
                                     <outlet property="delegate" destination="r8h-rW-EmU" id="q3i-YS-m73"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Saved event info" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jid-mP-nYU">
-                                <rect key="frame" x="16" y="435" width="185" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DC-im-dUQ">
                                 <rect key="frame" x="313" y="430" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -767,8 +760,10 @@
                                 <action selector="backBtnPressed:" destination="r8h-rW-EmU" id="Fvu-8Y-2FU"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="8MZ-NP-sRL"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="newEventBtn" destination="5DC-im-dUQ" id="eMk-iH-kLS"/>
                         <outlet property="tableView" destination="IKo-iB-TiT" id="VQi-hv-gOe"/>
                     </connections>
                 </viewController>
@@ -846,6 +841,6 @@
         <image name="Checkbx 5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ggy-hz-alA"/>
+        <segue reference="FFA-fp-wAq"/>
     </inferredMetricsTieBreakers>
 </document>

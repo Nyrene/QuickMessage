@@ -17,7 +17,7 @@ struct contactTableInfo {
 }
 
 
-class EditEventViewController:UIViewController, CNContactPickerDelegate, UITableViewDelegate, UITableViewDataSource {
+class EditEventViewController:UIViewController, CNContactPickerDelegate, UITableViewDelegate, UITableViewDataSource, CNContactViewControllerDelegate {
     var selectedDate:Date!
     var selectedContactsIDs = [String]()
     var contactInfosForTable = [contactTableInfo]()
@@ -91,6 +91,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         // TD2: later on, will implement more for choosing specific numbers
         
         // add contact identifier info
+        
         let thisContactID = contact.identifier
         self.selectedContactsIDs.append(thisContactID)
         
@@ -99,9 +100,21 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         let contactID = contact.identifier
         let newContactInfo = contactTableInfo(nameToDisplay: contactName, identifier: contactID)
         self.contactInfosForTable.append(newContactInfo)
-        
-        
         self.tableView.reloadData()
+       
+        
+        /* The below doesn't work, potential iOS bug - returning to this later
+        let contactView = CNContactViewController(for: contact)
+        contactView.delegate = self
+        
+        // this is because trying to present the view from this window or
+        // self.navigationController doesn't work - possible iOS bug
+        // let navigationController = UINavigationController(rootViewController: contactView)
+        // self.present(navigationController, animated: false) {}
+        
+        self.navigationController?.present(contactView, animated: true, completion: nil)
+        */
+        
     }
     
     func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
@@ -122,6 +135,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         }
         
         self.tableView.reloadData()
+    }
+    
+    func contactPicker(_ picker: CNContactPickerViewController, didSelect contactProperty: CNContactProperty) {
+        // if a phone number was selected, grab it for messaging info. Otherwise do nothing
+        print("DEBUG: value of selected property is: ", contactProperty.value as! String)
     }
     
     // Table view
@@ -183,6 +201,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         self.navigationController?.popViewController(animated: true)
     }
     
+    
+    // TD: this needs soooooo much cleanup
     @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {
         // Uncomment when saving functions are finished
         let eventTitle = self.titleTxtFld.text
@@ -293,12 +313,14 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
 
             } else {
                 let contactsVC = CNContactPickerViewController()
+                contactsVC.delegate = self
                 self.present(contactsVC, animated: true, completion: nil)
             }
         }
         switch authStatus {
         case .authorized:
             let contactsVC = CNContactPickerViewController()
+            contactsVC.delegate = self
             self.present(contactsVC, animated: true, completion: nil)
             break
         case .denied:

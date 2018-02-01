@@ -30,6 +30,8 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     var calendarVC:ViewController! // So we can redraw when the window becomes active again
     let dateFormatterPrint = DateFormatter()
     
+    @IBOutlet var newEventBtn:UIButton!
+    
     // Table View
     @IBOutlet var tableView:UITableView!
     var tableViewItems = [TableViewItem]()
@@ -39,6 +41,13 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
 
+        // if this date is in the past, remove the add event button
+        let thisDate = Date()
+        let startOfCurrentDate = Calendar.current.startOfDay(for: thisDate)
+        
+        if self.selectedCell.beginDate < startOfCurrentDate {
+            self.newEventBtn.alpha = 0
+        }
         
         
         // Load info from the selected cell if it's not nil
