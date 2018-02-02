@@ -133,7 +133,7 @@ public class CoreDataManager {
         notContent.title = "Message Helper"
         notContent.subtitle = "Alert"
         notContent.sound = UNNotificationSound.default()
-        notContent.body = "Tap this alert to send a message."
+        notContent.body = "Swipe this alert to send a message."
         notContent.badge = 0
         notContent.categoryIdentifier = "test"
         // save contact IDs

@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Title-->
         <scene sceneID="X8q-CW-fms">
             <objects>
-                <viewController id="DFF-yf-AMZ" sceneMemberID="viewController">
+                <viewController id="DFF-yf-AMZ" customClass="InfoViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="14o-Wi-rL2"/>
                         <viewControllerLayoutGuide type="bottom" id="8Xp-uv-uVd"/>
@@ -22,7 +22,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="App icon design: Lightning bolt icon made by Freepik at flaticon.com." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yVg-N6-SFy">
-                                <rect key="frame" x="31" y="128" width="301" height="239"/>
+                                <rect key="frame" x="37" y="214" width="301" height="119"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -31,6 +31,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="AEb-Nr-Pbo">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="2cb-Hk-RQh">
+                            <connections>
+                                <action selector="BackBtnPressed:" destination="DFF-yf-AMZ" id="dzy-j3-XI3"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpg-Cr-XKz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -311,14 +318,22 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem title="Item" id="OwW-tG-TsM"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" title="Title" id="5jY-tH-9KG">
-                        <barButtonItem key="leftBarButtonItem" title="Info" id="P5L-uX-QG3"/>
+                        <barButtonItem key="leftBarButtonItem" title="Info" id="P5L-uX-QG3">
+                            <connections>
+                                <segue destination="DFF-yf-AMZ" kind="show" id="Cf1-Mk-XLZ"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="test" id="p1x-Rm-sTU">
                             <connections>
                                 <segue destination="0pz-m5-U5c" kind="show" id="odO-pQ-L8q"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="calendarView" destination="Ksg-BD-OYa" id="7oN-qg-tTC"/>
                         <outlet property="monthTxtFld" destination="LAL-5T-OYm" id="pKI-B3-ZfP"/>
@@ -427,7 +442,7 @@
                                 <rect key="frame" x="0.0" y="598" width="375" height="49"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.052806341200000002" blue="0.02272644414" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" title="Delete(shown if editing)">
+                                <state key="normal" title="Delete">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                                 <connections>
@@ -841,6 +856,6 @@
         <image name="Checkbx 5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="FFA-fp-wAq"/>
+        <segue reference="ggy-hz-alA"/>
     </inferredMetricsTieBreakers>
 </document>
