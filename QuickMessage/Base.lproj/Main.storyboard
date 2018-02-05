@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G1036" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ODz-pn-uff">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ODz-pn-uff">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Title-->
+        <!--Info-->
         <scene sceneID="X8q-CW-fms">
             <objects>
                 <viewController id="DFF-yf-AMZ" customClass="InfoViewController" customModule="QuickMessage" customModuleProvider="target" sceneMemberID="viewController">
@@ -31,7 +31,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="AEb-Nr-Pbo">
+                    <navigationItem key="navigationItem" title="Info" id="AEb-Nr-Pbo">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="2cb-Hk-RQh">
                             <connections>
                                 <action selector="BackBtnPressed:" destination="DFF-yf-AMZ" id="dzy-j3-XI3"/>
@@ -89,7 +89,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Choose a text message to send" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="744-gf-yOJ">
-                                <rect key="frame" x="16" y="28" width="328" height="21"/>
+                                <rect key="frame" x="16" y="72" width="328" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -109,7 +109,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" alpha="0.94999999999999996" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a4T-jK-3I6">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a4T-jK-3I6">
                                 <rect key="frame" x="16" y="523" width="343" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -134,7 +134,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Send messages window" id="4yN-z3-ypS"/>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="contactsLbl" destination="CVk-I0-Md4" id="hBM-vJ-PGQ"/>
                         <outlet property="messageBtn1" destination="wyN-fh-cgn" id="IEL-36-csb"/>
@@ -146,7 +147,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TZI-0e-Niw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="668" y="-748.87556221889065"/>
+            <point key="canvasLocation" x="663" y="-758"/>
         </scene>
         <!--Title-->
         <scene sceneID="tne-QT-ifu">
@@ -169,14 +170,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Show User Calendar Events" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VuE-Os-Uuf">
-                                <rect key="frame" x="16" y="484" width="255" height="31"/>
+                                <rect key="frame" x="16" y="435" width="255" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="X1c-Up-mGf">
-                                <rect key="frame" x="310" y="484" width="51" height="31"/>
+                                <rect key="frame" x="310" y="435" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="toggleSwitched:" destination="BYZ-38-t0r" eventType="valueChanged" id="vRC-Z3-dhC"/>
@@ -271,14 +272,14 @@
                                 </connections>
                             </collectionView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Month(1-12)" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LAL-5T-OYm">
-                                <rect key="frame" x="16" y="70" width="109" height="30"/>
+                                <rect key="frame" x="16" y="70" width="97" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="2018" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jU2-yT-Y8X">
-                                <rect key="frame" x="148" y="70" width="79" height="30"/>
+                                <rect key="frame" x="121" y="71" width="79" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -291,45 +292,36 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="New Alarm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6UL-TJ-NX6">
-                                <rect key="frame" x="16" y="435" width="255" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5iS-eh-q61">
-                                <rect key="frame" x="310" y="435" width="49" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.40000000600000002" green="1" blue="0.40000000600000002" alpha="0.48153895547945208" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="+"/>
-                                <connections>
-                                    <segue destination="kmx-RS-Mtw" kind="show" identifier="EditEventViewSID" id="ggy-hz-alA"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oXg-e3-9cL">
-                                <rect key="frame" x="249" y="69" width="101" height="30"/>
+                                <rect key="frame" x="208" y="69" width="109" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Go"/>
                                 <connections>
                                     <action selector="goBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yEh-Dt-H5y"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EoD-kl-4A6">
+                                <rect key="frame" x="16" y="519" width="343" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Jump to messages screen"/>
+                                <connections>
+                                    <segue destination="0pz-m5-U5c" kind="show" id="aEb-GI-JgB"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem title="Item" id="OwW-tG-TsM"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Title" id="5jY-tH-9KG">
                         <barButtonItem key="leftBarButtonItem" title="Info" id="P5L-uX-QG3">
                             <connections>
                                 <segue destination="DFF-yf-AMZ" kind="show" id="Cf1-Mk-XLZ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="test" id="p1x-Rm-sTU">
+                        <barButtonItem key="rightBarButtonItem" title="+" id="FmG-IG-YWt">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
-                                <segue destination="0pz-m5-U5c" kind="show" id="odO-pQ-L8q"/>
+                                <segue destination="kmx-RS-Mtw" kind="show" identifier="EditEventViewSID" id="KSm-Kf-yJp"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -554,7 +546,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Tap on a message to edit it." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="yLv-Tv-iUD">
-                                <rect key="frame" x="0.0" y="286" width="375" height="187"/>
+                                <rect key="frame" x="16" y="318" width="343" height="98"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -564,7 +556,7 @@
                                 </connections>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ZK-nl-JVV">
-                                <rect key="frame" x="16" y="248" width="76" height="30"/>
+                                <rect key="frame" x="16" y="266" width="76" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Cancel"/>
                                 <connections>
@@ -572,7 +564,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SgN-Im-2vg">
-                                <rect key="frame" x="295" y="248" width="64" height="30"/>
+                                <rect key="frame" x="295" y="266" width="64" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Save"/>
                                 <connections>
@@ -580,7 +572,7 @@
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wpC-U0-7WF">
-                                <rect key="frame" x="16" y="86" width="343" height="154"/>
+                                <rect key="frame" x="16" y="72" width="343" height="186"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -653,20 +645,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="s46-R4-G4c">
-                                <rect key="frame" x="0.0" y="118" width="375" height="216"/>
+                                <rect key="frame" x="16" y="118" width="343" height="216"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <date key="date" timeIntervalSinceReferenceDate="537218287.75777698">
                                     <!--2018-01-09 19:18:07 +0000-->
                                 </date>
                             </datePicker>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="abB-2D-UMW">
-                                <rect key="frame" x="16" y="371" width="343" height="148"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <string key="text">This window is a placeholder. The edit event page will have a popup for selecting the date, rather than a dedicated view like this.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -703,7 +687,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="64" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="IKo-iB-TiT">
-                                <rect key="frame" x="16" y="95" width="343" height="299"/>
+                                <rect key="frame" x="16" y="64" width="343" height="330"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -758,14 +742,6 @@
                                     <outlet property="delegate" destination="r8h-rW-EmU" id="q3i-YS-m73"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DC-im-dUQ">
-                                <rect key="frame" x="313" y="430" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="+"/>
-                                <connections>
-                                    <segue destination="kmx-RS-Mtw" kind="show" identifier="NewEventFromDayViewSID" id="FFA-fp-wAq"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -775,10 +751,13 @@
                                 <action selector="backBtnPressed:" destination="r8h-rW-EmU" id="Fvu-8Y-2FU"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="8MZ-NP-sRL"/>
+                        <barButtonItem key="rightBarButtonItem" title="+" id="8MZ-NP-sRL">
+                            <connections>
+                                <segue destination="kmx-RS-Mtw" kind="show" identifier="NewEventFromDayViewSID" id="vdv-rI-vf7"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="newEventBtn" destination="5DC-im-dUQ" id="eMk-iH-kLS"/>
                         <outlet property="tableView" destination="IKo-iB-TiT" id="VQi-hv-gOe"/>
                     </connections>
                 </viewController>
@@ -839,7 +818,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ODz-pn-uff" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="e01-UD-C2X">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -856,6 +835,6 @@
         <image name="Checkbx 5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ggy-hz-alA"/>
+        <segue reference="vdv-rI-vf7"/>
     </inferredMetricsTieBreakers>
 </document>

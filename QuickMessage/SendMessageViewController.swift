@@ -106,17 +106,21 @@ class SendMessageViewController:UIViewController, MFMessageComposeViewController
     
     @IBAction func exitBtnPressed(_ sender: UIButton) {
         // delete the event associated with this window
+        
         if self.eventID != nil {
             CoreDataManager.deleteEventWithID(eventID: eventID)
         }
-        let sb = UIStoryboard(name: "Main", bundle: nil)
-        let otherVC = sb.instantiateViewController(withIdentifier: "MainViewController") as! ViewController
-        self.navigationController?.present(otherVC, animated: true, completion: nil)
         
-        // self.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
+        //self.dismiss(animated: true, completion: nil)
         
     }
     
+    @IBAction func cancelBtnPressed(_ sender: UIBarButtonItem) {
+        self.navigationController?.popViewController(animated: true)
+        
+    
+    }
     
     }
 

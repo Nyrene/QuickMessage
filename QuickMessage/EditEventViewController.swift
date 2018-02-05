@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import Contacts
 import ContactsUI
+import EventKit
 
 struct contactTableInfo {
     var nameToDisplay:String
@@ -23,6 +24,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var contactInfosForTable = [contactTableInfo]()
     
     var eventToEdit:Event!
+    var givenEK:EKEvent!
     
     var messages:[String] = []// don't edit the messages on the event directly. use an extra
     // string so if the user hits cancel and does some other editing later, the
@@ -59,6 +61,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
         
+        if self.eventToEdit != nil && self.givenEK != nil {
+            print("ERROR: too much info given to edit event view")
+            self.navigationController?.popViewController(animated: true)
+        }
+        
         
         if self.eventToEdit != nil {
             // editing an existing event, fill in info
@@ -80,6 +87,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         } else { // there's no event to delete, so hide the delete button
             self.deleteBtn.alpha = 0
             self.messages = CoreDataManager.getDefaultMessages()
+            
+        }
+        
+        if self.givenEK != nil {
+            self.titleTxtFld!.text = givenEK.title
             
         }
         

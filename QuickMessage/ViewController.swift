@@ -10,6 +10,8 @@ import UIKit
 import EventKit
 import CoreData
 import Contacts
+import UserNotifications
+
 //SKU little_QuickMessage_SKU
 
 /*
@@ -39,7 +41,7 @@ extension UIViewController {
 
 
 //This contains the calendar view and is the starting point for the app
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UNUserNotificationCenterDelegate {
     
     
     // DEBUG:
@@ -68,6 +70,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
 
     override func viewDidLoad() {
+        // background image
         let thisImage = UIImage(named: "background_3.jpg")
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
@@ -414,6 +417,91 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             
         }
     }
+    
+    // Notifications
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        print("DEBUG: did receive response called")
+        
+        // TD: streamline this a bit - could use a dictionary, [contactName:contactPhoneNum]
+        var contactNames:[String] = []
+        var theseContactIDs:[String] = []
+        var messages:[String] = []
+        var phoneNums:[String] = []
+        
+        let actionIdentifier = response.actionIdentifier
+        
+        let notDict = response.notification.request.content.userInfo
+        let notID = response.notification.request.identifier
+        
+        // get contact IDs from the dictionary
+        var i = 0
+        while (i > -1) {
+            let thisKey =  ("r" + String(i)) as String
+            print("thisKey is: ", thisKey)
+            if let thisID = notDict[thisKey] {
+                theseContactIDs.append(thisID as! String)
+                i += 1
+            } else {
+                break
+            }
+        }
+        
+        // get phone numbers for these contacts
+        if theseContactIDs.count > 0 {
+            let contacts = CoreDataManager.fetchContactsForIDs(contactIDs: theseContactIDs)
+            for item in contacts {
+                contactNames.append(item.givenName + " " + item.familyName)
+            }
+            phoneNums = CoreDataManager.getPhoneNumbersForContacts(contacts: contacts)
+        }
+        
+        // set messages
+        i = 1
+        while (i > 0) {
+            let thisMessageKey = "messages" + String(i)
+            if let thisMessage = notDict[thisMessageKey] {
+                messages.append(thisMessage as! String)
+                i += 1
+            } else {
+                break
+            }
+            
+        }
+        
+        
+        
+        switch actionIdentifier {
+        case UNNotificationDismissActionIdentifier: // Notification was dismissed by user
+            // Do nothing TD2: leave notification available in home app screen
+            completionHandler()
+        case UNNotificationDefaultActionIdentifier: // App was opened from notification
+            let sb = UIStoryboard(name: "Main", bundle: nil)
+            let otherVC = sb.instantiateViewController(withIdentifier: "SendMessageViewController") as! SendMessageViewController
+            
+            if messages.count == 4 {
+                print("DEBUG: setting otherVC's messages to self.messages in App Delegate")
+                otherVC.messages = messages
+                otherVC.recipients = phoneNums
+                otherVC.contactNames = contactNames
+            }
+            
+            if phoneNums.count > 0 {
+                otherVC.recipients = phoneNums
+            }
+            
+            otherVC.eventID = notID
+            
+            self.navigationController?.pushViewController(otherVC, animated: true)
+            completionHandler()
+        default:
+            completionHandler()
+        }
+        
+    }
+
     
     
 

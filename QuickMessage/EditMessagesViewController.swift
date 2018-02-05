@@ -22,6 +22,11 @@ class EditMessagesViewController:UIViewController, UITableViewDelegate, UITableV
     var contacts:[CNContact]!
     
     override func viewDidLoad() {
+        // background view
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+
         
         if self.messages.count == 0 { // remove this restriction later?
          self.messages = CoreDataManager.getDefaultMessages() // in case a VC

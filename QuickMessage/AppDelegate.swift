@@ -75,7 +75,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let center = UNUserNotificationCenter.current()
         let options: UNAuthorizationOptions = [.alert, .badge, .sound]
-        center.delegate = self
+        let rootVC = self.window?.rootViewController! as! UINavigationController
+        let thisVC = rootVC.topViewController as! ViewController
+        
+        center.delegate = thisVC
+        
+        // center.delegate = self
         
         center.requestAuthorization(options: options) { (granted, error) in
             if granted {

@@ -18,6 +18,11 @@ class SelectDateViewController:UIViewController {
     @IBOutlet weak var datePicker: UIDatePicker!
     
     override func viewDidLoad() {
+        // background view
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+        
         // Set up for date here, if loading from an existing window
         if self.selectedDateFromTarget != nil {
             self.datePicker.date = selectedDateFromTarget

@@ -11,6 +11,13 @@ import UIKit
 
 class InfoViewController:UIViewController {
     
+    override func viewDidLoad() {
+        // background view
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+
+    }
     
     @IBAction func BackBtnPressed(_ sender: UIBarButtonItem) {
         self.navigationController?.popViewController(animated: true)

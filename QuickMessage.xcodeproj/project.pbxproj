@@ -171,13 +171,13 @@
 		908A195D2001EB8F0084D908 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				9063B098200F0D870020E32E /* SendMessageViewController.swift */,
 				908A192C1FFEAA250084D908 /* ViewController.swift */,
 				908A19632001EC6E0084D908 /* DayViewController.swift */,
 				908A19652001EC7A0084D908 /* EditEventViewController.swift */,
 				908A19672001EC8D0084D908 /* EditLocationViewController.swift */,
 				9077B0BA20054D65002BBE0B /* SelectDateViewController.swift */,
 				9063B094200E6F1A0020E32E /* EditMessagesViewController.swift */,
+				9063B098200F0D870020E32E /* SendMessageViewController.swift */,
 				900B4FAF2025109200E8B44B /* InfoViewController.swift */,
 			);
 			name = "View Controllers";
