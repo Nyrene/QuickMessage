@@ -758,6 +758,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="newEventBarButton" destination="8MZ-NP-sRL" id="mxc-Fd-m2w"/>
                         <outlet property="tableView" destination="IKo-iB-TiT" id="VQi-hv-gOe"/>
                     </connections>
                 </viewController>

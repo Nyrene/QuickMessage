@@ -30,7 +30,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     var calendarVC:ViewController! // So we can redraw when the window becomes active again
     let dateFormatterPrint = DateFormatter()
     
-    @IBOutlet var newEventBtn:UIButton!
+    @IBOutlet var newEventBarButton:UIBarButtonItem!
     
     // Table View
     @IBOutlet var tableView:UITableView!
@@ -46,7 +46,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         let startOfCurrentDate = Calendar.current.startOfDay(for: thisDate)
         
         if self.selectedCell.beginDate < startOfCurrentDate {
-            self.newEventBtn.alpha = 0
+            self.newEventBarButton!.isEnabled = false
         }
         
         
