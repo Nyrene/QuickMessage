@@ -17,6 +17,14 @@ struct contactTableInfo {
     var identifier:String
 }
 
+struct EKEventInfo { // this is here until events are assigned to cells
+                    // so that new fetches aren't required every time this view
+    // is loaded to edit an existing event or create one for a calendar event.
+    // purely here to avoid a fetch unnecessarily
+    var title:String = ""
+    var startDate = Date()
+    
+}
 
 class EditEventViewController:UIViewController, CNContactPickerDelegate, UITableViewDelegate, UITableViewDataSource, CNContactViewControllerDelegate {
     var selectedDate:Date!
@@ -24,7 +32,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var contactInfosForTable = [contactTableInfo]()
     
     var eventToEdit:Event!
-    var givenEK:EKEvent!
+    var givenEKEventInfo:EKEventInfo!
     
     var messages:[String] = []// don't edit the messages on the event directly. use an extra
     // string so if the user hits cancel and does some other editing later, the
@@ -35,15 +43,17 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var dayView:DayViewController!
     
     @IBOutlet weak var titleTxtFld: UITextField!
-    
-    @IBOutlet var dateLbl: UILabel!
-    
     @IBOutlet weak var addContactBtn: UIButton!
-    
     @IBOutlet weak var tableView: UITableView!
-    
     @IBOutlet weak var editLocationInfoBtn: UIButton!
     @IBOutlet weak var deleteBtn: UIButton!
+    
+    // date/time info
+    @IBOutlet weak var editDateBtn:UIButton!
+    @IBOutlet weak var alertBeforeEventLbl:UILabel!
+    @IBOutlet weak var editAlertBeforeBtn:UIButton!
+    @IBOutlet var dateLbl: UILabel!
+    let dateFormatterPrint = DateFormatter()
     
     
     // messages
@@ -60,8 +70,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         let thisImage = UIImage(named: "background_3.jpg")
         let backgroundColor = UIColor(patternImage: thisImage!)
         self.view.backgroundColor = backgroundColor
+        dateFormatterPrint.dateFormat = "MMM dd, yyyy, hh:mm"
         
-        if self.eventToEdit != nil && self.givenEK != nil {
+        if self.eventToEdit != nil && self.givenEKEventInfo != nil {
             print("ERROR: too much info given to edit event view")
             self.navigationController?.popViewController(animated: true)
         }
@@ -70,8 +81,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         if self.eventToEdit != nil {
             // editing an existing event, fill in info
             self.titleTxtFld.text = eventToEdit.title!
-            let dateFormatterPrint = DateFormatter()
-            dateFormatterPrint.dateFormat = "MMM dd, yyyy, hh:mm"
             self.dateLbl.text = dateFormatterPrint.string(from: eventToEdit.alarmDate! as Date)
             self.selectedContactsIDs = self.eventToEdit.contactIdentifiers! as! [String]
             self.populateTableFromGivenContactsIDs()
@@ -90,12 +99,28 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             
         }
         
-        if self.givenEK != nil {
-            self.titleTxtFld!.text = givenEK.title
-            
+        if self.givenEKEventInfo != nil {
+            // remove the edit button from the date/time selection field
+            // make visible the "time before" label and the edit button for that
+            print("DEBUG: edit event view was given EKEvent info")
+            self.titleTxtFld!.text = givenEKEventInfo.title
+            self.dateLbl.text! = self.dateFormatterPrint.string(from: (self.selectedDate))
+            self.editDateBtn.alpha = 0
+            self.alertBeforeEventLbl.alpha = 1
+            self.editAlertBeforeBtn.alpha = 1
+        } else {
+            self.alertBeforeEventLbl.alpha = 0
+            self.editAlertBeforeBtn.alpha = 0
         }
         
         self.reloadMessages()
+    }
+    
+    func setEKEventInfo(title:String, startDate:Date) {
+        self.givenEKEventInfo = EKEventInfo()
+        self.givenEKEventInfo.title = title
+        self.givenEKEventInfo.startDate = startDate
+        
     }
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
@@ -180,7 +205,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         return thisCell
     }
     
-    func deleteContactBtnPressed(_ sender:ContactsTableCellButton) {
+    @objc func deleteContactBtnPressed(_ sender:ContactsTableCellButton) {
         // delete contact info and redraw table
         let indexForDeletedItem = sender.indexPath
         self.contactInfosForTable.remove(at: (indexForDeletedItem?.row)!)
@@ -213,6 +238,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         self.navigationController?.popViewController(animated: true)
     }
     
+    @IBAction func editAlertBeforeBtnPressed(_ sender:UIButton) {
+        
+    }
     
     // TD: this needs soooooo much cleanup
     @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {

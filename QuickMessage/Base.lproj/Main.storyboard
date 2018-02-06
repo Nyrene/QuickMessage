@@ -319,7 +319,6 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="+" id="FmG-IG-YWt">
-                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <segue destination="kmx-RS-Mtw" kind="show" identifier="EditEventViewSID" id="KSm-Kf-yJp"/>
                             </connections>
@@ -356,7 +355,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="select date ---&gt;" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xWC-sq-BhD">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="date/time" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xWC-sq-BhD">
                                 <rect key="frame" x="16" y="110" width="343" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -494,6 +493,21 @@
                                     <segue destination="F1N-Aq-Rmx" kind="show" identifier="EditMessagesSID" id="3dv-1a-VIj"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Alert before:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cyF-Tm-zKn">
+                                <rect key="frame" x="16" y="145" width="343" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2g1-1a-kDs">
+                                <rect key="frame" x="313" y="140" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Edit"/>
+                                <connections>
+                                    <action selector="editAlertBeforeBtnPressed:" destination="kmx-RS-Mtw" eventType="touchUpInside" id="Mqk-RG-K1Z"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <attributedString key="userComments">
@@ -519,8 +533,11 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addContactBtn" destination="g9l-OT-H0e" id="uOU-23-NUI"/>
+                        <outlet property="alertBeforeEventLbl" destination="cyF-Tm-zKn" id="64N-zB-Dey"/>
                         <outlet property="dateLbl" destination="xWC-sq-BhD" id="4s8-JB-caa"/>
                         <outlet property="deleteBtn" destination="jUT-zZ-qWC" id="StS-Xu-RRE"/>
+                        <outlet property="editAlertBeforeBtn" destination="2g1-1a-kDs" id="npQ-IJ-lKf"/>
+                        <outlet property="editDateBtn" destination="jnc-tF-cQY" id="NmD-CZ-VcZ"/>
                         <outlet property="message1Lbl" destination="h3B-H2-t7c" id="VgH-fX-433"/>
                         <outlet property="message2Lbl" destination="OyG-kC-Ndp" id="Prd-mh-hqG"/>
                         <outlet property="message3Lbl" destination="0pD-qM-CKL" id="FCU-fF-Ywf"/>
@@ -836,6 +853,6 @@
         <image name="Checkbx 5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="vdv-rI-vf7"/>
+        <segue reference="KSm-Kf-yJp"/>
     </inferredMetricsTieBreakers>
 </document>

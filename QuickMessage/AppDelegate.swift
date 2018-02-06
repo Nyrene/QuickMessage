@@ -85,7 +85,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         center.requestAuthorization(options: options) { (granted, error) in
             if granted {
                 print("DEBUG: notifications permission given")
-                application.registerForRemoteNotifications()
+                DispatchQueue.main.async(execute: {
+                    UIApplication.shared.registerForRemoteNotifications()
+                })
             } else {
                 print("DEBUG: notifications permissions not given")
             }

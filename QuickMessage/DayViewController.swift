@@ -17,9 +17,7 @@ struct TableViewItem {
     var ekEventID = ""
     var date = Date() // we need this to sort combined ek and app events
     var alarmTiedToUserEKEventID = "" // the unique identifier for the EKEVent, used to filter out duplicates
-    
-    
-    
+
 }
 
 
@@ -214,15 +212,24 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             // get the selected table view cell, pull event from that,
             // then give it to the target VC
             // TD: instead of fetching again, assign events and EKEvents to cells
-            // themselves
+            // themselves, and pass to edit event VC from there
             let selectedTableCell = sender as! DayViewTableViewCell
+            
+            
+            // TD: figure out why was I doing it this way instead of just assigning the
+            // tableViewItem to the cell??
             if self.tableViewItems[selectedTableCell.indexPath.row].eventID != "" {
                 // this is a user created event
                 let thisEventArr = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
                 targetVC.eventToEdit = thisEventArr[0]
-            } else {
-                // calendar event. TD: initialize view with countdown timer
-                // to event time
+            } else if self.tableViewItems[selectedTableCell.indexPath.row].ekEventID != "" {
+                // calendar event - we're not editing the actual calendar event at all
+                // so don't bother fetching and assigning the event
+                let ekEventTitle = self.tableViewItems[selectedTableCell.indexPath.row].title
+                let ekEventDate = self.tableViewItems[selectedTableCell.indexPath.row].date
+                
+                targetVC.selectedDate! = self.tableViewItems[selectedTableCell.indexPath.row].date
+                targetVC.setEKEventInfo(title: ekEventTitle, startDate: ekEventDate)
             }
             
         }

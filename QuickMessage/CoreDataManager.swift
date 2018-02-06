@@ -256,7 +256,7 @@ public class CoreDataManager {
     static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String], messages:[String]!) {
         // set event information
         givenEvent.title! = eventTitle
-        givenEvent.alarmDate! = alarmDate as NSDate
+        givenEvent.alarmDate! = alarmDate
         givenEvent.contactIdentifiers! = eventContactIDs as NSObject
         
         if (messages != nil) {
