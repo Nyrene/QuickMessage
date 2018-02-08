@@ -13,7 +13,7 @@ class SelectDateViewController:UIViewController {
     
     var editEventVC:EditEventViewController!
     var selectedDateFromTarget:Date!
-    var isCountdownTimer = false
+    var forEkEvent = false
     
     @IBOutlet weak var datePicker: UIDatePicker!
     
@@ -29,8 +29,12 @@ class SelectDateViewController:UIViewController {
         }
         
         // TD: continue implementation for selecting a calendar event
-        if self.isCountdownTimer {
-         self.datePicker.datePickerMode = UIDatePickerMode.countDownTimer
+        if self.forEkEvent {
+            if self.selectedDateFromTarget == nil {
+                print("ERROR: selectedDate loaded for EKEvent, but no startDate given")
+                self.navigationController?.popViewController(animated: true)
+            }
+            self.datePicker.datePickerMode = UIDatePickerMode.countDownTimer
         }
     }
     
@@ -46,6 +50,7 @@ class SelectDateViewController:UIViewController {
         }
         
         // TD: create a function for this, since it's being done in multiple locations
+        // determine whether selected date is in the past
         let currentDate = Date()
         
         if (currentDate > datePicker!.date) {
@@ -66,6 +71,11 @@ class SelectDateViewController:UIViewController {
             // Now that we have a valid date selected, pop this view controller
             self.navigationController?.popViewController(animated: true)
         }
+    }
+    
+    
+    func isValidCountdownDate() -> Bool {
+        return false
     }
     
 }

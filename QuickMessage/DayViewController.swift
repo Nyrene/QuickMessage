@@ -144,6 +144,20 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         return thisCell
     }
     
+    func addNewEventInfoToTableView(title:String, dateStr:String, date:Date, eventID:String, ekEventID:String!, alarmTiedToUserEKID:String!) {
+        var thisEKID = ""
+        var thistiedTo = ""
+        
+        if ekEventID != nil {
+            thisEKID = ekEventID
+        }
+        if alarmTiedToUserEKID != nil {
+            thistiedTo = alarmTiedToUserEKID
+        }
+        
+        let newTableInfo = TableViewItem(title:title, dateString:dateStr, eventID:eventID, ekEventID:thisEKID, date:date, alarmTiedToUserEKEventID:thistiedTo)
+        self.tableViewItems.append(newTableInfo)
+    }
     
     func addNewEventToTableView(newEvent:Event) {
         self.selectedCell.events.append(newEvent) // Not necessary for now but might be later
@@ -227,9 +241,10 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
                 // so don't bother fetching and assigning the event
                 let ekEventTitle = self.tableViewItems[selectedTableCell.indexPath.row].title
                 let ekEventDate = self.tableViewItems[selectedTableCell.indexPath.row].date
+                let ekEventIdentifier = self.tableViewItems[selectedTableCell.indexPath.row].ekEventID
                 
                 targetVC.selectedDate! = self.tableViewItems[selectedTableCell.indexPath.row].date
-                targetVC.setEKEventInfo(title: ekEventTitle, startDate: ekEventDate)
+                targetVC.setEKEventInfo(title: ekEventTitle, startDate: ekEventDate, identifier:ekEventIdentifier)
             }
             
         }

@@ -20,7 +20,7 @@ public class CoreDataManager {
     
     // most of below function's code pulled from
     // https://www.raywenderlich.com/173972/getting-started-with-core-data-tutorial-2
-    static func saveNewEventWithInformation(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!, messages:[String]!) {
+    static func saveNewEventWithInformation(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!, messages:[String]!) -> String {
         // TD2: NOTE FOR LATER:
         /* "
          When you save changes in a context, the changes are only committed “one store up.” If you save a child context, changes are pushed to its parent. Changes are not saved to the persistent store until the root context is saved.
@@ -28,7 +28,7 @@ public class CoreDataManager {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
                 print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                return
+                return ""
         }
         
         // create new event
@@ -64,9 +64,9 @@ public class CoreDataManager {
             print("Could not save. \(error), \(error.userInfo)")
         }
         
-        // TD: associate alarm/notification with this event
         self.scheduleNotificationForEventIdentifier(identifier: newEvent.uniqueID!, notDate: newEvent.alarmDate! as Date, withEvent:newEvent)
-
+        
+        return newEvent.uniqueID!
     }
     
     static func saveNewEventWithInformationAndReturn(title:String, eventDate:Date, contactIDs:[String], tiedToEKID:String, uniqueID:String!, messages:[String]!) -> Event {
@@ -253,10 +253,10 @@ public class CoreDataManager {
         
     }
     
-    static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String], messages:[String]!) {
+    static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String], messages:[String]!) -> String {
         // set event information
         givenEvent.title! = eventTitle
-        givenEvent.alarmDate! = alarmDate
+        givenEvent.alarmDate! = alarmDate as NSDate
         givenEvent.contactIdentifiers! = eventContactIDs as NSObject
         
         if (messages != nil) {
@@ -267,7 +267,7 @@ public class CoreDataManager {
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
                 print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
-                return
+                return ""
         }
         
         let thisMOC = appDelegate.persistentContainer.viewContext
@@ -278,6 +278,7 @@ public class CoreDataManager {
             print("Could not save. \(error), \(error.userInfo)")
         }
         
+        return givenEvent.uniqueID!
     }
     // TD: make this throw instead of returning an empty array
     static func fetchEventForID(eventID:String) -> [Event] {

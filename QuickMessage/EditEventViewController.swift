@@ -23,11 +23,20 @@ struct EKEventInfo { // this is here until events are assigned to cells
     // purely here to avoid a fetch unnecessarily
     var title:String = ""
     var startDate = Date()
-    
+    var identifier = ""
+}
+
+enum saveErrors:String {
+    case noTitle = "Please add a title for this event."
+    case noContacts = "No contacts entered"
+    case noDate = "Please select a date for this event."
+    case invalidDate = "Please select a valid date for this event."
+    case noErrors = "No Errors"
 }
 
 class EditEventViewController:UIViewController, CNContactPickerDelegate, UITableViewDelegate, UITableViewDataSource, CNContactViewControllerDelegate {
     var selectedDate:Date!
+    var selectedTimeInterval:TimeInterval!
     var selectedContactsIDs = [String]()
     var contactInfosForTable = [contactTableInfo]()
     
@@ -116,10 +125,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         self.reloadMessages()
     }
     
-    func setEKEventInfo(title:String, startDate:Date) {
+    func setEKEventInfo(title:String, startDate:Date, identifier:String) {
         self.givenEKEventInfo = EKEventInfo()
         self.givenEKEventInfo.title = title
         self.givenEKEventInfo.startDate = startDate
+        self.givenEKEventInfo.identifier = identifier
         
     }
     
@@ -243,103 +253,136 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     }
     
     // TD: this needs soooooo much cleanup
-    @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {
-        // Uncomment when saving functions are finished
-        let eventTitle = self.titleTxtFld.text
+    // cases:
+    // 1) editing same event, changed date, remove it from table
+    // 2) editing same event, didn't change date, don't remove it from table but
+    //      redraw the table
+    // 3) new event, same date, add to table/redraw
+    // 4) new event, different date, don't add to table
+    /*
+     if new {
+     -save newEvent
+     if time interval, calculate the alarm date
+        -if tiedToCalendarEvent, calculate time interval here
+     
+     
+     // for now
+     if self.calendarView != nil { reload calendar view }
+     if self.dayView != nil { reload day view }
+    
+     } else {
+     editing:
+     if time interval, calculate the alarm date
+        -save with update info (pull updated info)
+     
+     
+     }
+     
+ 
+    */
+    func validateCurrentSettingsBeforeSave() -> saveErrors {
+        var errorType = saveErrors.noErrors
         
-        // TD: switch these to guard statements	
-        // https://thatthinginswift.com/guard-statement-swift/
-        
-        if self.titleTxtFld!.text == "" {
-            // TD2: add alert to alert controller
-            let thisAlert = UIAlertController(title: "No Title Given", message: "Please add a title for this event.", preferredStyle: UIAlertControllerStyle.alert)
-            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-            present(thisAlert, animated: true, completion: nil)
-            if self.calendarView != nil {
-                self.calendarView.redrawCalendar(useDefaultInfo: false)
-            }
-            return
+       if self.titleTxtFld!.text == nil || self.titleTxtFld!.text == "" {
+            errorType = saveErrors.noTitle
+            return errorType
         }
         
-        
+        // right now the date is checked for validity when it is selected in the
+        // SelectDateVC, hence not checking that here.
         if self.selectedDate == nil {
-            // TD2: add popup to popup controller later
-            let thisAlert = UIAlertController(title: "No Date Selected", message: "Please select a date for this event.", preferredStyle: UIAlertControllerStyle.alert)
-            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-            present(thisAlert, animated: true, completion: nil)
-            return
+            errorType = saveErrors.noDate
+            return errorType
         }
         
-        if self.selectedContactsIDs.count == 0 || self.contactInfosForTable.count == 0 {
-            let thisAlert = UIAlertController(title: "No contacts selected", message: "Please select one or more contacts for this event.", preferredStyle: UIAlertControllerStyle.alert)
-            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-            present(thisAlert, animated: true, completion: nil)
-            return
-        }
-        
-        var haveSaved = false
-        // cases:
-        // 1) editing same event, changed date, remove it from table
-        // 2) editing same event, didn't change date, don't remove it from table but
-        //      redraw the table
-        // 3) new event, same date, add to table/redraw
-        // 4) new event, different date, don't add to table
-        
-        // day view always comes from selecting a cell, so we can use
-        // selectedCell.date to check the date (compare it with Calendar.current.startOfDay(for: eventToEdit.alarmDate! as Date) == Calendar.current.startOfDay(for: self.eventToEdit.alarmDate! as Date)
-        
-        // test if the date has changed:
+        return errorType
+    }
+    
+    func isCurrentSelectedDateSameAsPrecedingDayView() -> Bool {
         if self.dayView != nil {
             if Calendar.current.startOfDay(for:self.selectedDate) == Calendar.current.startOfDay(for:self.dayView.selectedCell.beginDate) {
-                if self.eventToEdit != nil {
-                    // redraw the table view
-                    // save the existing event
-                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
-                    self.dayView.redrawTable()
-                    haveSaved = true
-                    
-                } else {
-                    // it's a new event, add it to the day view's list of events
-                    let thisNewEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
-                    self.dayView.addNewEventToTableView(newEvent: thisNewEvent)
-                    haveSaved = true
-                }
-                
+                return true
             } else {
-                // the new event's date doesn't match the day view. Save, but 
-                // don't update the table view
-                if self.eventToEdit == nil {
-                    // new event
-                    CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
-                    haveSaved = true
-                } else {
-                    // save existing event
-                    CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
-                    haveSaved = true
-                }
+                return false
             }
+        } else {
+            // TD: throw here - no dayView exists
+            print("ERROR: in \(#function), self.dayView is nil")
+            return false
         }
+    }
+    
+    @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {
+        let eventTitle = self.titleTxtFld.text
+        var newEvent = true
+        
+        var savedEventUniqueID = ""
+        
+        // 1) Validate user given info
+        let saveError = self.validateCurrentSettingsBeforeSave()
+        if saveError != .noErrors {
+            let thisAlert = UIAlertController(title: "", message: "", preferredStyle: UIAlertControllerStyle.alert)
+            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            present(thisAlert, animated: true, completion: nil)
+            switch saveError {
+            case .noDate:
+                thisAlert.title? = "No Date Given"
+                thisAlert.message? = saveError.rawValue
+                break
+            case .noContacts:
+                thisAlert.title? = "No Contacts Given"
+                thisAlert.message? = saveError.rawValue
+                break
+            case .invalidDate:
+                thisAlert.title? = "No Date Given"
+                thisAlert.message? = "Please select a date for this alert."
+                break
+            default:
+                thisAlert.title? = "Unable to save event"
+                thisAlert.message? = "Please double check all settings and try again."
+                break
+            }
+            return
+        } // validation done
+        
+        // save event
+        if self.eventToEdit == nil { // NEW event
+            savedEventUniqueID =  CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
+        } else { // EXISTING event editing
+            newEvent = false
+            savedEventUniqueID = CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
+        }
+        
+        var EKID = ""
+        if self.givenEKEventInfo != nil {
+            EKID = self.givenEKEventInfo.identifier
+        }
+        
+        // Reloading views - event has been saved at this point
+        if self.dayView != nil {
+            if newEvent == true && self.isCurrentSelectedDateSameAsPrecedingDayView() {
+                // add an event to the day view table
+                print("DEBUG: new event to be saved with same date on day view")
+                self.dayView.addNewEventInfoToTableView(title: self.titleTxtFld!.text!, dateStr: self.dateLbl!.text!, date: self.selectedDate!, eventID: savedEventUniqueID, ekEventID: EKID, alarmTiedToUserEKID: "")
+            }
+            
+            print("DEBUG: redrawing day view")
+            self.dayView.redrawTable()
+        }
+           
         
         if self.calendarView != nil {
-            if self.eventToEdit != nil {
-                CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
-            } else {
-                CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
-            }
             self.calendarView.redrawCalendar(useDefaultInfo: false)
-            haveSaved = true
         }
-        
+       
         print("DEBUG: selectedContactsIDs.count is: ", self.selectedContactsIDs.count)
         
-        
-        if haveSaved == false {
-            print("ERROR: saveBtnPressed, but no case occurred where saved")
-        }
         self.navigationController?.popViewController(animated: true)
         // end of savebtnpressed
         
     }
+    
+    ////////--------------------------------------------------------////////////////////////////
     
     // TD: this could be cleaned up a lot
     @IBAction func addContactBtnPressed(_ sender: UIButton) {
@@ -405,7 +448,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             // load the date with the current one if we have one
             if self.eventToEdit != nil {
                 targetVC.selectedDateFromTarget = self.eventToEdit.alarmDate! as Date
-            } else if self.selectedDate != nil {
+            }
+            
+            else if self.selectedDate != nil {
                 targetVC.selectedDateFromTarget = self.selectedDate
             }
         }
@@ -415,6 +460,18 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             targetVC.editEventWindow = self
             targetVC.messages = self.messages
             
+        }
+        
+        if segue.identifier == "EditAlertBeforeSID" {
+            let targetVC = segue.destination as! SelectDateViewController
+            if self.givenEKEventInfo != nil && self.selectedDate != nil {
+                targetVC.selectedDateFromTarget = self.givenEKEventInfo.startDate
+                targetVC.forEkEvent = true
+                targetVC.selectedDateFromTarget = self.selectedDate
+            } else {
+                print("ERROR: Not enough information for edit alert before interval")
+                self.navigationController?.popViewController(animated: true)
+            }
         }
         
     }
