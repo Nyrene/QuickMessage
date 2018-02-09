@@ -143,7 +143,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         
         return thisCell
     }
-    
+    /*
     func addNewEventInfoToTableView(title:String, dateStr:String, date:Date, eventID:String, ekEventID:String!, alarmTiedToUserEKID:String!) {
         var thisEKID = ""
         var thistiedTo = ""
@@ -157,7 +157,9 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         
         let newTableInfo = TableViewItem(title:title, dateString:dateStr, eventID:eventID, ekEventID:thisEKID, date:date, alarmTiedToUserEKEventID:thistiedTo)
         self.tableViewItems.append(newTableInfo)
+        self.tableView.reloadData()
     }
+ */
     
     func addNewEventToTableView(newEvent:Event) {
         self.selectedCell.events.append(newEvent) // Not necessary for now but might be later

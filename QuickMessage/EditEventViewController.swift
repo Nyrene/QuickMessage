@@ -315,6 +315,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {
         let eventTitle = self.titleTxtFld.text
         var newEvent = true
+        var newSavedEvent:Event!
         
         var savedEventUniqueID = ""
         
@@ -347,26 +348,20 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         // save event
         if self.eventToEdit == nil { // NEW event
-            savedEventUniqueID =  CoreDataManager.saveNewEventWithInformation(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
+            newSavedEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
+            
         } else { // EXISTING event editing
             newEvent = false
-            savedEventUniqueID = CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
-        }
-        
-        var EKID = ""
-        if self.givenEKEventInfo != nil {
-            EKID = self.givenEKEventInfo.identifier
+            CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
         }
         
         // Reloading views - event has been saved at this point
-        if self.dayView != nil {
-            if newEvent == true && self.isCurrentSelectedDateSameAsPrecedingDayView() {
+        if self.dayView != nil && self.isCurrentSelectedDateSameAsPrecedingDayView() {
                 // add an event to the day view table
                 print("DEBUG: new event to be saved with same date on day view")
-                self.dayView.addNewEventInfoToTableView(title: self.titleTxtFld!.text!, dateStr: self.dateLbl!.text!, date: self.selectedDate!, eventID: savedEventUniqueID, ekEventID: EKID, alarmTiedToUserEKID: "")
+            if newSavedEvent != nil {
+                self.dayView.addNewEventToTableView(newEvent: newSavedEvent)
             }
-            
-            print("DEBUG: redrawing day view")
             self.dayView.redrawTable()
         }
            
