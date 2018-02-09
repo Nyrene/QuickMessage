@@ -290,7 +290,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         // right now the date is checked for validity when it is selected in the
         // SelectDateVC, hence not checking that here.
-        if self.selectedDate == nil {
+        if self.selectedDate == nil && self.selectedTimeInterval == nil {
+            // TD: make another error type for no selected time interval
             errorType = saveErrors.noDate
             return errorType
         }
@@ -314,10 +315,11 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     
     @IBAction func saveBtnPressed(_ sender:UIBarButtonItem) {
         let eventTitle = self.titleTxtFld.text
-        var newEvent = true
         var newSavedEvent:Event!
+        var EKID = ""
+        var eventDate:Date!
         
-        var savedEventUniqueID = ""
+        if self.givenEKEventInfo != nil {EKID = givenEKEventInfo.identifier}
         
         // 1) Validate user given info
         let saveError = self.validateCurrentSettingsBeforeSave()
@@ -335,8 +337,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 thisAlert.message? = saveError.rawValue
                 break
             case .invalidDate:
-                thisAlert.title? = "No Date Given"
-                thisAlert.message? = "Please select a date for this alert."
+                thisAlert.title? = "No Alert Time Given"
+                thisAlert.message? = "Please complete the necessary alert time information."
                 break
             default:
                 thisAlert.title? = "Unable to save event"
@@ -346,14 +348,30 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         } // validation done
         
+        
+        // some setup
+        if self.selectedTimeInterval != nil {
+            eventDate = self.givenEKEventInfo!.startDate.addingTimeInterval((-1 * self.selectedTimeInterval!))
+        } else {
+            if self.selectedDate != nil {
+                eventDate = self.selectedDate!
+            }
+        }
+    
+    
+        
         // save event
         if self.eventToEdit == nil { // NEW event
-            newSavedEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: self.selectedDate, contactIDs: self.selectedContactsIDs, tiedToEKID: "", uniqueID: nil, messages: self.messages)
+            
+            newSavedEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: eventDate!, contactIDs: self.selectedContactsIDs, tiedToEKID: EKID, uniqueID: nil, messages: self.messages)
             
         } else { // EXISTING event editing
-            newEvent = false
-            CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: self.selectedDate, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
+            // Don't bother saving EKID here (if there is one) because that shouldn't change
+            CoreDataManager.saveEventInformation(givenEvent: self.eventToEdit, eventTitle: self.titleTxtFld.text!, alarmDate: eventDate!, eventContactIDs: self.selectedContactsIDs, messages: self.messages)
         }
+        
+        
+        
         
         // Reloading views - event has been saved at this point
         if self.dayView != nil && self.isCurrentSelectedDateSameAsPrecedingDayView() {
@@ -371,13 +389,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         }
        
         print("DEBUG: selectedContactsIDs.count is: ", self.selectedContactsIDs.count)
-        
         self.navigationController?.popViewController(animated: true)
         // end of savebtnpressed
         
     }
-    
-    ////////--------------------------------------------------------////////////////////////////
     
     // TD: this could be cleaned up a lot
     @IBAction func addContactBtnPressed(_ sender: UIButton) {
@@ -463,9 +478,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 targetVC.selectedDateFromTarget = self.givenEKEventInfo.startDate
                 targetVC.forEkEvent = true
                 targetVC.selectedDateFromTarget = self.selectedDate
-            } else {
-                print("ERROR: Not enough information for edit alert before interval")
-                self.navigationController?.popViewController(animated: true)
+                targetVC.editEventVC = self
             }
         }
         

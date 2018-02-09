@@ -46,36 +46,76 @@ class SelectDateViewController:UIViewController {
         if self.editEventVC == nil {
             print("ERROR: selectDateVC's editEvent attribute is nil, nothing to pass date back to")
             self.navigationController?.popViewController(animated: true)
+            return
             // TD: pop-up explaining the date couldn't be saved
         }
         
-        // TD: create a function for this, since it's being done in multiple locations
-        // determine whether selected date is in the past
-        let currentDate = Date()
         
-        if (currentDate > datePicker!.date) {
-            let thisAlert = UIAlertController(title: "Invalid date", message: "Please select a date and time that takes place in the future.", preferredStyle: UIAlertControllerStyle.alert)
-            thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-            present(thisAlert, animated: true, completion: nil)
-
-            print ("DEBUG: user tried to save a date that was in the past")
+        if self.forEkEvent {
+            if !self.isValidSelectedCountdownDate() {
+                let thisAlert = UIAlertController(title: "Invalid Selection", message: "Please select a valid time interval.", preferredStyle: UIAlertControllerStyle.alert)
+                thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+                self.present(thisAlert, animated: true, completion: nil)
+                return
+            }
             
-        } else {
-            // Pass the selected date back to the previous window
+            // Valid selection, switch to edit screen
+            self.editEventVC.selectedTimeInterval = self.datePicker!.countDownDuration
+            let thisDateComponentsFormatter = DateComponentsFormatter()
+            self.editEventVC.alertBeforeEventLbl!.text = "Alert " + thisDateComponentsFormatter.string(from: self.datePicker!.countDownDuration)! + " before event"
+            
+            
+        } else { // Proceed for standalone alerts
+            if !self.isValidSelectedDate() {
+                let thisAlert = UIAlertController(title: "Invalid Selection", message: "Please select a valid date.", preferredStyle: UIAlertControllerStyle.alert)
+                thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+                self.present(thisAlert, animated: true, completion: nil)
+                return
+            }
+            
+            // Valid selection, switch to edit event screen
             self.editEventVC.selectedDate = self.datePicker.date
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = DateFormatter.Style.medium
             dateFormatter.timeStyle = DateFormatter.Style.short
             self.editEventVC.dateLbl.text = dateFormatter.string(from: self.datePicker.date)
             
-            // Now that we have a valid date selected, pop this view controller
-            self.navigationController?.popViewController(animated: true)
         }
+        
+        
+        
+        
+        self.navigationController?.popViewController(animated: true)
+        
     }
     
     
-    func isValidCountdownDate() -> Bool {
-        return false
+    func isValidSelectedCountdownDate() -> Bool {
+        if self.datePicker!.datePickerMode != .countDownTimer {
+            print("ERROR: Attempted to see if datePicker interval was valid, but is in date mode")
+            return false
+        }
+        
+        let interval = self.datePicker!.countDownDuration
+        // see if the interval before the date gives a date that is in the past
+        if self.selectedDateFromTarget.addingTimeInterval(-1 * interval) < Date() {
+            print("DEBUG: User tried to save an EK event time interval in the past")
+            return false
+        }
+        
+        return true
     }
     
+    func isValidSelectedDate() -> Bool {
+        if self.datePicker!.datePickerMode != .dateAndTime {
+            print("ERROR: Attempted to see if datePicker date was valid, but is in countdown mode")
+            return false
+        }
+        
+        if self.datePicker!.date < Date() { // Invalid
+            return false
+        }
+        
+        return true
+    }
 }

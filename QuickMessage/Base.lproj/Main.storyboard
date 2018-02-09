@@ -506,6 +506,7 @@
                                 <state key="normal" title="Edit"/>
                                 <connections>
                                     <action selector="editAlertBeforeBtnPressed:" destination="kmx-RS-Mtw" eventType="touchUpInside" id="Mqk-RG-K1Z"/>
+                                    <segue destination="fIy-RA-HED" kind="show" identifier="EditAlertBeforeSID" id="BIy-lc-Hk1"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -853,6 +854,7 @@
         <image name="Checkbx 5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="BIy-lc-Hk1"/>
         <segue reference="KSm-Kf-yJp"/>
     </inferredMetricsTieBreakers>
 </document>
