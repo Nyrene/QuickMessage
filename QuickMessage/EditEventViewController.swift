@@ -71,7 +71,8 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     @IBOutlet var message3Lbl:UILabel!
     @IBOutlet var message4Lbl:UILabel!
     
-    
+    // TD: clean up/revise, could have a function for each case
+    // and a switch statement
     override func viewDidLoad() {
         
         hideKeyboardWhenTappedAround()
@@ -100,6 +101,31 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 self.messages = CoreDataManager.getDefaultMessages()
             }
             
+            // EKEvent info
+            if self.eventToEdit!.tiedToEkEvent != nil {
+                if self.eventToEdit!.tiedToEkEvent != "" {
+                    print("Loading saved info for event tied to ID: ", eventToEdit!.tiedToEkEvent!)
+                    // must set interval info here
+                    // search for EK Info so that if, say, the user has renamed
+                    // the calendar event, that's reflected/updated here
+                    let thisEventStore = EKEventStore()
+                    let thisEKEvent = thisEventStore.event(withIdentifier: self.eventToEdit!.tiedToEkEvent!)
+                    
+                    self.selectedDate = thisEKEvent!.startDate
+                    let thisTimeInterval = thisEKEvent!.startDate.timeIntervalSince(self.eventToEdit!.alarmDate! as Date)
+                    self.alertBeforeEventLbl.text! = DateComponentsFormatter().string(from: (thisTimeInterval))!
+                    self.dateLbl.text! = self.dateFormatterPrint.string(from: self.selectedDate)
+                    self.selectedTimeInterval = thisTimeInterval
+                    
+                    // UI
+                    self.editDateBtn.alpha = 0
+                    self.editAlertBeforeBtn.alpha = 1
+                    self.alertBeforeEventLbl.alpha = 1
+                    self.titleTxtFld!.isEnabled = false
+                    
+                }
+            }
+            
             self.deleteBtn.alpha = 1
 
         } else { // there's no event to delete, so hide the delete button
@@ -117,9 +143,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.editDateBtn.alpha = 0
             self.alertBeforeEventLbl.alpha = 1
             self.editAlertBeforeBtn.alpha = 1
-        } else {
-            self.alertBeforeEventLbl.alpha = 0
-            self.editAlertBeforeBtn.alpha = 0
         }
         
         self.reloadMessages()
@@ -345,13 +368,14 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 thisAlert.message? = "Please double check all settings and try again."
                 break
             }
+            self.present(thisAlert, animated: true, completion: nil)
             return
         } // validation done
         
         
         // some setup
         if self.selectedTimeInterval != nil {
-            eventDate = self.givenEKEventInfo!.startDate.addingTimeInterval((-1 * self.selectedTimeInterval!))
+            eventDate = self.selectedDate.addingTimeInterval((-1 * self.selectedTimeInterval!))
         } else {
             if self.selectedDate != nil {
                 eventDate = self.selectedDate!
@@ -364,6 +388,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         if self.eventToEdit == nil { // NEW event
             
             newSavedEvent = CoreDataManager.saveNewEventWithInformationAndReturn(title: eventTitle!, eventDate: eventDate!, contactIDs: self.selectedContactsIDs, tiedToEKID: EKID, uniqueID: nil, messages: self.messages)
+            print ("Saving new event with EKID: ", EKID)
             
         } else { // EXISTING event editing
             // Don't bother saving EKID here (if there is one) because that shouldn't change
@@ -476,10 +501,15 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             let targetVC = segue.destination as! SelectDateViewController
             if self.givenEKEventInfo != nil && self.selectedDate != nil {
                 targetVC.selectedDateFromTarget = self.givenEKEventInfo.startDate
-                targetVC.forEkEvent = true
-                targetVC.selectedDateFromTarget = self.selectedDate
-                targetVC.editEventVC = self
+            } else {
+                targetVC.selectedDateFromTarget = self.selectedDate!
             }
+            
+            targetVC.forEkEvent = true
+            targetVC.selectedDateFromTarget = self.selectedDate
+            targetVC.editEventVC = self
+            
+            
         }
         
     }

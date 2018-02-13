@@ -45,6 +45,7 @@ public class CoreDataManager {
         newEvent.setValue(title, forKey : "title")
         newEvent.setValue(eventDate, forKey: "alarmDate")
         newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
+        newEvent.setValue(tiedToEKID, forKey: "tiedToEkEvent")
         
         if messages != nil {
             newEvent.setValue(messages, forKey: "messages")
@@ -93,6 +94,7 @@ public class CoreDataManager {
         newEvent.setValue(title, forKey : "title")
         newEvent.setValue(eventDate, forKey: "alarmDate")
         newEvent.setValue(contactIDs, forKey: "contactIdentifiers")
+        newEvent.setValue(tiedToEKID, forKey: "tiedToEkEvent")
         
         if messages != nil {
             newEvent.setValue(messages, forKey: "messages")

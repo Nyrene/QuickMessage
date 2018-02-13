@@ -79,10 +79,6 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             self.tableViewItems.append(newTableViewItem)
         }
     
-        
-        
-        
-        
     }
     
     func setGivenEventsToTableItems() {
@@ -94,7 +90,12 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
                 let eventDate = event.alarmDate as Date?
                 var alarmTiedToEkEvent = ""
                 if event.tiedToEkEvent != nil {
-                    alarmTiedToEkEvent = event.tiedToEkEvent!
+                    if event.tiedToEkEvent != ""
+                    {
+                        print("DEBUG: found event with tiedToEkEvent value")
+                        alarmTiedToEkEvent = event.tiedToEkEvent!
+                        
+                    }
                 }
             
                 let eventDateStr = dateFormatterPrint.string(from: eventDate!)
@@ -143,23 +144,6 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         
         return thisCell
     }
-    /*
-    func addNewEventInfoToTableView(title:String, dateStr:String, date:Date, eventID:String, ekEventID:String!, alarmTiedToUserEKID:String!) {
-        var thisEKID = ""
-        var thistiedTo = ""
-        
-        if ekEventID != nil {
-            thisEKID = ekEventID
-        }
-        if alarmTiedToUserEKID != nil {
-            thistiedTo = alarmTiedToUserEKID
-        }
-        
-        let newTableInfo = TableViewItem(title:title, dateString:dateStr, eventID:eventID, ekEventID:thisEKID, date:date, alarmTiedToUserEKEventID:thistiedTo)
-        self.tableViewItems.append(newTableInfo)
-        self.tableView.reloadData()
-    }
- */
     
     func addNewEventToTableView(newEvent:Event) {
         self.selectedCell.events.append(newEvent) // Not necessary for now but might be later
@@ -234,19 +218,25 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             
             // TD: figure out why was I doing it this way instead of just assigning the
             // tableViewItem to the cell??
-            if self.tableViewItems[selectedTableCell.indexPath.row].eventID != "" {
-                // this is a user created event
-                let thisEventArr = CoreDataManager.fetchEventForID(eventID: self.tableViewItems[selectedTableCell.indexPath.row].eventID)
+            let thisInfoItem = self.tableViewItems[selectedTableCell.indexPath.row]
+            
+            
+            if thisInfoItem.eventID != "" && thisInfoItem.alarmTiedToUserEKEventID == "" {
+                // this is a user created, standalone event
+                let thisEventArr = CoreDataManager.fetchEventForID(eventID: thisInfoItem.eventID)
                 targetVC.eventToEdit = thisEventArr[0]
-            } else if self.tableViewItems[selectedTableCell.indexPath.row].ekEventID != "" {
+            } else if thisInfoItem.ekEventID != "" {
                 // calendar event - we're not editing the actual calendar event at all
                 // so don't bother fetching and assigning the event
-                let ekEventTitle = self.tableViewItems[selectedTableCell.indexPath.row].title
-                let ekEventDate = self.tableViewItems[selectedTableCell.indexPath.row].date
-                let ekEventIdentifier = self.tableViewItems[selectedTableCell.indexPath.row].ekEventID
+                let ekEventTitle = thisInfoItem.title
+                let ekEventDate = thisInfoItem.date
+                let ekEventIdentifier = thisInfoItem.ekEventID
                 
-                targetVC.selectedDate! = self.tableViewItems[selectedTableCell.indexPath.row].date
+                targetVC.selectedDate! = thisInfoItem.date
                 targetVC.setEKEventInfo(title: ekEventTitle, startDate: ekEventDate, identifier:ekEventIdentifier)
+            } else if thisInfoItem.alarmTiedToUserEKEventID != "" {
+                let thisEventArr = CoreDataManager.fetchEventForID(eventID: thisInfoItem.eventID)
+                targetVC.eventToEdit = thisEventArr[0]
             }
             
         }
