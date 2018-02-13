@@ -59,7 +59,7 @@
 		9077B0BA20054D65002BBE0B /* SelectDateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDateViewController.swift; sourceTree = "<group>"; };
 		9077B0BE2005685A002BBE0B /* ContactsTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableCell.swift; sourceTree = "<group>"; };
 		9077B0C02005755C002BBE0B /* ContactsTableCellButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableCellButton.swift; sourceTree = "<group>"; };
-		908A19271FFEAA250084D908 /* QuickMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		908A19271FFEAA250084D908 /* TextHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TextHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		908A192A1FFEAA250084D908 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		908A192C1FFEAA250084D908 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		908A192F1FFEAA250084D908 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -67,10 +67,10 @@
 		908A19341FFEAA250084D908 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		908A19371FFEAA250084D908 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		908A19391FFEAA250084D908 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		908A193E1FFEAA260084D908 /* QuickMessageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickMessageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		908A193E1FFEAA260084D908 /* TextHelperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TextHelperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		908A19421FFEAA260084D908 /* QuickMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickMessageTests.swift; sourceTree = "<group>"; };
 		908A19441FFEAA260084D908 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		908A19491FFEAA260084D908 /* QuickMessageUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickMessageUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		908A19491FFEAA260084D908 /* TextHelperUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TextHelperUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		908A194D1FFEAA260084D908 /* QuickMessageUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickMessageUITests.swift; sourceTree = "<group>"; };
 		908A194F1FFEAA260084D908 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		908A195B200064940084D908 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -126,9 +126,9 @@
 		908A19281FFEAA250084D908 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				908A19271FFEAA250084D908 /* QuickMessage.app */,
-				908A193E1FFEAA260084D908 /* QuickMessageTests.xctest */,
-				908A19491FFEAA260084D908 /* QuickMessageUITests.xctest */,
+				908A19271FFEAA250084D908 /* TextHelper.app */,
+				908A193E1FFEAA260084D908 /* TextHelperTests.xctest */,
+				908A19491FFEAA260084D908 /* TextHelperUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -208,9 +208,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		908A19261FFEAA250084D908 /* QuickMessage */ = {
+		908A19261FFEAA250084D908 /* TextHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 908A19521FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessage" */;
+			buildConfigurationList = 908A19521FFEAA260084D908 /* Build configuration list for PBXNativeTarget "TextHelper" */;
 			buildPhases = (
 				908A19231FFEAA250084D908 /* Sources */,
 				908A19241FFEAA250084D908 /* Frameworks */,
@@ -220,14 +220,14 @@
 			);
 			dependencies = (
 			);
-			name = QuickMessage;
+			name = TextHelper;
 			productName = QuickMessage;
-			productReference = 908A19271FFEAA250084D908 /* QuickMessage.app */;
+			productReference = 908A19271FFEAA250084D908 /* TextHelper.app */;
 			productType = "com.apple.product-type.application";
 		};
-		908A193D1FFEAA260084D908 /* QuickMessageTests */ = {
+		908A193D1FFEAA260084D908 /* TextHelperTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 908A19551FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessageTests" */;
+			buildConfigurationList = 908A19551FFEAA260084D908 /* Build configuration list for PBXNativeTarget "TextHelperTests" */;
 			buildPhases = (
 				908A193A1FFEAA260084D908 /* Sources */,
 				908A193B1FFEAA260084D908 /* Frameworks */,
@@ -238,14 +238,14 @@
 			dependencies = (
 				908A19401FFEAA260084D908 /* PBXTargetDependency */,
 			);
-			name = QuickMessageTests;
+			name = TextHelperTests;
 			productName = QuickMessageTests;
-			productReference = 908A193E1FFEAA260084D908 /* QuickMessageTests.xctest */;
+			productReference = 908A193E1FFEAA260084D908 /* TextHelperTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		908A19481FFEAA260084D908 /* QuickMessageUITests */ = {
+		908A19481FFEAA260084D908 /* TextHelperUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 908A19581FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessageUITests" */;
+			buildConfigurationList = 908A19581FFEAA260084D908 /* Build configuration list for PBXNativeTarget "TextHelperUITests" */;
 			buildPhases = (
 				908A19451FFEAA260084D908 /* Sources */,
 				908A19461FFEAA260084D908 /* Frameworks */,
@@ -256,9 +256,9 @@
 			dependencies = (
 				908A194B1FFEAA260084D908 /* PBXTargetDependency */,
 			);
-			name = QuickMessageUITests;
+			name = TextHelperUITests;
 			productName = QuickMessageUITests;
-			productReference = 908A19491FFEAA260084D908 /* QuickMessageUITests.xctest */;
+			productReference = 908A19491FFEAA260084D908 /* TextHelperUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -291,7 +291,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 908A19221FFEAA250084D908 /* Build configuration list for PBXProject "QuickMessage" */;
+			buildConfigurationList = 908A19221FFEAA250084D908 /* Build configuration list for PBXProject "TextHelper" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -304,9 +304,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				908A19261FFEAA250084D908 /* QuickMessage */,
-				908A193D1FFEAA260084D908 /* QuickMessageTests */,
-				908A19481FFEAA260084D908 /* QuickMessageUITests */,
+				908A19261FFEAA250084D908 /* TextHelper */,
+				908A193D1FFEAA260084D908 /* TextHelperTests */,
+				908A19481FFEAA260084D908 /* TextHelperUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -385,12 +385,12 @@
 /* Begin PBXTargetDependency section */
 		908A19401FFEAA260084D908 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 908A19261FFEAA250084D908 /* QuickMessage */;
+			target = 908A19261FFEAA250084D908 /* TextHelper */;
 			targetProxy = 908A193F1FFEAA260084D908 /* PBXContainerItemProxy */;
 		};
 		908A194B1FFEAA260084D908 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 908A19261FFEAA250084D908 /* QuickMessage */;
+			target = 908A19261FFEAA250084D908 /* TextHelper */;
 			targetProxy = 908A194A1FFEAA260084D908 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -559,7 +559,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QuickMessage.app/QuickMessage";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TextHelper.app/TextHelper";
 			};
 			name = Debug;
 		};
@@ -574,7 +574,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QuickMessage.app/QuickMessage";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TextHelper.app/TextHelper";
 			};
 			name = Release;
 		};
@@ -609,7 +609,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		908A19221FFEAA250084D908 /* Build configuration list for PBXProject "QuickMessage" */ = {
+		908A19221FFEAA250084D908 /* Build configuration list for PBXProject "TextHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				908A19501FFEAA260084D908 /* Debug */,
@@ -618,7 +618,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		908A19521FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessage" */ = {
+		908A19521FFEAA260084D908 /* Build configuration list for PBXNativeTarget "TextHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				908A19531FFEAA260084D908 /* Debug */,
@@ -627,7 +627,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		908A19551FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessageTests" */ = {
+		908A19551FFEAA260084D908 /* Build configuration list for PBXNativeTarget "TextHelperTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				908A19561FFEAA260084D908 /* Debug */,
@@ -636,7 +636,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		908A19581FFEAA260084D908 /* Build configuration list for PBXNativeTarget "QuickMessageUITests" */ = {
+		908A19581FFEAA260084D908 /* Build configuration list for PBXNativeTarget "TextHelperUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				908A19591FFEAA260084D908 /* Debug */,

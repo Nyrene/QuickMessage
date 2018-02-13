@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "908A19261FFEAA250084D908"
-               BuildableName = "QuickMessage.app"
-               BlueprintName = "QuickMessage"
-               ReferencedContainer = "container:QuickMessage.xcodeproj">
+               BuildableName = "TextHelper.app"
+               BlueprintName = "TextHelper"
+               ReferencedContainer = "container:TextHelper.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "908A193D1FFEAA260084D908"
-               BuildableName = "QuickMessageTests.xctest"
-               BlueprintName = "QuickMessageTests"
-               ReferencedContainer = "container:QuickMessage.xcodeproj">
+               BuildableName = "TextHelperTests.xctest"
+               BlueprintName = "TextHelperTests"
+               ReferencedContainer = "container:TextHelper.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -44,9 +44,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "908A19481FFEAA260084D908"
-               BuildableName = "QuickMessageUITests.xctest"
-               BlueprintName = "QuickMessageUITests"
-               ReferencedContainer = "container:QuickMessage.xcodeproj">
+               BuildableName = "TextHelperUITests.xctest"
+               BlueprintName = "TextHelperUITests"
+               ReferencedContainer = "container:TextHelper.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -54,9 +54,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "908A19261FFEAA250084D908"
-            BuildableName = "QuickMessage.app"
-            BlueprintName = "QuickMessage"
-            ReferencedContainer = "container:QuickMessage.xcodeproj">
+            BuildableName = "TextHelper.app"
+            BlueprintName = "TextHelper"
+            ReferencedContainer = "container:TextHelper.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -78,9 +78,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "908A19261FFEAA250084D908"
-            BuildableName = "QuickMessage.app"
-            BlueprintName = "QuickMessage"
-            ReferencedContainer = "container:QuickMessage.xcodeproj">
+            BuildableName = "TextHelper.app"
+            BlueprintName = "TextHelper"
+            ReferencedContainer = "container:TextHelper.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -97,9 +97,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "908A19261FFEAA250084D908"
-            BuildableName = "QuickMessage.app"
-            BlueprintName = "QuickMessage"
-            ReferencedContainer = "container:QuickMessage.xcodeproj">
+            BuildableName = "TextHelper.app"
+            BlueprintName = "TextHelper"
+            ReferencedContainer = "container:TextHelper.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
