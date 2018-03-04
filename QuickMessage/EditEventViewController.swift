@@ -26,6 +26,7 @@ struct EKEventInfo { // this is here until events are assigned to cells
     var identifier = ""
 }
 
+
 enum saveErrors:String {
     case noTitle = "Please add a title for this event."
     case noContacts = "No contacts entered"
@@ -42,6 +43,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     
     var eventToEdit:Event!
     var givenEKEventInfo:EKEventInfo!
+    var givenEKEvent:EKEvent!
     
     var messages:[String] = []// don't edit the messages on the event directly. use an extra
     // string so if the user hits cancel and does some other editing later, the
@@ -82,70 +84,14 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         self.view.backgroundColor = backgroundColor
         dateFormatterPrint.dateFormat = "MMM dd, yyyy, hh:mm"
         
-        if self.eventToEdit != nil && self.givenEKEventInfo != nil {
-            print("ERROR: too much info given to edit event view")
-            self.navigationController?.popViewController(animated: true)
+        if self.givenEKEventInfo != nil {
+            self.loadGivenEKEventInfo()
         }
-        
         
         if self.eventToEdit != nil {
-            // editing an existing event, fill in info
-            self.titleTxtFld.text = eventToEdit.title!
-            self.dateLbl.text = dateFormatterPrint.string(from: eventToEdit.alarmDate! as Date)
-            self.selectedContactsIDs = self.eventToEdit.contactIdentifiers! as! [String]
-            self.populateTableFromGivenContactsIDs()
-            
-            if self.eventToEdit.messages != nil {
-                self.messages = self.eventToEdit.messages as! [String]
-            } else {
-                self.messages = CoreDataManager.getDefaultMessages()
-            }
-            
-            // EKEvent info
-            if self.eventToEdit!.tiedToEkEvent != nil {
-                if self.eventToEdit!.tiedToEkEvent != "" {
-                    print("Loading saved info for event tied to ID: ", eventToEdit!.tiedToEkEvent!)
-                    // must set interval info here
-                    // search for EK Info so that if, say, the user has renamed
-                    // the calendar event, that's reflected/updated here
-                    let thisEventStore = EKEventStore()
-                    let thisEKEvent = thisEventStore.event(withIdentifier: self.eventToEdit!.tiedToEkEvent!)
-                    
-                    self.selectedDate = thisEKEvent!.startDate
-                    let thisTimeInterval = thisEKEvent!.startDate.timeIntervalSince(self.eventToEdit!.alarmDate! as Date)
-                    self.alertBeforeEventLbl.text! = DateComponentsFormatter().string(from: (thisTimeInterval))!
-                    self.dateLbl.text! = self.dateFormatterPrint.string(from: self.selectedDate)
-                    self.selectedTimeInterval = thisTimeInterval
-                    
-                    // UI
-                    self.editDateBtn.alpha = 0
-                    self.editAlertBeforeBtn.alpha = 1
-                    self.alertBeforeEventLbl.alpha = 1
-                    self.titleTxtFld!.isEnabled = false
-                    
-                }
-            }
-            
-            self.deleteBtn.alpha = 1
-
-        } else { // there's no event to delete, so hide the delete button
-            self.deleteBtn.alpha = 0
-            self.messages = CoreDataManager.getDefaultMessages()
-            
+            self.loadGivenEventInfo()
         }
         
-        if self.givenEKEventInfo != nil {
-            // remove the edit button from the date/time selection field
-            // make visible the "time before" label and the edit button for that
-            print("DEBUG: edit event view was given EKEvent info")
-            self.titleTxtFld!.text = givenEKEventInfo.title
-            self.dateLbl.text! = self.dateFormatterPrint.string(from: (self.selectedDate))
-            self.editDateBtn.alpha = 0
-            self.alertBeforeEventLbl.alpha = 1
-            self.editAlertBeforeBtn.alpha = 1
-        }
-        
-        self.reloadMessages()
     }
     
     func setEKEventInfo(title:String, startDate:Date, identifier:String) {
@@ -155,6 +101,95 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         self.givenEKEventInfo.identifier = identifier
         
     }
+    
+    // BRANCH: codecleanup
+    func setUIFor(editDate:Bool, newEvent:Bool) {
+        if editDate {
+            self.editAlertBeforeBtn.alpha = 0
+            self.alertBeforeEventLbl.alpha = 0
+            self.editDateBtn.alpha = 1
+            self.titleTxtFld!.isEnabled = true
+        } else {
+            self.editAlertBeforeBtn.alpha = 1
+            self.alertBeforeEventLbl.alpha = 1
+            self.editDateBtn.alpha = 0
+            self.titleTxtFld!.isEnabled = false
+        }
+            
+        if newEvent {
+            self.deleteBtn!.alpha = 1
+        }
+    }
+    
+    func loadGivenEKEventInfo() {
+        if self.givenEKEventInfo == nil {
+            print("Error: tried to set UI for given EK info, but is nil")
+            return
+        }
+        
+        self.titleTxtFld!.text = self.givenEKEventInfo.title
+        self.dateLbl!.text = self.dateFormatterPrint.string(from: self.givenEKEventInfo.startDate)
+        self.selectedDate = self.givenEKEventInfo.startDate
+        
+        
+        self.setUIFor(editDate: false, newEvent: true)
+    }
+    
+    func loadGivenEventInfo() {
+        if self.eventToEdit == nil {
+            print("Error: tried to set UI for given event info, but is nil")
+            return
+        }
+        
+        self.selectedDate = self.eventToEdit!.alarmDate
+        if self.eventToEdit!.title == nil || self.eventToEdit!.title == "" {
+            self.titleTxtFld!.text = "Untitled Event"
+        } else {
+             self.titleTxtFld!.text = self.eventToEdit!.title!
+        }
+        
+        if self.eventToEdit.contactIdentifiers != nil {
+            self.selectedContactsIDs = self.eventToEdit.contactIdentifiers! as! [String]
+            self.populateTableFromGivenContactsIDs()
+        }
+        
+        if self.eventToEdit.messages != nil {
+            self.messages = eventToEdit.messages as! [String]
+            self.reloadMessages()
+        } else {
+            self.messages = CoreDataManager.getDefaultMessages()
+        }
+        self.dateLbl!.text = self.dateFormatterPrint.string(from: self.eventToEdit.alarmDate!)
+        
+        // if EKEvent info associated
+        if self.eventToEdit!.tiedToEkEvent != nil && self.eventToEdit!.tiedToEkEvent != "" {
+            guard let thisEvent = EKEventStore().event(withIdentifier: eventToEdit.tiedToEkEvent!) else {
+                print("ERROR: no event with this identifier found")
+                return
+            }
+            
+            let dateCompsFormatter = DateComponentsFormatter()
+            
+            self.selectedDate = thisEvent.startDate!
+            self.selectedTimeInterval = self.selectedDate.timeIntervalSince(thisEvent.startDate!)
+            
+            self.titleTxtFld!.text = thisEvent.title!
+            self.dateLbl!.text = dateFormatterPrint.string(from: self.selectedDate!)
+            self.alertBeforeEventLbl!.text = "Alert " + dateCompsFormatter.string(from: self.selectedTimeInterval!)!
+            
+            self.setUIFor(editDate: false, newEvent: false)
+        } else {
+            self.setUIFor(editDate: true, newEvent: false)
+        }
+    }
+    
+    func setUpForNewEvent() {
+        self.dateLbl!.text = "Please select a date."
+        
+    }
+    
+    
+    
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact) {
         

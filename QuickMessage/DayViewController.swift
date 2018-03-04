@@ -12,12 +12,9 @@ import EventKit
 
 struct TableViewItem {
     var title:String = ""
-    var dateString = ""
-    var eventID = ""
-    var ekEventID = ""
-    var date = Date() // we need this to sort combined ek and app events
-    var alarmTiedToUserEKEventID = "" // the unique identifier for the EKEVent, used to filter out duplicates
-
+    var date:Date // we need this to sort combined ek and app events
+    var event:Event!
+    var ekEvent:EKEvent!
 }
 
 
@@ -28,6 +25,8 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     var calendarVC:ViewController! // So we can redraw when the window becomes active again
     let dateFormatterPrint = DateFormatter()
     
+    var ekEventStore:EKEventStore!
+    
     @IBOutlet var newEventBarButton:UIBarButtonItem!
     
     // Table View
@@ -35,29 +34,18 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     var tableViewItems = [TableViewItem]()
     
     override func viewDidLoad() {
-        let thisImage = UIImage(named: "background_3.jpg")
-        let backgroundColor = UIColor(patternImage: thisImage!)
-        self.view.backgroundColor = backgroundColor
-
-        // if this date is in the past, remove the add event button
-        let thisDate = Date()
-        let startOfCurrentDate = Calendar.current.startOfDay(for: thisDate)
-        
-        if self.selectedCell.beginDate < startOfCurrentDate {
-            self.newEventBarButton!.isEnabled = false
-        }
-        
+        self.setViewColors()
         
         // Load info from the selected cell if it's not nil
         if selectedCell != nil {
             // Set up info
             
             dateFormatterPrint.dateFormat = "MMM dd, yyyy"
-            
             self.navigationItem.title = dateFormatterPrint.string(from: selectedCell.beginDate)
             dateFormatterPrint.dateFormat = "MMM dd, yyyy hh:mm"
             
         } else {
+            print ("ERROR: no cell given to day view, popping VC")
             self.navigationController?.popViewController(animated: true)
         }
         
@@ -67,15 +55,29 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         // draw table
         self.redrawTable()
         
+        // if this date is in the past, remove the add event button
+        let thisDate = Date()
+        let startOfCurrentDate = Calendar.current.startOfDay(for: thisDate)
+        if self.selectedCell.beginDate < startOfCurrentDate {
+            self.newEventBarButton!.isEnabled = false
+        }
     }
     
     // Utility
     func setGivenEKEventsToTableItems() {
 
         for ekEvent in self.selectedCell.ekEvents {
-            let displayDate = dateFormatterPrint.string(from: ekEvent.startDate)
-            let newTableViewItem = TableViewItem(title: ekEvent.title, dateString: displayDate, eventID: "", ekEventID: ekEvent.eventIdentifier, date: ekEvent.startDate, alarmTiedToUserEKEventID: "")
+            var ekEventTitle = "Untitled Calendar Event"
+            if ekEvent.title != nil {
+                ekEventTitle = ekEvent.title
+            }
             
+            if ekEvent.startDate == nil {
+                print("ERROR: Attempted to add EKEvent to day view table, but date is nil, skipping")
+                continue
+            }
+    
+            let newTableViewItem = TableViewItem(title: ekEventTitle, date: ekEvent.startDate!, event: nil, ekEvent: ekEvent)
             self.tableViewItems.append(newTableViewItem)
         }
     
@@ -83,26 +85,20 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func setGivenEventsToTableItems() {
 
-        if self.selectedCell.events.count == 0 {
-            return
-        } else {
-            for event in selectedCell.events {
-                let eventDate = event.alarmDate as Date?
-                var alarmTiedToEkEvent = ""
-                if event.tiedToEkEvent != nil {
-                    if event.tiedToEkEvent != ""
-                    {
-                        print("DEBUG: found event with tiedToEkEvent value")
-                        alarmTiedToEkEvent = event.tiedToEkEvent!
-                        
-                    }
-                }
-            
-                let eventDateStr = dateFormatterPrint.string(from: eventDate!)
-                let newTableItem = TableViewItem(title: event.title!, dateString: eventDateStr, eventID: event.uniqueID!, ekEventID: "", date: eventDate!, alarmTiedToUserEKEventID: alarmTiedToEkEvent)
-                self.tableViewItems.append(newTableItem)
+        for event in selectedCell.events {
+            guard let eventDate = event.alarmDate as Date? else {
+                print("ERROR: Day view given event does not have a date, skipping")
+                continue
             }
             
+            var eventTitle = "Untitled event"
+            if event.title != nil {
+                eventTitle = event.title!
+            }
+        
+            // let newTableItem = TableViewItem(title: event.title!, dateString: eventDateStr, eventID: event.uniqueID!, ekEventID: "", date: eventDate!, alarmTiedToUserEKEventID: alarmTiedToEkEvent)
+            let newTableItem = TableViewItem(title: eventTitle, date: eventDate, event: event, ekEvent: nil)
+            self.tableViewItems.append(newTableItem)
         }
         
     }
@@ -110,7 +106,6 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     
     
     // TableView
-    
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Delete this when ready to implement - don't implement data transfer here, but in prepareForSegue instead (because the segue won't wait for this function to finish
         // before switching views.
@@ -126,36 +121,39 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // TD: sort by date
         let thisCell = tableView.dequeueReusableCell(withIdentifier: "DayViewTableViewCell") as! DayViewTableViewCell
         
         let thisTableViewItem = self.tableViewItems[indexPath.row]
-        if thisTableViewItem.eventID == "" {
-            thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
+        if thisTableViewItem.event != nil {
+            thisCell.eventTypeLbl.backgroundColor = UIColor.yellow
         } else {
-            thisCell.dotMarkerLbl.alpha = 0
-            thisCell.backgroundColor = UIColor.yellow
+            thisCell.eventTypeLbl.backgroundColor = UIColor.yellow
         }
         
         thisCell.indexPath = indexPath
-        thisCell.dateLbl.text = thisTableViewItem.dateString
+        thisCell.dateLbl.text = self.dateFormatterPrint.string(from: thisTableViewItem.date)
         thisCell.titleLbl.text = thisTableViewItem.title
         
         return thisCell
     }
     
     func addNewEventToTableView(newEvent:Event) {
-        self.selectedCell.events.append(newEvent) // Not necessary for now but might be later
-        let thisDateString = dateFormatterPrint.string(from: newEvent.alarmDate! as Date)
-        var thisEkID = ""
-        if newEvent.tiedToEkEvent != nil {
-            thisEkID = newEvent.tiedToEkEvent!
+        self.selectedCell.events.append(newEvent)
+        var eventTitle = "Untitled Event"
+        if newEvent.title != nil {
+            eventTitle = newEvent.title!
         }
         
-        let newTableInfo = TableViewItem(title: newEvent.title!, dateString: thisDateString, eventID: newEvent.uniqueID!, ekEventID:"", date: newEvent.alarmDate! as Date, alarmTiedToUserEKEventID: thisEkID)
+        if newEvent.alarmDate == nil {
+            print("ERROR: attempted to add new event to table view, but no date given, skipping")
+            return
+        }
         
+        let newTableInfo = TableViewItem(title: eventTitle, date: newEvent.alarmDate!, event: newEvent, ekEvent: nil)
+        
+        // insert the new table view item at the current spot
         self.tableViewItems.append(newTableInfo)
+        self.sortTableViewItemsByDate()
         self.tableView.reloadData()
     }
     
@@ -169,15 +167,25 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func redrawTable() {
-        self.tableViewItems = []
+        // Completely refresh/reload the table
+        if self.tableViewItems.count != 0 {
+            self.tableViewItems = []
+        }
+        
         self.setGivenEventsToTableItems()
         self.setGivenEKEventsToTableItems()
         
         
         // order the table by date
-        self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedAscending})
+        self.sortTableViewItemsByDate()
         
         self.tableView.reloadData()
+    }
+    
+    func sortTableViewItemsByDate() {
+        if self.tableViewItems.count != 0 {
+            self.tableViewItems = self.tableViewItems.sorted(by: { $0.date.compare($1.date) == .orderedAscending})
+        }
     }
 
     
@@ -206,19 +214,25 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             let targetVC = segue.destination as! EditEventViewController
             targetVC.dayView = self
             targetVC.selectedDate = self.selectedCell.beginDate
-            // we want to pull the event info from the day view, not
-            // from the selected cell
-            
-            // get the selected table view cell, pull event from that,
-            // then give it to the target VC
-            // TD: instead of fetching again, assign events and EKEvents to cells
-            // themselves, and pass to edit event VC from there
+           
             let selectedTableCell = sender as! DayViewTableViewCell
+            let thisInfoItem = self.tableViewItems[selectedTableCell.indexPath.row]
+            
+            
+            if thisInfoItem.event != nil {
+                targetVC.eventToEdit = self.tableViewItems[selectedTableCell.indexPath.row].event
+            }
+            
+            if thisInfoItem.ekEvent != nil {
+                targetVC.ekEvent = thisInfoItem.ekEvent
+            }
+            
+        
             
             
             // TD: figure out why was I doing it this way instead of just assigning the
             // tableViewItem to the cell??
-            let thisInfoItem = self.tableViewItems[selectedTableCell.indexPath.row]
+            
             
             
             if thisInfoItem.eventID != "" && thisInfoItem.alarmTiedToUserEKEventID == "" {
@@ -240,6 +254,12 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             }
             
         }
+    }
+    
+    func setViewColors() {
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
     }
     
     

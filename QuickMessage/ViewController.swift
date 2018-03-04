@@ -14,18 +14,8 @@ import UserNotifications
 
 //SKU little_QuickMessage_SKU
 
-/*
- Next steps:
- - load saved events/alarms into table view
- -
- 
-*/
-
-
 
 // copied straight from https://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift, esqqarrouth's answer
-// to avoid interference with didSelectRow or didSelectItem,
-// add this: tap.cancelsTouchesInView = false
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
@@ -46,6 +36,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     // DEBUG:
     var events = [Event]()
+    var ekevents = [EKEvent]()
     
     // Calendar
     @IBOutlet var calendarView:UICollectionView?
@@ -55,6 +46,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     var includeUserEKEvents:Bool = false
+    var dateComponents = DateComponents()
+    
     
     // Only used for the collection view...
     // TD: find some way to not have these as attributes
@@ -71,17 +64,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     override func viewDidLoad() {
         // background image
-        let thisImage = UIImage(named: "background_3.jpg")
-        let backgroundColor = UIColor(patternImage: thisImage!)
-        self.view.backgroundColor = backgroundColor
-
-        self.calendarView?.backgroundColor = backgroundColor
+        self.setViewColors()
         
         // Keyboard dismissal
         hideKeyboardWhenTappedAround()
         super.viewDidLoad()
         // View
         
+        // Set default/starting month and date placeholders
         let dateComponents = DateComponents()
         (dateComponents as NSDateComponents).calendar = Calendar.current
         let currentDate = Date()
@@ -89,20 +79,16 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.yearTxtFld.placeholder = String(Calendar.current.component(.year, from: currentDate))
     
         // Calendar
-        
+        // TD: make a dedicated calendar class
         self.calendarView?.delegate = self
         self.calendarView?.dataSource = self
         
+        self.month = Calendar.current.component(.month, from: currentDate)
+        self.year = Calendar.current.component(.year, from: currentDate)
+        
         self.setCalendarInfo(givenMonth: Calendar.current.component(.month, from: currentDate), givenYear: Calendar.current.component(.year, from: currentDate))
-
-        // Event info
-        // if we already have access, go ahead and load user events in
-        // TD2: load toggle setting from previous run automatically
-        /*if EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
-            // TD2: and if the toggle was switched on when the app was closed
-            self.includeUserEKEvents = true
-        }
- */
+        self.redrawCalendar(useDefaultInfo: false)
+        
     }
     
 
@@ -118,89 +104,75 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     }
     
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.daysInMonth + self.startingDayOfWeek
+        
+        // return self.daysInMonth + self.startingDayOfWeek // why??
+        return self.daysInMonth
     }
     
     
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        dateComponents.year = self.year
+        dateComponents.month = self.month
         
         // first starting date is sunday, at 1
         let thisCell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCell", for: indexPath) as! CalendarCell
-        var thisDateComponents = DateComponents()
         
         if (indexPath.item) < (self.startingDayOfWeek - 1) { // if it's before the start date
             thisCell.alpha = 0
         } else { // cell is an active calendar item. Give it a date and display
+            // new code
+            dateComponents.day = indexPath.item - self.startingDayOfWeek + 2
+            let cellDate = Calendar.current.date(from: dateComponents)
+            let cellStartDate = Calendar.current.startOfDay(for: cellDate!)
+            dateComponents.day = dateComponents.day! + 1
+            var nextDate = Calendar.current.date(from: dateComponents)
+            nextDate = Calendar.current.startOfDay(for: nextDate!)
+            
+            thisCell.beginDate = cellStartDate
+            let eventsMatchingDate = self.events.filter {$0.alarmDate! > cellStartDate && $0.alarmDate! < nextDate! }
+            
+            let thisDateFormatter = DateFormatter()
+            thisDateFormatter.timeStyle = DateFormatter.Style.short
+            thisDateFormatter.dateStyle = DateFormatter.Style.short
+            
+            print("Cell end date is: ", thisDateFormatter.string(from: cellStartDate))
+            print("Cell begin date is: ", thisDateFormatter.string(from: nextDate!))
+
+            
             thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)
-
-            thisDateComponents.year = self.year
-            thisDateComponents.month = self.month
-            thisDateComponents.day = Int(thisCell.displayNum.text!)
-            thisDateComponents.hour = 0
-            thisDateComponents.minute = 0
+            thisCell.beginDate = cellStartDate
+            if eventsMatchingDate.count != 0 {
+                print("Attempting to add image to cell")
+                thisCell.events = eventsMatchingDate
+                thisCell.alarmMarkerLbl.alpha = 1
+                
+                let thisImage = UIImage(named:"alarmicon.png")
+                let imageSize = thisCell.alarmMarkerLbl.frame.size
+                UIGraphicsBeginImageContext(imageSize)
+                thisImage?.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
+                let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                thisCell.alarmMarkerLbl.backgroundColor = UIColor(patternImage: newImage!)
+                
+            }
             
-            thisCell.beginDate = Calendar.current.date(from: thisDateComponents)!
-            
-            /*
-            thisDateComponents.hour = 23
-            thisDateComponents.minute = 59
-            let endDate = Calendar.current.date(from: thisDateComponents)
- */
-
-            
-        
-        
-        // Add EKEvents if required
-            if self.includeUserEKEvents == true
-            {
-                // Get start and end date for this cell
-                /*print("DEBUG: beginDate is: ", beginDate)
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateStyle = DateFormatter.Style.medium
-                dateFormatter.timeStyle = DateFormatter.Style.medium
-                let dateString = dateFormatter.string(from: beginDate!)
-                print("datestring for begin date is: ", dateString)
-                */
-                
-                
-                thisDateComponents.hour = 23
-                thisDateComponents.minute = 59
-                let endDate = Calendar.current.date(from: thisDateComponents)
-                //print("DEBUG: endDate is: ", endDate)
-                
-                // predicate for that day
-                // TD2: allow user to choose which calendars
-                let thisPredicate = self.eventStore.predicateForEvents(withStart: thisCell.beginDate, end: endDate!, calendars: nil)
-                
-                // set the cell's color if there's events
-                let fetchedEvents = eventStore.events(matching: thisPredicate)
-                if fetchedEvents.count != 0 {
-                    thisCell.dotMarkerLbl.backgroundColor = UIColor.blue
+            if self.includeUserEKEvents == true {
+                print("first of self.ekevents.startDate is: ", thisDateFormatter.string(from: self.ekevents[0].startDate! ))
+                let ekEventsMatchingDate = self.ekevents.filter {$0.startDate! >= cellStartDate && $0.startDate! <= nextDate! }
+                if ekEventsMatchingDate.count != 0 {
+                    thisCell.ekEvents = ekEventsMatchingDate
                     thisCell.dotMarkerLbl.alpha = 1
-                } else {
-                    thisCell.dotMarkerLbl.alpha = 0
+                    
+                    // icon
+                    let thisImage = UIImage(named:"Checkbox5.png")
+                    let imageSize = thisCell.dotMarkerLbl.frame.size
+                    UIGraphicsBeginImageContext(imageSize)
+                    thisImage?.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
+                    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                    UIGraphicsEndImageContext()
+                    thisCell.dotMarkerLbl.backgroundColor = UIColor(patternImage: newImage!)
                 }
-                
-                thisCell.ekEvents = fetchedEvents
-        
-                
-            } else {
-                thisCell.dotMarkerLbl.alpha = 0
             }
-            
-            // now add saved events
-            let fetchedEvents = CoreDataManager.fetchEventsForDate(givenDate: thisCell.beginDate) as [Event]
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeStyle = DateFormatter.Style.medium
-            dateFormatter.dateStyle = DateFormatter.Style.medium
-            if fetchedEvents.count > 0 {
-                thisCell.backgroundColor = UIColor.yellow
-                thisCell.events = fetchedEvents
-            } else {
-                
-                thisCell.backgroundColor = UIColor.white
-            }
-            
         
         } // end of if calendar date
         return thisCell
@@ -212,35 +184,42 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         // Utility
     
     func setCalendarInfo(givenMonth:Int!, givenYear:Int!) {
-        self.daysInMonth = getDaysInMonth(givenMonth, givenYear:givenYear!)
-        self.startingDayOfWeek = getStartingDayOfWeek(givenMonth:givenMonth, givenYear:givenYear)
-        self.year = givenYear
-        self.month = givenMonth
+        var year:Int! = givenYear
+        var month:Int! = givenMonth
         
         if (givenMonth == nil && givenYear == nil) {
             // use current information
             let thisDate = Date()
-            if (self.year == 0) {self.year = Calendar.current.component(.year, from: thisDate)}
-            if (self.month == 0) {self.month = Calendar.current.component(.month, from: thisDate)}
+            month = Calendar.current.component(.month, from: thisDate)
+            year = Calendar.current.component(.year, from: thisDate)
         }
         
+        self.daysInMonth = Utility.getDaysInMonth(month, givenYear:year)
+        self.startingDayOfWeek = self.getStartingDayOfWeek(givenMonth:month, givenYear:year)
+        self.year = year!
+        self.month = month!
+        
+        self.events = CoreDataManager.fetchEventsForMonthInYear(month: month!, year: year!)
+        
+        if self.includeUserEKEvents {//TD: fetch all EKEvents for month
+            self.ekevents = Utility.getEKEventsForMonthInYear(month: month, year:year, eventStore:self.eventStore)
+        }
     }
     
     func redrawCalendar(useDefaultInfo:Bool) {
         print("DEBUG: redrawCalendar called")
         if (useDefaultInfo == true) {
             self.setCalendarInfo(givenMonth: nil, givenYear: nil)
-            
+        } else {
+            self.setCalendarInfo(givenMonth: self.month, givenYear: self.year)
         }
         
         self.calendarView?.reloadData()
-        
-        
     }
     
     
     func getDaysInMonth(_ givenMonth:Int!, givenYear:Int!) -> Int {
-        //note: months start at 1
+        // note: months start at 1
         
         var dateComponents = DateComponents()
         (dateComponents as NSDateComponents).calendar = Calendar.current
@@ -300,6 +279,42 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             return startingDay
         }
     }
+    
+    
+    
+    func setEKEventsForMonth(month:Int, year:Int) {
+        // get permissions
+        if EKEventStore.authorizationStatus(for: EKEntityType.event) != .authorized {
+            print("ERROR: user tried to get calendar events, but permission not granted")
+            self.userEventsToggle.isOn = false
+            return
+        }
+        
+        // fetch events
+        let thisStore = EKEventStore()
+        
+        
+        let beginningOfMonth = Utility.getBeginningDateOfMonthInYear(month: month, year:year)
+        let endOfMonth = Utility.getEndingDateOfMonthInYear(month: month, year: year)
+        
+        
+        // let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        let eventsPredicate = thisStore.predicateForEvents(withStart: beginningOfMonth, end: endOfMonth, calendars: nil)
+        let theseEvents = thisStore.events(matching: eventsPredicate)
+        self.ekevents = theseEvents
+    }
+    
+    func getEventsForMonth(month:Int, year:Int) {
+        // set fetch request
+        // let fetchedEvents = CoreDataManager.fetchEventsForDate(givenDate: thisCell.beginDate) as [Event]
+        
+        //
+        
+        
+    }
+    
+    
+    
     // TD: clean this up or move someplace where it makes more sense
     func getPermissionsForContacts() {
         func completionHandler(_ granted: Bool, error: Error?) -> Void {
@@ -504,7 +519,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     
     
-
+    func setViewColors() {
+        let thisImage = UIImage(named: "background_3.jpg")
+        let backgroundColor = UIColor(patternImage: thisImage!)
+        self.view.backgroundColor = backgroundColor
+        self.calendarView?.backgroundColor = backgroundColor
+    }
 
 }
 

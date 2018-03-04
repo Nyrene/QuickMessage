@@ -13,6 +13,7 @@ import UserNotifications
 import UserNotificationsUI
 import Contacts
 import ContactsUI
+import EventKit
 
 public class CoreDataManager {
     
@@ -253,6 +254,36 @@ public class CoreDataManager {
         
         return events
         
+    }
+    
+    static func fetchEventsForMonthInYear(month:Int, year:Int) -> [Event]! {
+        var eventsArray:[Event]! = nil
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                print ("ERROR: unable to get app delegate instance in saveNewEventWithInformation")
+                return eventsArray
+        }
+        
+        // create new event
+        let thisMOC = appDelegate.persistentContainer.viewContext
+        
+        let beginDate = Utility.getBeginningDateOfMonthInYear(month: month, year: year)
+        let endDate = Utility.getEndingDateOfMonthInYear(month: month, year: year)
+
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Event")
+        let datePredicate = NSPredicate(format: "(%@ <= alarmDate) AND (alarmDate <= %@)", argumentArray: [beginDate, endDate])
+        fetchRequest.predicate = datePredicate
+        
+        
+        do {
+            eventsArray = try thisMOC.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [Event]
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        
+        return eventsArray
     }
     
     static func saveEventInformation(givenEvent:Event, eventTitle:String, alarmDate:Date, eventContactIDs:[String], messages:[String]!) -> String {
