@@ -61,6 +61,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         if self.selectedCell.beginDate < startOfCurrentDate {
             self.newEventBarButton!.isEnabled = false
         }
+        
     }
     
     // Utility
@@ -224,36 +225,11 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
             }
             
             if thisInfoItem.ekEvent != nil {
-                targetVC.ekEvent = thisInfoItem.ekEvent
-            }
-            
-        
-            
-            
-            // TD: figure out why was I doing it this way instead of just assigning the
-            // tableViewItem to the cell??
-            
-            
-            
-            if thisInfoItem.eventID != "" && thisInfoItem.alarmTiedToUserEKEventID == "" {
-                // this is a user created, standalone event
-                let thisEventArr = CoreDataManager.fetchEventForID(eventID: thisInfoItem.eventID)
-                targetVC.eventToEdit = thisEventArr[0]
-            } else if thisInfoItem.ekEventID != "" {
-                // calendar event - we're not editing the actual calendar event at all
-                // so don't bother fetching and assigning the event
-                let ekEventTitle = thisInfoItem.title
-                let ekEventDate = thisInfoItem.date
-                let ekEventIdentifier = thisInfoItem.ekEventID
-                
-                targetVC.selectedDate! = thisInfoItem.date
-                targetVC.setEKEventInfo(title: ekEventTitle, startDate: ekEventDate, identifier:ekEventIdentifier)
-            } else if thisInfoItem.alarmTiedToUserEKEventID != "" {
-                let thisEventArr = CoreDataManager.fetchEventForID(eventID: thisInfoItem.eventID)
-                targetVC.eventToEdit = thisEventArr[0]
+                targetVC.givenEKEvent = thisInfoItem.ekEvent
             }
             
         }
+            
     }
     
     func setViewColors() {

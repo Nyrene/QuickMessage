@@ -84,7 +84,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         self.view.backgroundColor = backgroundColor
         dateFormatterPrint.dateFormat = "MMM dd, yyyy, hh:mm"
         
-        if self.givenEKEventInfo != nil {
+        if self.givenEKEvent != nil {
             self.loadGivenEKEventInfo()
         }
         
@@ -92,7 +92,17 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.loadGivenEventInfo()
         }
         
+        if self.eventToEdit == nil && self.givenEKEvent == nil {
+            self.setUIFor(editDate: true, newEvent: true)
+        }
+        
+        if self.messages.count == 0 {
+            self.messages = CoreDataManager.getDefaultMessages()
+            self.reloadMessages()
+        }
+        
     }
+
     
     func setEKEventInfo(title:String, startDate:Date, identifier:String) {
         self.givenEKEventInfo = EKEventInfo()
@@ -117,20 +127,19 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         }
             
         if newEvent {
-            self.deleteBtn!.alpha = 1
+            self.deleteBtn!.alpha = 0
         }
     }
     
     func loadGivenEKEventInfo() {
-        if self.givenEKEventInfo == nil {
+        if self.givenEKEvent == nil {
             print("Error: tried to set UI for given EK info, but is nil")
             return
         }
         
-        self.titleTxtFld!.text = self.givenEKEventInfo.title
-        self.dateLbl!.text = self.dateFormatterPrint.string(from: self.givenEKEventInfo.startDate)
-        self.selectedDate = self.givenEKEventInfo.startDate
-        
+        self.titleTxtFld!.text = self.givenEKEvent.title
+        self.dateLbl!.text = self.dateFormatterPrint.string(from: self.givenEKEvent.startDate)
+        self.selectedDate = self.givenEKEvent.startDate
         
         self.setUIFor(editDate: false, newEvent: true)
     }
@@ -142,8 +151,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         }
         
         self.selectedDate = self.eventToEdit!.alarmDate
-        if self.eventToEdit!.title == nil || self.eventToEdit!.title == "" {
+        if self.eventToEdit!.title == nil {
+            if self.eventToEdit!.title == "" {
             self.titleTxtFld!.text = "Untitled Event"
+            }
         } else {
              self.titleTxtFld!.text = self.eventToEdit!.title!
         }
@@ -227,16 +238,18 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     }
     
     func populateTableFromGivenContactsIDs() {
-        let store = CNContactStore()
-        let predicate: NSPredicate = CNContact.predicateForContacts(withIdentifiers: self.selectedContactsIDs)
-        let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactIdentifierKey]
-        let contacts = try! store.unifiedContacts(matching: predicate, keysToFetch:keysToFetch as [CNKeyDescriptor])
-        
-        for item in contacts {
-            let thisContactName = item.givenName + " " + item.familyName
-            let thisContactInfo = contactTableInfo(nameToDisplay: thisContactName, identifier: item.identifier)
-            self.contactInfosForTable.append(thisContactInfo)
+        if self.selectedContactsIDs.count != 0 {
+            let store = CNContactStore()
+            let predicate: NSPredicate = CNContact.predicateForContacts(withIdentifiers: self.selectedContactsIDs)
+            let keysToFetch = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactIdentifierKey]
+            let contacts = try! store.unifiedContacts(matching: predicate, keysToFetch:keysToFetch as [CNKeyDescriptor])
             
+            for item in contacts {
+                let thisContactName = item.givenName + " " + item.familyName
+                let thisContactInfo = contactTableInfo(nameToDisplay: thisContactName, identifier: item.identifier)
+                self.contactInfosForTable.append(thisContactInfo)
+                
+            }
         }
         
         self.tableView.reloadData()
@@ -354,6 +367,16 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return errorType
         }
         
+        if self.selectedContactsIDs == nil {
+            errorType = saveErrors.noContacts
+            return errorType
+        }
+        
+        if self.selectedContactsIDs.count == 0 {
+            errorType = saveErrors.noContacts
+            return errorType
+        }
+        
         return errorType
     }
     
@@ -377,7 +400,14 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         var EKID = ""
         var eventDate:Date!
         
-        if self.givenEKEventInfo != nil {EKID = givenEKEventInfo.identifier}
+        if self.givenEKEvent != nil {
+            if self.givenEKEvent.eventIdentifier != nil {
+                EKID = self.givenEKEvent.eventIdentifier
+            } else {
+                print("ERROR: given EKEvent does not have ID associated.")
+            }
+            
+        }
         
         // 1) Validate user given info
         let saveError = self.validateCurrentSettingsBeforeSave()
