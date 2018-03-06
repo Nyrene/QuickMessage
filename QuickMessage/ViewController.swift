@@ -135,8 +135,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             thisDateFormatter.timeStyle = DateFormatter.Style.short
             thisDateFormatter.dateStyle = DateFormatter.Style.short
             
-            print("Cell end date is: ", thisDateFormatter.string(from: cellStartDate))
-            print("Cell begin date is: ", thisDateFormatter.string(from: nextDate!))
 
             
             thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)

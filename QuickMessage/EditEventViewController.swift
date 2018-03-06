@@ -17,14 +17,6 @@ struct contactTableInfo {
     var identifier:String
 }
 
-struct EKEventInfo { // this is here until events are assigned to cells
-                    // so that new fetches aren't required every time this view
-    // is loaded to edit an existing event or create one for a calendar event.
-    // purely here to avoid a fetch unnecessarily
-    var title:String = ""
-    var startDate = Date()
-    var identifier = ""
-}
 
 
 enum saveErrors:String {
@@ -42,7 +34,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
     var contactInfosForTable = [contactTableInfo]()
     
     var eventToEdit:Event!
-    var givenEKEventInfo:EKEventInfo!
     var givenEKEvent:EKEvent!
     
     var messages:[String] = []// don't edit the messages on the event directly. use an extra
@@ -103,15 +94,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
     }
 
-    
-    func setEKEventInfo(title:String, startDate:Date, identifier:String) {
-        self.givenEKEventInfo = EKEventInfo()
-        self.givenEKEventInfo.title = title
-        self.givenEKEventInfo.startDate = startDate
-        self.givenEKEventInfo.identifier = identifier
-        
-    }
-    
     // BRANCH: codecleanup
     func setUIFor(editDate:Bool, newEvent:Bool) {
         if editDate {
@@ -184,9 +166,13 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.selectedDate = thisEvent.startDate!
             self.selectedTimeInterval = self.selectedDate.timeIntervalSince(thisEvent.startDate!)
             
+            // debugging - interval keeps coming out 0
+            let testTimeInterval = thisEvent.startDate!.timeIntervalSince(self.selectedDate!)
+            
             self.titleTxtFld!.text = thisEvent.title!
             self.dateLbl!.text = dateFormatterPrint.string(from: self.selectedDate!)
             self.alertBeforeEventLbl!.text = "Alert " + dateCompsFormatter.string(from: self.selectedTimeInterval!)!
+            print("DEBUG: selected time interval is: ", self.selectedTimeInterval)
             
             self.setUIFor(editDate: false, newEvent: false)
         } else {
@@ -223,8 +209,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         let contactView = CNContactViewController(for: contact)
         contactView.delegate = self
         
-        // this is because trying to present the view from this window or
-        // self.navigationController doesn't work - possible iOS bug
         // let navigationController = UINavigationController(rootViewController: contactView)
         // self.present(navigationController, animated: false) {}
         
@@ -323,34 +307,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
     }
     
-    // TD: this needs soooooo much cleanup
-    // cases:
-    // 1) editing same event, changed date, remove it from table
-    // 2) editing same event, didn't change date, don't remove it from table but
-    //      redraw the table
-    // 3) new event, same date, add to table/redraw
-    // 4) new event, different date, don't add to table
-    /*
-     if new {
-     -save newEvent
-     if time interval, calculate the alarm date
-        -if tiedToCalendarEvent, calculate time interval here
-     
-     
-     // for now
-     if self.calendarView != nil { reload calendar view }
-     if self.dayView != nil { reload day view }
-    
-     } else {
-     editing:
-     if time interval, calculate the alarm date
-        -save with update info (pull updated info)
-     
-     
-     }
-     
- 
-    */
     func validateCurrentSettingsBeforeSave() -> saveErrors {
         var errorType = saveErrors.noErrors
         
@@ -400,7 +356,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         var EKID = ""
         var eventDate:Date!
         
-        if self.givenEKEvent != nil {
+        if self.givenEKEvent != nil { // if EK info given, make sure it has an ID to use
             if self.givenEKEvent.eventIdentifier != nil {
                 EKID = self.givenEKEvent.eventIdentifier
             } else {
@@ -546,11 +502,13 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             targetVC.editEventVC = self
             
             // load the date with the current one if we have one
+            /*
             if self.eventToEdit != nil {
                 targetVC.selectedDateFromTarget = self.eventToEdit.alarmDate! as Date
             }
+ */
             
-            else if self.selectedDate != nil {
+            if self.selectedDate != nil {
                 targetVC.selectedDateFromTarget = self.selectedDate
             }
         }
@@ -564,14 +522,20 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         if segue.identifier == "EditAlertBeforeSID" {
             let targetVC = segue.destination as! SelectDateViewController
-            if self.givenEKEventInfo != nil && self.selectedDate != nil {
-                targetVC.selectedDateFromTarget = self.givenEKEventInfo.startDate
+            if self.givenEKEvent != nil {
+                targetVC.selectedDateFromTarget = self.givenEKEvent.startDate!
+            } else if self.selectedDate != nil {
+                targetVC.selectedDateFromTarget = self.selectedDate
             } else {
-                targetVC.selectedDateFromTarget = self.selectedDate!
+                print ("Error: not enough info to set the date for alert before interval")
+            }
+            
+            
+            if self.selectedTimeInterval != nil {
+                targetVC.selectedTimeIntervalFromTarget = self.selectedTimeInterval!
             }
             
             targetVC.forEkEvent = true
-            targetVC.selectedDateFromTarget = self.selectedDate
             targetVC.editEventVC = self
             
             

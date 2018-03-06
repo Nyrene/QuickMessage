@@ -390,7 +390,7 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="-"/>
                                                 </button>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Checkbx 5" translatesAutoresizingMaskIntoConstraints="NO" id="Hjw-fl-e4J">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Checkbox5" translatesAutoresizingMaskIntoConstraints="NO" id="Hjw-fl-e4J">
                                                     <rect key="frame" x="8" y="11" width="22" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -850,7 +850,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Checkbx 5" width="56" height="52"/>
+        <image name="Checkbox5" width="56" height="52"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="BIy-lc-Hk1"/>

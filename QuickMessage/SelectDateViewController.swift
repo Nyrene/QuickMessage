@@ -13,6 +13,7 @@ class SelectDateViewController:UIViewController {
     
     var editEventVC:EditEventViewController!
     var selectedDateFromTarget:Date!
+    var selectedTimeIntervalFromTarget:TimeInterval!
     var forEkEvent = false
     
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -26,15 +27,20 @@ class SelectDateViewController:UIViewController {
         // Set up for date here, if loading from an existing window
         if self.selectedDateFromTarget != nil {
             self.datePicker.date = selectedDateFromTarget
+        } else {
+            self.datePicker.date = Date()
         }
         
-        // TD: continue implementation for selecting a calendar event
         if self.forEkEvent {
             if self.selectedDateFromTarget == nil {
                 print("ERROR: selectedDate loaded for EKEvent, but no startDate given")
                 self.navigationController?.popViewController(animated: true)
             }
             self.datePicker.datePickerMode = UIDatePickerMode.countDownTimer
+            
+            if self.selectedTimeIntervalFromTarget != nil {
+                self.datePicker.countDownDuration = self.selectedTimeIntervalFromTarget!
+            }
         }
     }
     
@@ -75,15 +81,13 @@ class SelectDateViewController:UIViewController {
             
             // Valid selection, switch to edit event screen
             self.editEventVC.selectedDate = self.datePicker.date
+            // TD: move this code into the editDateVC
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = DateFormatter.Style.medium
             dateFormatter.timeStyle = DateFormatter.Style.short
             self.editEventVC.dateLbl.text = dateFormatter.string(from: self.datePicker.date)
             
         }
-        
-        
-        
         
         self.navigationController?.popViewController(animated: true)
         
