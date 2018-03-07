@@ -48,6 +48,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     var includeUserEKEvents:Bool = false
     var dateComponents = DateComponents()
     
+    // Images
+    var calendarDotIcon:UIImage!
+    var alarmIcon:UIImage!
+    
     
     // Only used for the collection view...
     // TD: find some way to not have these as attributes
@@ -87,6 +91,14 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.year = Calendar.current.component(.year, from: currentDate)
         
         self.setCalendarInfo(givenMonth: Calendar.current.component(.month, from: currentDate), givenYear: Calendar.current.component(.year, from: currentDate))
+        
+        if UserDefaults.standard.value(forKey: "includeCalendarEvents") != nil {
+            if UserDefaults.standard.value(forKey: "includeCalendarEvents") as! Bool == true {
+                self.includeUserEKEvents = true
+                self.userEventsToggle.isOn = true
+            }
+        }
+        
         self.redrawCalendar(useDefaultInfo: false)
         
     }
@@ -140,7 +152,6 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             thisCell.displayNum.text = String(indexPath.item - self.startingDayOfWeek + 2)
             thisCell.beginDate = cellStartDate
             if eventsMatchingDate.count != 0 {
-                print("Attempting to add image to cell")
                 thisCell.events = eventsMatchingDate
                 thisCell.alarmMarkerLbl.alpha = 1
                 
@@ -155,14 +166,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             }
             
             if self.includeUserEKEvents == true {
-                print("first of self.ekevents.startDate is: ", thisDateFormatter.string(from: self.ekevents[0].startDate! ))
                 let ekEventsMatchingDate = self.ekevents.filter {$0.startDate! >= cellStartDate && $0.startDate! <= nextDate! }
                 if ekEventsMatchingDate.count != 0 {
                     thisCell.ekEvents = ekEventsMatchingDate
                     thisCell.dotMarkerLbl.alpha = 1
                     
                     // icon
-                    let thisImage = UIImage(named:"Checkbox5.png")
+                    let thisImage = UIImage(named:"calendardot.png")
                     let imageSize = thisCell.dotMarkerLbl.frame.size
                     UIGraphicsBeginImageContext(imageSize)
                     thisImage?.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
@@ -302,16 +312,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.ekevents = theseEvents
     }
     
-    func getEventsForMonth(month:Int, year:Int) {
-        // set fetch request
-        // let fetchedEvents = CoreDataManager.fetchEventsForDate(givenDate: thisCell.beginDate) as [Event]
-        
-        //
-        
-        
-    }
-    
-    
+   
     
     // TD: clean this up or move someplace where it makes more sense
     func getPermissionsForContacts() {
@@ -358,6 +359,8 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBAction func toggleSwitched(_ sender: UISwitch) {
  
         if (self.userEventsToggle.isOn) {
+            UserDefaults.standard.set(true, forKey: "includeCalendarEvents")
+            
             // Depending on the permissions status, redraw the calendar with events
             switch (EKEventStore.authorizationStatus(for: EKEntityType.event)) {
             case .authorized:
@@ -403,6 +406,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         } else { //user has toggled it off
             self.includeUserEKEvents = false
             self.redrawCalendar(useDefaultInfo: false)
+            UserDefaults.standard.set(false, forKey: "includeCalendarEvents")
             
             
         }

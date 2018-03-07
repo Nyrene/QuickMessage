@@ -124,11 +124,28 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let thisCell = tableView.dequeueReusableCell(withIdentifier: "DayViewTableViewCell") as! DayViewTableViewCell
         
+        // correctly sized event type images
+        let alarmImage = UIImage(named: "alarmicon.png")
+        let dotImage = UIImage(named:"calendardot.png")
+        
+        let imageSize = thisCell.eventTypeLbl.frame.size
+        UIGraphicsBeginImageContext(imageSize)
+        alarmImage?.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
+        let sizedAlarmImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        UIGraphicsBeginImageContext(imageSize)
+        dotImage?.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
+        let sizedDotImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        // set images to cell
         let thisTableViewItem = self.tableViewItems[indexPath.row]
         if thisTableViewItem.event != nil {
-            thisCell.eventTypeLbl.backgroundColor = UIColor.yellow
+            thisCell.eventTypeLbl.backgroundColor = UIColor(patternImage:sizedAlarmImage!)
         } else {
-            thisCell.eventTypeLbl.backgroundColor = UIColor.yellow
+            
+            thisCell.eventTypeLbl.backgroundColor = UIColor(patternImage:sizedDotImage!)
         }
         
         thisCell.indexPath = indexPath
@@ -155,6 +172,21 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         // insert the new table view item at the current spot
         self.tableViewItems.append(newTableInfo)
         self.sortTableViewItemsByDate()
+        self.tableView.reloadData()
+    }
+    
+    func removeEventFromTable(eventToRemove:Event) {
+        var i = 0
+        for item in self.tableViewItems {
+            if item.event != nil {
+                if item.event == eventToRemove {
+                    self.tableViewItems.remove(at: i)
+                    break
+                }
+            }
+            i += 1
+        }
+        
         self.tableView.reloadData()
     }
     

@@ -92,6 +92,19 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             self.reloadMessages()
         }
         
+        // message label graphics
+        let messageLblImage = UIImage(named:"whiteroundlabel")
+        let imageSize = self.message1Lbl.frame.size
+        UIGraphicsBeginImageContext(imageSize)
+        messageLblImage?.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
+        let resizedMessageLblImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        self.message1Lbl.backgroundColor = UIColor(patternImage: resizedMessageLblImage!)
+        self.message2Lbl.backgroundColor = UIColor(patternImage: resizedMessageLblImage!)
+        self.message3Lbl.backgroundColor = UIColor(patternImage: resizedMessageLblImage!)
+        self.message4Lbl.backgroundColor = UIColor(patternImage: resizedMessageLblImage!)
+        
     }
 
     // BRANCH: codecleanup
@@ -156,22 +169,22 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         
         // if EKEvent info associated
         if self.eventToEdit!.tiedToEkEvent != nil && self.eventToEdit!.tiedToEkEvent != "" {
-            guard let thisEvent = EKEventStore().event(withIdentifier: eventToEdit.tiedToEkEvent!) else {
+            guard let thisEKEvent = EKEventStore().event(withIdentifier: eventToEdit.tiedToEkEvent!) else {
                 print("ERROR: no event with this identifier found")
                 return
             }
             
             let dateCompsFormatter = DateComponentsFormatter()
             
-            self.selectedDate = thisEvent.startDate!
-            self.selectedTimeInterval = self.selectedDate.timeIntervalSince(thisEvent.startDate!)
+            self.selectedDate = thisEKEvent.startDate!
+            self.selectedTimeInterval = self.selectedDate.timeIntervalSince(thisEKEvent.startDate!)
             
             // debugging - interval keeps coming out 0
-            let testTimeInterval = thisEvent.startDate!.timeIntervalSince(self.selectedDate!)
+            self.selectedTimeInterval = eventToEdit.alarmDate!.timeIntervalSince(self.selectedDate!)
             
-            self.titleTxtFld!.text = thisEvent.title!
+            self.titleTxtFld!.text = thisEKEvent.title!
             self.dateLbl!.text = dateFormatterPrint.string(from: self.selectedDate!)
-            self.alertBeforeEventLbl!.text = "Alert " + dateCompsFormatter.string(from: self.selectedTimeInterval!)!
+            self.alertBeforeEventLbl!.text = "Alert " + dateCompsFormatter.string(from: ( -1 * self.selectedTimeInterval!))!
             print("DEBUG: selected time interval is: ", self.selectedTimeInterval)
             
             self.setUIFor(editDate: false, newEvent: false)
@@ -290,10 +303,10 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return
         }
         
-        self.message1Lbl!.text! = self.messages[0]
-        self.message2Lbl!.text! = self.messages[1]
-        self.message3Lbl!.text! = self.messages[2]
-        self.message4Lbl!.text! = self.messages[3]
+        self.message1Lbl!.text! = "  " + self.messages[0]
+        self.message2Lbl!.text! = "  " + self.messages[1]
+        self.message3Lbl!.text! = "  " + self.messages[2]
+        self.message4Lbl!.text! = "  " + self.messages[3]
         
     }
 
@@ -320,11 +333,6 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         if self.selectedDate == nil && self.selectedTimeInterval == nil {
             // TD: make another error type for no selected time interval
             errorType = saveErrors.noDate
-            return errorType
-        }
-        
-        if self.selectedContactsIDs == nil {
-            errorType = saveErrors.noContacts
             return errorType
         }
         
@@ -394,8 +402,12 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         } // validation done
         
         
-        // some setup
+        // time interval stuff - get the alarm date from the time interval
         if self.selectedTimeInterval != nil {
+            if self.selectedTimeInterval > 0 {
+                self.selectedTimeInterval = self.selectedTimeInterval! * -1
+            }
+            
             eventDate = self.selectedDate.addingTimeInterval((-1 * self.selectedTimeInterval!))
         } else {
             if self.selectedDate != nil {
@@ -427,6 +439,12 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 self.dayView.addNewEventToTableView(newEvent: newSavedEvent)
             }
             self.dayView.redrawTable()
+        }
+        
+        if self.dayView != nil && !self.isCurrentSelectedDateSameAsPrecedingDayView() {
+            if self.eventToEdit != nil { // editing a pre-existing event whose date has been changed
+                self.dayView.removeEventFromTable(eventToRemove: self.eventToEdit!)
+            }
         }
            
         
