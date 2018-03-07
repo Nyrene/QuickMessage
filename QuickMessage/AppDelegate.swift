@@ -58,8 +58,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         
         }
-        
-        
         completionHandler([.alert, .sound])
     }
     

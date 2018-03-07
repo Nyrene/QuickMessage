@@ -157,7 +157,6 @@ public class CoreDataManager {
         notContent.launchImageName = ""
         
         
-        
         let request = UNNotificationRequest(identifier: identifier, content: notContent, trigger: thisUNTrigger)
         UNUserNotificationCenter.current().add(request) { error in
             if error != nil {
@@ -170,8 +169,11 @@ public class CoreDataManager {
             }
         }
         
-        
-        
+    }
+    
+    static func rescheduleNotificationWithIdentifier(givenNotID:String, newDate:Date, givenEvent:Event) {
+        deleteNotification(notID: givenNotID)
+        scheduleNotificationForEventIdentifier(identifier: givenNotID, notDate: newDate, withEvent: givenEvent)
     }
     
     static func deleteEventWithID(eventID:String) {
@@ -309,10 +311,17 @@ public class CoreDataManager {
             try thisMOC.save()
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
+            deleteNotification(notID: givenEvent.uniqueID!)
         }
         
+        // reschedule notification
+        rescheduleNotificationWithIdentifier(givenNotID: givenEvent.uniqueID!, newDate: alarmDate, givenEvent: givenEvent)
         return givenEvent.uniqueID!
     }
+    
+    
+    
+    
     // TD: make this throw instead of returning an empty array
     static func fetchEventForID(eventID:String) -> [Event] {
         guard let appDelegate =
@@ -321,7 +330,6 @@ public class CoreDataManager {
                 return [Event]()
         }
         
-        // create new event
         let thisMOC = appDelegate.persistentContainer.viewContext
         let thisFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Event")
         let thisPredicate = NSPredicate(format:"%K == %@", "uniqueID", eventID)

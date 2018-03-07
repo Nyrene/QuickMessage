@@ -92,10 +92,13 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         self.setCalendarInfo(givenMonth: Calendar.current.component(.month, from: currentDate), givenYear: Calendar.current.component(.year, from: currentDate))
         
-        if UserDefaults.standard.value(forKey: "includeCalendarEvents") != nil {
-            if UserDefaults.standard.value(forKey: "includeCalendarEvents") as! Bool == true {
+        if let calendarToggleSetting = UserDefaults.standard.value(forKey: "includeCalendarEvents") as! Bool? {
+            if calendarToggleSetting == true && EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
                 self.includeUserEKEvents = true
                 self.userEventsToggle.isOn = true
+            } else {
+                self.userEventsToggle.isOn = false
+                self.includeUserEKEvents = false
             }
         }
         
