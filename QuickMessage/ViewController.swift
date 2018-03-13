@@ -358,6 +358,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
 
     }
     
+    func setUserEventsToggle(isOn:Bool) {
+        self.userEventsToggle.isOn = true
+    }
     
     @IBAction func toggleSwitched(_ sender: UISwitch) {
  
@@ -374,7 +377,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                 func completionHandler(_ granted: Bool, error: Error?) -> Void{
                     if granted == true {
                         print("DEBUG: calendar permissions granted")
-                        userEventsToggle.isOn = true
+                        self.setUserEventsToggle(isOn:true)
                         self.includeUserEKEvents = true
                         self.redrawCalendar(useDefaultInfo: false)
                     } else {

@@ -67,8 +67,8 @@ class SelectDateViewController:UIViewController {
             
             // Valid selection, switch to edit screen
             self.editEventVC.selectedTimeInterval = self.datePicker!.countDownDuration
-            let thisDateComponentsFormatter = DateComponentsFormatter()
-            self.editEventVC.alertBeforeEventLbl!.text = "Alert " + thisDateComponentsFormatter.string(from: self.datePicker!.countDownDuration)! + " before event"
+            // let thisIntervalString =
+            self.editEventVC.alertBeforeEventLbl!.text = "Alert " + CoreDataManager.formatInterval(givenInterval: self.datePicker!.countDownDuration) + " before event"
             
             
         } else { // Proceed for standalone alerts
@@ -122,4 +122,5 @@ class SelectDateViewController:UIViewController {
         
         return true
     }
+    
 }

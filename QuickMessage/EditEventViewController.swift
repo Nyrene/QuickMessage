@@ -24,6 +24,7 @@ enum saveErrors:String {
     case noContacts = "No contacts entered"
     case noDate = "Please select a date for this event."
     case invalidDate = "Please select a valid date for this event."
+    case noTimeInterval = "Please select how early before the event you'd like to be alerted."
     case noErrors = "No Errors"
 }
 
@@ -177,14 +178,14 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             let dateCompsFormatter = DateComponentsFormatter()
             
             self.selectedDate = thisEKEvent.startDate!
-            self.selectedTimeInterval = self.selectedDate.timeIntervalSince(thisEKEvent.startDate!)
-            
-            // debugging - interval keeps coming out 0
             self.selectedTimeInterval = eventToEdit.alarmDate!.timeIntervalSince(self.selectedDate!)
             
             self.titleTxtFld!.text = thisEKEvent.title!
             self.dateLbl!.text = dateFormatterPrint.string(from: self.selectedDate!)
-            self.alertBeforeEventLbl!.text = "Alert " + dateCompsFormatter.string(from: ( -1 * self.selectedTimeInterval!))!
+            if self.selectedTimeInterval > 0 {
+                self.selectedTimeInterval = self.selectedTimeInterval * -1
+            }
+            self.alertBeforeEventLbl!.text = "Alert " + CoreDataManager.formatInterval(givenInterval:( -1 * self.selectedTimeInterval!)) + " before event"
             print("DEBUG: selected time interval is: ", self.selectedTimeInterval)
             
             self.setUIFor(editDate: false, newEvent: false)
@@ -341,6 +342,18 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
             return errorType
         }
         
+        if self.givenEKEvent != nil && self.selectedTimeInterval == nil {
+            errorType = saveErrors.noTimeInterval
+            return errorType
+        }
+        
+        if self.eventToEdit != nil {
+            if self.eventToEdit.tiedToEkEvent != nil && self.selectedTimeInterval == nil {
+                errorType = saveErrors.noTimeInterval
+                return errorType
+            }
+        }
+        
         return errorType
     }
     
@@ -378,7 +391,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
         if saveError != .noErrors {
             let thisAlert = UIAlertController(title: "", message: "", preferredStyle: UIAlertControllerStyle.alert)
             thisAlert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
-            present(thisAlert, animated: true, completion: nil)
+            // present(thisAlert, animated: true, completion: nil)
             switch saveError {
             case .noDate:
                 thisAlert.title? = "No Date Given"
@@ -392,6 +405,9 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 thisAlert.title? = "No Alert Time Given"
                 thisAlert.message? = "Please complete the necessary alert time information."
                 break
+            case .noTimeInterval:
+                thisAlert.title? = "No Alert Time Set"
+                thisAlert.message? = saveErrors.noTimeInterval.rawValue
             default:
                 thisAlert.title? = "Unable to save event"
                 thisAlert.message? = "Please double check all settings and try again."
@@ -408,7 +424,7 @@ class EditEventViewController:UIViewController, CNContactPickerDelegate, UITable
                 self.selectedTimeInterval = self.selectedTimeInterval! * -1
             }
             
-            eventDate = self.selectedDate.addingTimeInterval((-1 * self.selectedTimeInterval!))
+            eventDate = self.selectedDate.addingTimeInterval((self.selectedTimeInterval!))
         } else {
             if self.selectedDate != nil {
                 eventDate = self.selectedDate!
