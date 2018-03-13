@@ -424,6 +424,7 @@ public class CoreDataManager {
     
     // copied and modified from:
     // https://stackoverflow.com/questions/35999022/how-to-format-time-intervals-for-user-display-social-network-like-in-swift
+    // TD: switch to a modified version of Kesava's solution to avoid rounding
     static func formatInterval(givenInterval: TimeInterval) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.day, .hour, .minute, .second]

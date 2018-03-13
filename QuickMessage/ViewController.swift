@@ -30,6 +30,7 @@ extension UIViewController {
 
 
 
+
 //This contains the calendar view and is the starting point for the app
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UNUserNotificationCenterDelegate {
     
@@ -40,13 +41,15 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     
     // Calendar
     @IBOutlet var calendarView:UICollectionView?
-    @IBOutlet weak var monthTxtFld: UITextField!
-    @IBOutlet weak var yearTxtFld: UITextField!
+    @IBOutlet weak var monthLbl:UILabel!
+    @IBOutlet weak var yearLbl:UILabel!
     
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
     var includeUserEKEvents:Bool = false
     var dateComponents = DateComponents()
+    
+    let months: [Int:String] = [1: "January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"]
     
     // Images
     var calendarDotIcon:UIImage!
@@ -79,8 +82,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let dateComponents = DateComponents()
         (dateComponents as NSDateComponents).calendar = Calendar.current
         let currentDate = Date()
-        self.monthTxtFld.placeholder = String(Calendar.current.component(.month, from: currentDate))
-        self.yearTxtFld.placeholder = String(Calendar.current.component(.year, from: currentDate))
+
     
         // Calendar
         // TD: make a dedicated calendar class
@@ -89,6 +91,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
         self.month = Calendar.current.component(.month, from: currentDate)
         self.year = Calendar.current.component(.year, from: currentDate)
+        
+        self.monthLbl.tag = self.year
+        self.monthLbl.text = months[self.month]
+        self.yearLbl.text = String(self.year)
+        self.yearLbl.tag = self.year
         
         self.setCalendarInfo(givenMonth: Calendar.current.component(.month, from: currentDate), givenYear: Calendar.current.component(.year, from: currentDate))
         
@@ -210,11 +217,27 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         self.year = year!
         self.month = month!
         
+        self.setCalendarLabels()
+        
         self.events = CoreDataManager.fetchEventsForMonthInYear(month: month!, year: year!)
         
         if self.includeUserEKEvents {//TD: fetch all EKEvents for month
             self.ekevents = Utility.getEKEventsForMonthInYear(month: month, year:year, eventStore:self.eventStore)
         }
+    }
+    
+    func setCalendarLabels() {
+        if self.year == 0 || self.month == 0 {
+            print("ERROR: not enough information to set calendar labels")
+            return
+        }
+        
+        self.monthLbl.text = months[self.month]
+        self.yearLbl.text = String(self.year)
+        self.monthLbl.tag = self.month
+        self.yearLbl.tag = self.year
+        
+        
     }
     
     func redrawCalendar(useDefaultInfo:Bool) {
@@ -326,28 +349,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         CNContactStore().requestAccess(for: CNEntityType.contacts, completionHandler: completionHandler(_:error:))
     }
     
-
-    // User calendar info - EKEvent
     
 
     
     // IBActions
-    
-    // TD2: disable go button unless both text fields have values
-    @IBAction func goBtnPressed(_ sender: UIButton) {
-        // Only run if both fields have values
-        if (self.monthTxtFld.text! != "" && self.yearTxtFld.text! != "") {
-            self.setCalendarInfo(givenMonth: Int(self.monthTxtFld.text!), givenYear: Int(self.yearTxtFld.text!))
-            
-            // Redraw the calendar
-            self.redrawCalendar(useDefaultInfo: false)
-        } else {
-            print("Error: both month and year text fields must have values")
-        }
-        
-        self.dismissKeyboard()
-        
-    }
     
     // TD2: move this to a separate area for alerts
     func displayEventsAlerts() {
@@ -420,6 +425,40 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         
     }
     
+    // TD: can probably combine these next two functions into one
+    @IBAction func nextMonthBtnPressed(_ sender: UIButton) {
+        if self.monthLbl.tag == 0 || self.yearLbl.tag == 0 {
+            print("ERROR: can't move to next month because the month and year labels haven't been set")
+            return
+        }
+        var thisMonth = monthLbl!.tag + 1
+        var thisYear = yearLbl!.tag
+        if self.monthLbl!.tag == 12 {
+            thisMonth = 1
+            thisYear = thisYear + 1
+        }
+        
+        self.setCalendarInfo(givenMonth: thisMonth, givenYear: thisYear)
+        self.redrawCalendar(useDefaultInfo: false)
+    }
+    
+    @IBAction func previousMonthBtnPressed(_ sender: UIButton) {
+        if self.monthLbl.tag == 0 || self.yearLbl.tag == 0 {
+            print("ERROR: can't move to previous month because the month and year labels haven't been set")
+            return
+        }
+        
+        var thisMonth = monthLbl!.tag - 1
+        var thisYear = yearLbl!.tag
+        if self.monthLbl!.tag == 1 {
+            thisMonth = 12
+            thisYear = thisYear - 1
+        }
+        
+        self.setCalendarInfo(givenMonth: thisMonth, givenYear: thisYear)
+        self.redrawCalendar(useDefaultInfo: false)
+        
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // segue ID for displaying event: EventViewSID
