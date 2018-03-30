@@ -14,4 +14,5 @@ class MessagesTableViewCell: UITableViewCell {
     @IBOutlet var messageLbl:UILabel!
     var row:Int = 0
     
+
 }

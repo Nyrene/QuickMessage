@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		900B4FB02025109200E8B44B /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900B4FAF2025109200E8B44B /* InfoViewController.swift */; };
+		905658AF206DD6F100B287DE /* CalendarListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905658AE206DD6F100B287DE /* CalendarListCell.swift */; };
 		9063B095200E6F1A0020E32E /* EditMessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9063B094200E6F1A0020E32E /* EditMessagesViewController.swift */; };
 		9063B097200E95590020E32E /* MessagesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9063B096200E95590020E32E /* MessagesTableViewCell.swift */; };
 		9063B099200F0D870020E32E /* SendMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9063B098200F0D870020E32E /* SendMessageViewController.swift */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		900B4FAF2025109200E8B44B /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		905658AE206DD6F100B287DE /* CalendarListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarListCell.swift; sourceTree = "<group>"; };
 		9063B094200E6F1A0020E32E /* EditMessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditMessagesViewController.swift; sourceTree = "<group>"; };
 		9063B096200E95590020E32E /* MessagesTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesTableViewCell.swift; sourceTree = "<group>"; };
 		9063B098200F0D870020E32E /* SendMessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendMessageViewController.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				9077B0BE2005685A002BBE0B /* ContactsTableCell.swift */,
 				9077B0C02005755C002BBE0B /* ContactsTableCellButton.swift */,
 				9063B096200E95590020E32E /* MessagesTableViewCell.swift */,
+				905658AE206DD6F100B287DE /* CalendarListCell.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 				9063B099200F0D870020E32E /* SendMessageViewController.swift in Sources */,
 				908A195C200064940084D908 /* Event.swift in Sources */,
 				9063B097200E95590020E32E /* MessagesTableViewCell.swift in Sources */,
+				905658AF206DD6F100B287DE /* CalendarListCell.swift in Sources */,
 				9077B0B620047755002BBE0B /* DayViewTableViewCell.swift in Sources */,
 				900B4FB02025109200E8B44B /* InfoViewController.swift in Sources */,
 				908A192D1FFEAA250084D908 /* ViewController.swift in Sources */,

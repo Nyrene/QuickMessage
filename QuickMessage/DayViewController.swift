@@ -152,6 +152,7 @@ class DayViewController:UIViewController, UITableViewDelegate, UITableViewDataSo
         thisCell.dateLbl.text = self.dateFormatterPrint.string(from: thisTableViewItem.date)
         thisCell.titleLbl.text = thisTableViewItem.title
         
+        
         return thisCell
     }
     

@@ -32,7 +32,7 @@ extension UIViewController {
 
 
 //This contains the calendar view and is the starting point for the app
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UNUserNotificationCenterDelegate {
+class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UNUserNotificationCenterDelegate, UITableViewDelegate, UITableViewDataSource {
     
     
     // DEBUG:
@@ -43,6 +43,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     @IBOutlet var calendarView:UICollectionView?
     @IBOutlet weak var monthLbl:UILabel!
     @IBOutlet weak var yearLbl:UILabel!
+    @IBOutlet weak var lastMonthBtn: UIButton!
+    @IBOutlet weak var nextMonthBtn: UIButton!
+    
     
     var daysInMonth:Int = 0
     var startingDayOfWeek:Int = 0 //this is for which cell to begin displaying the date on
@@ -67,6 +70,10 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     // Menu area
     @IBOutlet weak var userEventsToggle: UISwitch!
     
+    // Calendar list/selection table view
+    @IBOutlet var calListTableView:UITableView!
+    var listCalendars:[EKCalendar]!
+    
     
 
     override func viewDidLoad() {
@@ -82,7 +89,9 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         let dateComponents = DateComponents()
         (dateComponents as NSDateComponents).calendar = Calendar.current
         let currentDate = Date()
-
+        
+        self.nextMonthBtn!.layer.cornerRadius = 5
+        self.lastMonthBtn!.layer.cornerRadius = 5
     
         // Calendar
         // TD: make a dedicated calendar class
@@ -103,13 +112,22 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             if calendarToggleSetting == true && EKEventStore.authorizationStatus(for: EKEntityType.event) == .authorized {
                 self.includeUserEKEvents = true
                 self.userEventsToggle.isOn = true
+                self.calListTableView.alpha = 1
+                self.reloadCalendarListTable()
             } else {
                 self.userEventsToggle.isOn = false
                 self.includeUserEKEvents = false
+                self.calListTableView.alpha = 0
             }
         }
         
         self.redrawCalendar(useDefaultInfo: false)
+        
+        
+        // Calendar list table view
+        self.calListTableView.delegate = self
+        self.calListTableView.dataSource = self
+        
         
     }
     
@@ -117,6 +135,62 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    // Calendar list table view functions
+    open func numberOfSections(in tableView: UITableView) -> Int {
+        if self.listCalendars != nil {
+            if self.listCalendars.count > 0 {
+                return 1
+            }
+        }
+        
+        return 0
+    }
+    
+    func getListOfCalendarsForTableView() {
+        if EKEventStore.authorizationStatus(for: EKEntityType.event) != .authorized {
+            print("ERROR: Can't load calendars; user permission not granted")
+            return
+        }
+        
+        self.listCalendars = self.eventStore.calendars(for: EKEntityType.event)
+        
+        
+    }
+    
+    func reloadCalendarListTable() {
+        if self.includeUserEKEvents != true && EKEventStore.authorizationStatus(for: EKEntityType.event) != .authorized {
+            print("ERROR: couldn't load table view list of calendars, conditions not met")
+            return
+        }
+        
+        getListOfCalendarsForTableView()
+        self.calListTableView.alpha = 1
+        
+        if self.listCalendars != nil {
+            if self.listCalendars.count > 0 {
+                self.calListTableView.reloadData()
+            }
+        }
+    }
+    
+    open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.listCalendars != nil {
+            if self.listCalendars.count > 0 {
+                return listCalendars.count
+            }
+        }
+        
+        return 0
+    }
+    
+    
+    open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let thisCell = tableView.dequeueReusableCell(withIdentifier: "CalendarListCell") as! CalendarListCell
+        
+        thisCell.calendarName.text = self.listCalendars[indexPath.row].title
+        return thisCell
     }
 
     // Calendar delegate and source functions
@@ -377,6 +451,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
             case .authorized:
                 self.includeUserEKEvents = true
                 self.redrawCalendar(useDefaultInfo: false)
+                self.reloadCalendarListTable()
                 break;
             case .notDetermined:
                 func completionHandler(_ granted: Bool, error: Error?) -> Void{
@@ -385,6 +460,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
                         self.setUserEventsToggle(isOn:true)
                         self.includeUserEKEvents = true
                         self.redrawCalendar(useDefaultInfo: false)
+                        self.reloadCalendarListTable()
                     } else {
                         self.userEventsToggle.isOn = false
                         self.includeUserEKEvents = false
@@ -417,6 +493,7 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         } else { //user has toggled it off
             self.includeUserEKEvents = false
             self.redrawCalendar(useDefaultInfo: false)
+            self.calListTableView.alpha = 0
             UserDefaults.standard.set(false, forKey: "includeCalendarEvents")
             
             
